@@ -1,0 +1,60 @@
+# Note: use of { } is to allow inclusion in Makefile
+
+REMASTER_SUFFIX=remastered
+ENCRYPT=NO
+UPGRADE_PKGS=NO
+
+# Executable commands
+CURL=/usr/bin/curl
+GPG=/usr/bin/gpg
+SHA256SUM=/usr/bin/sha256sum
+MD5SUM=/usr/bin/md5sum
+SUDO=/usr/bin/sudo
+MOUNT=/bin/mount
+UMOUNT=/bin/umount
+CHMOD=/bin/chmod
+MKISOFS=/usr/bin/mkisofs
+MKSQUASHFS=/usr/bin/mksquashfs
+
+# Directory configuration
+# Modify as needed
+BASEDIR=${PWD}
+ISO_DIR=${BASEDIR}/iso
+
+# Ubuntu related variables
+UBUNTU_URL_BASE=http://releases.ubuntu.com
+UBUNTU_URL_DIR=14.04
+UBUNTU_DIST=ubuntu
+UBUNTU_REL=14.04.1
+UBUNTU_CAT=desktop
+UBUNTU_ARCH=amd64
+UBUNTU_ISO_BASE=${UBUNTU_DIST}-${UBUNTU_REL}-${UBUNTU_CAT}-${UBUNTU_ARCH}.iso
+UBUNTU_ISO_FILE=${ISO_DIR}/${UBUNTU_ISO_BASE}
+UBUNTU_ISO_URL=${UBUNTU_URL_BASE}/${UBUNTU_URL_DIR}/${UBUNTU_ISO_BASE}
+UBUNTU_KEY_ID=0xFBB75451
+UBUNTU_SHA256SUMS_BASE=SHA256SUMS
+UBUNTU_SHA256SUMS_FILE=${ISO_DIR}/${UBUNTU_SHA256SUMS_BASE}
+UBUNTU_SHA256SUMS_URL=${UBUNTU_URL_BASE}/${UBUNTU_URL_DIR}/${UBUNTU_SHA256SUMS_BASE}
+
+# Mounting locations
+ROMNT=${BASEDIR}/mnt/ro
+RWMNT=${BASEDIR}/mnt/rw
+
+ISOMNT_RO=${ROMNT}/iso
+ISOMNT_RO_SENTINEL=${ISOMNT_RO}/.disk/info
+ISOMNT_RW=${RWMNT}/iso
+ISOMNT_RW_SENTINEL=${ISOMNT_RW}/.disk/info
+
+ROOTFSMNT_RO=${ROMNT}/rootfs
+ROOTFSMNT_RO_SENTINEL=${ROOTFSMNT_RO}/etc/issue
+ROOTFSMNT_RW=${RWMNT}/rootfs
+ROOTFSMNT_RW_SENTINEL=${ROOTFSMNT_RW}/etc/issue
+
+# initrd locations
+CHROOT_INITRD=${ROOTFSMNT_RW}/boot/initrd.img*
+ISO_INITRD=${ISOMNT_RW}/casper/initrd.gz
+ISO_OLDINIT=${ISOMNT_RW}/casper/initrd.lz
+
+# Remastered variables
+REMASTER_BASE=${UBUNTU_DIST}-${UBUNTU_REL}-${UBUNTU_CAT}-${UBUNTU_ARCH}-${REMASTER_SUFFIX}
+REMASTER_NAME=${REMASTER_BASE}.iso

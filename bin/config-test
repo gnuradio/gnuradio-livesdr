@@ -1,0 +1,19 @@
+#!/bin/sh
+
+. config/config-vars
+
+for cmd in \
+    $CURL \
+    $GPG \
+    $SHA256SUM \
+    $MKSQUASHFS \
+    $MD5SUM \
+    $MKISOFS \
+    ; do
+
+    if ! test -x $cmd ; then
+        echo ERROR: $cmd not found or not executable
+        echo You may need to install it.
+        exit 1
+    fi
+done

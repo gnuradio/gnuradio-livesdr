@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. config/config-vars
+
+$SUDO apt-get install \
+     curl \
+     gnupg \
+     coreutils \
+     squashfs-tools \
+     genisoimage

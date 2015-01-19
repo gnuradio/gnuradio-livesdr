@@ -1,0 +1,23 @@
+#!/bin/sh
+
+. config/config-vars
+
+# Test for existence of read-write overlay mount
+[ ! -f $ROOTFSMNT_RW_SENTINEL ] || {
+    # Unmount overlay
+    echo Unmounting squashfs root filesystem read-write overlay.
+    $SUDO $UMOUNT -l $ROOTFSMNT_RW || {
+        echo Failed to unmount root filesystem overlay.
+        exit 1
+    }
+}
+
+# Test for existence of mounted ROOTFS file
+[ ! -f $ROOTFSMNT_RO_SENTINEL ] || {
+    # Unmount image
+    echo Unmounting squashfs root filesystem.
+    $SUDO $UMOUNT -l $ROOTFSMNT_RO || {
+        echo Failed to unmount root filesystem image
+        exit 1
+    }
+}

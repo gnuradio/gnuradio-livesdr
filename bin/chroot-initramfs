@@ -1,0 +1,12 @@
+#!/bin/sh
+
+cd /root/live
+
+. config/config-vars
+
+# Create new initramfs that includes cryptsetup
+export CRYPTSETUP=y
+update-initramfs -k all -u || {
+    echo Unable to execute update-initramfs.
+    exit 1
+}

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. config/config-vars
+
+# Test for presence of root filesystem read-write overlay
+[ ! -f $ROOTFSMNT_RW/etc/issue ] || {
+    echo Root filesystem read-write overlay still mounted
+    exit 1
+}
+
+# Wipe out overlay storage
+$SUDO rm -rf $ROOTFSMNT_RW

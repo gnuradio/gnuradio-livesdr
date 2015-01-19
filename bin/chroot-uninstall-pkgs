@@ -1,0 +1,19 @@
+#!/bin/sh
+
+cd /root/live
+
+. config/config-vars
+
+# Temporarily install policy file to prevent services from running
+install -o root -g root -m 755 \
+    custom/apt/policy-rc.d \
+    /usr/sbin
+
+for pkglist in config/remove-pkgs.d/*; do
+    pkgs=`cat $pkglist`
+    apt-get -q -q -y purge $pkgs
+    apt-get -q -q -y autoremove
+done
+
+# Remove policy file
+rm -f /usr/sbin/policy-rc.d

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+. config/config-vars
+
+echo Installing custom casper boot script...
+$SUDO install -g root -o root -m 664 \
+    custom/casper/casper \
+    $ROOTFSMNT_RW/usr/share/initramfs-tools/scripts
+
+echo Installing custom isolinux menu configuration...
+$SUDO mkdir -p $ISOMNT_RW/isolinux
+$SUDO install -g root -o root -m 664 \
+    custom/casper/txt.cfg \
+    $ISOMNT_RW/isolinux

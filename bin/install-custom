@@ -1,0 +1,16 @@
+#!/bin/sh
+
+. config/config-vars
+
+# Test for presence of root filesystem read-write overlay
+[ -f $ROOTFSMNT_RW_SENTINEL ] || {
+    echo Unable to find root filesystem read-write overlay!
+    exit 1
+}
+
+# Execute each fragment in config/clean-rootfs.d
+# TODO: export these in config-vars along with anything else needed
+export ROOTFSMNT_RW=$ROOTFSMNT_RW
+export ISOMNT_RW=$ISOMNT_RW
+echo Executing customization scripts.
+run-parts config/custom.d

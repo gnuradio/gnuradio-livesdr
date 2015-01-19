@@ -1,0 +1,16 @@
+#!/bin/sh
+
+cd /root/live
+
+. config/config-vars
+
+# Temporarily install policy file to prevent services from running
+install -o root -g root -m 755 \
+    custom/apt/policy-rc.d \
+    /usr/sbin
+
+apt-get update -q
+apt-get upgrade -q -y
+
+# Remove policy file
+rm -f /usr/sbin/policy-rc.d

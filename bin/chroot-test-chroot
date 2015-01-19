@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cd /root/live
+
+. config/config-vars
+
+# Test for being inside chroot
+[ -f /root/live/config/config-vars ] || {
+    echo Not inside root filesystem chroot
+    exit 1
+}
+
+exit 0

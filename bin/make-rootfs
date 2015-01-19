@@ -1,0 +1,34 @@
+#!/bin/sh
+
+. config/config-vars
+
+# Test for presence of root filesystem read-write overlay
+[ -f $ROOTFSMNT_RW_SENTINEL ] || {
+    echo Unable to find root filesystem read-write overlay!
+    exit 1
+}
+
+# Test for presence of ISO filesystem read-write overlay
+[ -f $ISOMNT_RW_SENTINEL ] || {
+    echo Unable to find ISO filesystem read-write overlay!
+    exit 1
+}
+
+# Delete existing compressed squashfs file
+$SUDO rm -f $ISOMNT_RW/casper/filesystem.squashfs
+
+# Create compressed squashfs file from root filesystem read-write overlay
+echo Creating new squashfs root filesystem image from read-write overlay.
+$SUDO $MKSQUASHFS \
+    $ROOTFSMNT_RW \
+    $ISOMNT_RW/casper/filesystem.squashfs || {
+    echo Unable to create squashfs root filesystem image!
+    exit 1
+}
+
+$SUDO printf $($SUDO du -sx --block-size=1 $ISOMNT_RW | cut -f1) > filesystem.size &&
+$SUDO mv filesystem.size $ISOMNT_RW/casper || {
+    echo Unable to calculate generated filesystem image.
+    exit 1
+}
+$SUDO chown root.root $ISOMNT_RW/casper/filesystem.size

@@ -1,0 +1,38 @@
+#!/bin/sh
+
+. config/config-vars
+
+# Test if ISO already mounted and exit
+[ ! -f $ISOMNT_RO_SENTINEL ] || exit 0
+
+# Create read-only mount directory
+mkdir -p $ISOMNT_RO || {
+    echo Unable to create directory for mounting Ubuntu ISO image.
+    exit 1
+}
+
+# Mount original ISO image
+echo Mounting Ubuntu ISO image file read-only.
+$SUDO $MOUNT -t iso9660 -oloop,ro $UBUNTU_ISO_FILE $ISOMNT_RO || {
+    echo Mounting of Ubuntu ISO image failed.
+    exit 1
+}
+
+# Create read-write mount directory
+# TODO: detect presence of btrfs and make subvolume instead
+mkdir -p $ISOMNT_RW || {
+    echo Unable to create directory for mounting Ubuntu ISO read-write overlay.
+    exit 1
+}
+
+# Mount read-write overlay
+# TODO: use btrfs seed mount?
+echo Mounting Ubuntu ISO image file read-write overlay.
+$SUDO $MOUNT -t overlayfs -olowerdir=$ISOMNT_RO,upperdir=$ISOMNT_RW overlayfs $ISOMNT_RW || {
+    echo Mounting of Ubuntu ISO read-write overlay failed.
+    exit 1
+}
+
+# Change permissions of the stock isolinux.bin file to allow
+# update by genisoimage.
+#$SUDO $CHMOD ugo+rw $ISOMNT_RW/isolinux/isolinux.bin
