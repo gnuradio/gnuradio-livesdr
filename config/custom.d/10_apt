@@ -2,6 +2,16 @@
 
 . config/config-vars
 
+echo Installing custom APT sources.list...
+$SUDO install -o root -g root -m 644 \
+    custom/apt/sources.list \
+    $ROOTFSMNT_RW/etc/apt/sources.list
+
+echo Enabling force-unsafe-io dpkg operation...
+$SUDO install -o root -g root -m 644 \
+    custom/apt/force-unsafe-io \
+    $ROOTFSMNT_RW/etc/dpkg/dpkg.cfg.d
+
 echo Enabling force-confold dpkg operation...
 $SUDO install -o root -g root -m 644 \
     custom/apt/force-confold \

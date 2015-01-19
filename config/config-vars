@@ -2,7 +2,7 @@
 
 REMASTER_SUFFIX=remastered
 ENCRYPT=NO
-UPGRADE_PKGS=NO
+UPGRADE_PKGS=YES
 
 # Executable commands
 CURL=/usr/bin/curl

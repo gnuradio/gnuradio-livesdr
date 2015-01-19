@@ -1,0 +1,11 @@
+#!/bin/sh
+
+. config/config-vars
+
+echo Installing custom Unity low graphics mode config
+$SUDO install -m 644 \
+    custom/unity/ubuntu.session \
+    $ROOTFSMNT_RW/usr/share/gnome-session/sessions/
+$SUDO install -m 644 \
+    custom/unity/unity7.conf \
+    $ROOTFSMNT_RW/usr/share/upstart/sessions/unity7.conf
