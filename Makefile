@@ -60,6 +60,14 @@ endif
 
 packages: stamps/packages.stamp
 
+${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config:
+	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs
+
+pybombs: ${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config
+
+install-pybombs-apps: pybombs
+	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs-apps
+
 # Create new initrd from rootfs contents (and with cryptsetup)
 ${CHROOT_INITRD}:
 	@bin/run-in-chroot /root/live/bin/chroot-initramfs
@@ -70,7 +78,7 @@ ${ISO_INITRD}: ${CHROOT_INITRD}
 initrd: mount ${ISO_INITRD}
 
 # Target for entire custom content generation
-content: custom packages initrd
+content: custom packages install-pybombs-apps initrd
 
 ###############
 # Remastering #
@@ -91,11 +99,15 @@ luks: rootfs
 master: mount-iso
 	@bin/make-master
 
+# Create torrent from remastered ISO
+torrent:
+	@bin/make-torrent
+
 # Build a new master image based on current overlays
 ifeq (${ENCRYPT},YES)
-binary: content luks master unmount
+binary: content luks master torrent unmount
 else
-binary: content rootfs master unmount
+binary: content rootfs master torrent unmount
 endif
 
 ###########

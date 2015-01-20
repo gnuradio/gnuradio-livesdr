@@ -1,0 +1,10 @@
+doxygen
+libcomedi-dev
+libsdl1.2-dev
+libzmq3-dev
+octave
+python-matplotlib
+python-opengl
+python-scipy
+python-sphinx
+python-zmq

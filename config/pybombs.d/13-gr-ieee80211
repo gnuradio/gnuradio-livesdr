@@ -1,0 +1,37 @@
+#!/bin/sh
+
+GITREV=7805bae2
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-ieee-80211.lwr
+
+# Test if gr-ieee-80211 already installed, silently exit if so
+[ -f $ROOTFS_PREFIX/include/ieee802-11/gnuradio/ieee802_11/api.h ] || {
+
+    # Edit gr-ieee-80211 recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access gr-ieee-80211 pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in gr-ieee-80211 recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install gr-ieee-80211
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install gr-ieee-80211 || {
+        echo Unable to install gr-ieee-80211 via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-ieee-80211/build &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-ieee-80211/.git || {
+        echo Unable to clean up after gr-ieee-80211 compile.
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}

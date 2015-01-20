@@ -1,0 +1,17 @@
+[802-3-ethernet]
+duplex=full
+
+[connection]
+id=USRP
+uuid=6cc38971-6375-422c-a4bc-9a92cece2483
+type=802-3-ethernet
+timestamp=1409454738
+
+[ipv6]
+method=ignore
+
+[ipv4]
+method=manual
+address1=192.168.10.1/24,192.168.10.33
+never-default=true
+may-fail=false

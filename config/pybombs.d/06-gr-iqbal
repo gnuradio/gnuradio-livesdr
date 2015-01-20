@@ -1,0 +1,37 @@
+#!/bin/sh
+
+GITREV=44ab02f6
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-iqbal.lwr
+
+# Test if gr-iqbal already installed, silently exit if so
+[ -f $ROOTFS_PREFIX/lib/libgnuradio-iqbalance.so ] || {
+
+    # Edit gr-iqbal recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access gr-iqbal pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in gr-iqbal recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install gr-iqbal
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install gr-iqbal || {
+        echo Unable to install gr-iqbal via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-iqbal/build &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-iqbal/.git || {
+        echo Unable to clean up after gr-iqbal compile.
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}

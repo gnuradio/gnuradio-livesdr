@@ -1,0 +1,115 @@
+#!/bin/sh
+
+GITREV=4e98bc6b
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/hackrf.lwr
+
+# Test if hackrf already installed, silently exit if so
+[ -x $ROOTFS_PREFIX/bin/hackrf_info ] || {
+
+    # Edit hackrf recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access hackrf pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in hackrf recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install hackrf
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install hackrf || {
+        echo Unable to install hackrf via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/hackrf/host/build || {
+        echo Unable to clean up after hackrf compile.
+        exit 1
+    }
+
+    # Clean up repository history
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/hackrf/.git || {
+        echo Unable to remove repository history after hackrf compile.
+        exit 1
+    }
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}
+
+# Install udev permissions for hackrf
+[ -x /etc/udev/rules.d/53-hackrf.rules ] || {
+    install -g root -o root -m 644 $LIVEUB_DIR/custom/hackrf/53-hackrf.rules /etc/udev/rules.d || {
+        echo Unable to install hackrf udev rules file.
+        exit 1
+    }
+}
+
+# Download and install hackrf firmware files
+[ -f /usr/local/share/hackrf/firmware-bin/hackrf_one_usb_ram.dfu ] || {
+    # Download hackrf release package
+    echo Downloading hackrf release package
+    mkdir -p /tmp/hackrf &&
+    curl -# http://iweb.dl.sourceforge.net/project/hackrf/hackrf-2014.08.1.tar.xz \
+        -o /tmp/hackrf/hackrf-2014.08.1.tar.xz || {
+        echo Unable to download hackrf release package.
+        exit 1
+    }
+
+    # Unpack release package file to tmpdir
+    cd /tmp/hackrf &&
+    tar xJf hackrf-2014.08.1.tar.xz || {
+        echo Unable to unpack hackrf firmware.
+        exit 1
+    }
+
+    # Install firmware-bin files
+    echo Installing hackrf firmware files.
+    TMPDIR=/tmp/hackrf/hackrf-2014.08.1/firmware-bin
+    DESTDIR=/usr/local/share/hackrf/firmware-bin
+
+    mkdir -p $DESTDIR &&
+    install -o root -g root -m 644 \
+        -t $DESTDIR \
+        $TMPDIR/hackrf_cpld_default.xsvf \
+        $TMPDIR/hackrf_jawbreaker_usb_ram.dfu \
+        $TMPDIR/hackrf_jawbreaker_usb_rom_to_ram.bin \
+        $TMPDIR/hackrf_one_usb_ram.dfu \
+        $TMPDIR/hackrf_one_usb_rom_to_ram.bin || {
+        echo Unable to install hackrf firmware files.
+    }
+
+    rm -rf /tmp/hackrf
+}
+
+# Download, compile, and install dfu-util 0.5
+[ -x /usr/local/bin/dfu-util ] || {
+    # Download source tarball
+    mkdir -p /tmp/hackrf &&
+    curl -# http://dfu-util.sourceforge.net/releases/dfu-util-0.5.tar.gz \
+        -o /tmp/hackrf/dfu-util-0.5.tar.gz || {
+        echo Unable to download dfu-util-0.5
+        exit 1
+    }
+
+    # Unpack source tarball
+    cd /tmp/hackrf &&
+    tar xzf dfu-util-0.5.tar.gz || {
+        echo Unable to unpack hackrf firmware.
+        exit 1
+    }
+
+    # Compile and install source tarball
+    cd /tmp/hackrf/dfu-util-0.5 &&
+    ./configure --prefix=/usr/local &&
+    make &&
+    make install || {
+        echo Unable to compile/install dfu-util 0.5
+        exit 1
+    }
+
+    rm -rf /tmp/hackrf
+}

@@ -1,0 +1,40 @@
+#!/bin/sh
+
+GITREV=v2.3.2
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gqrx.lwr
+
+# Test if gqrx already installed, silently exit if so
+[ -x $ROOTFS_PREFIX/bin/gqrx ] || {
+
+    # Edit gqrx recipe for desired revisio
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access gqrx pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in gqrx recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Patch out -mt suffix addition
+    sed -i -e 's/BOOST_SUFFIX=-mt/BOOST_SUFFIX=/' $LWR
+
+    # Execute pybombs recipe to install gqrx
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install gqrx || {
+        echo Unable to install gqrx via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    make -C $ROOTFS_SRCDIR/pybombs/src/gqrx clean &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gqrx/.git || {
+        echo Unable to clean up after gqrx compile.
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}

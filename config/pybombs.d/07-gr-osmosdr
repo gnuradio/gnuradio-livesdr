@@ -1,0 +1,37 @@
+#!/bin/sh
+
+GITREV=46bb1ad1
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-osmosdr.lwr
+
+# Test if gr-osmosdr already installed, silently exit if so
+[ -x $ROOTFS_PREFIX/bin/osmocom_fft ] || {
+
+    # Edit gr-osmosdr recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access gr-osmosdr pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in gr-osmosdr recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install gr-osmosdr
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install gr-osmosdr || {
+        echo Unable to install gr-osmosdr via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-osmosdr/build clean &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-osmosdr/.git || {
+        echo Unable to clean up after gr-osmosdr compile.
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}

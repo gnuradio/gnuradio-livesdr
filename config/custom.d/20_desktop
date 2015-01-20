@@ -1,13 +1,34 @@
 #!/bin/sh
 
+echo Installing live user dconf configuration
+sudo mkdir -p $ROOTFSMNT_RW/etc/skel/.config/dconf
+sudo install -g 999 -o 999 -m 644 \
+    custom/desktop/dconf/user \
+    $ROOTFSMNT_RW/etc/skel/.config/dconf/
+
 echo Removing desktop examples shortcut...
 sudo rm -f $ROOTFSMNT_RW/etc/skel/examples.desktop
 
 echo Nuking Amazon icon from Unity...
 sudo rm -f $ROOTFSMNT_RW/usr/share/applications/ubuntu-amazon-default.desktop
 
+echo Installing GNU Radio logo file...
+sudo mkdir -p $ROOTFSMNT_RW/usr/local/share/gnuradio
+sudo install -g root -o root -m 644 \
+    custom/gnuradio/gnuradio_logo.png \
+    $ROOTFSMNT_RW/usr/local/share/gnuradio
+
+echo Installing custom Mozilla profile...
+sudo cp -a custom/desktop/firefox/.mozilla \
+    $ROOTFSMNT_RW/etc/skel
+sudo chown 999.999 -R $ROOTFSMNT_RW/etc/skel/.mozilla
+
 echo Installing desktop autostart for indicator-multiload...
 sudo mkdir -p $ROOTFSMNT_RW/etc/skel/.config/autostart
 sudo install -g 999 -o 999 -m 644 \
     custom/desktop/autostart/indicator-multiload.desktop \
     $ROOTFSMNT_RW/etc/skel/.config/autostart
+
+echo Installing home directory shortcuts
+sudo ln -sf /usr/local/src/pybombs/src $ROOTFSMNT_RW/etc/skel
+sudo ln -sf /usr/local/share/gnuradio/examples $ROOTFSMNT_RW/etc/skel

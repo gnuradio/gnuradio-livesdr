@@ -1,0 +1,37 @@
+#!/bin/sh
+
+GITREV=76945c80
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/openlte.lwr
+
+# Test if openlte already installed, silently exit if so
+[ -f $ROOTFS_PREFIX/bin/LTE_file_recorder ] || {
+
+    # Edit openlte recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access openlte pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in openlte recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install openlte
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install openlte || {
+        echo Unable to install openlte via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/openlte/build &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/openlte/.git || {
+        echo Unable to clean up after openlte compile.
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}

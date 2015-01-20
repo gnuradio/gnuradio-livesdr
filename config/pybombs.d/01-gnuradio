@@ -1,0 +1,77 @@
+#!/bin/sh
+
+GITREV=v3.7.6.1
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnuradio.lwr
+
+# Test if UHD already installed, silently exit if so
+[ -x $ROOTFS_PREFIX/bin/gnuradio-config-info ] || {
+
+    # Edit pybombs recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access gnuradio pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in gnuradio recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install gnuradio
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install gnuradio || {
+        echo Unable to install gnuradio via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gnuradio/build || {
+        echo Unable to clean up after gnuradio compile.
+        exit 1
+    }
+
+    # Nuke repository history
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gnuradio/.git || {
+        echo Unable to clean up gnuradio repository history
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}
+
+# Install freedesktop files
+[ -f /usr/share/mime/packages/gnuradio-grc.xml ] || {
+    /usr/local/libexec/gnuradio/grc_setup_freedesktop install || {
+        echo Unable to install gnuradio freedesktop files.
+        exit 1
+    }
+}
+
+# Install desktop icon for GNU Radio Companion
+[ -f /etc/skel/Desktop/gnuradio-grc.desktop ] || {
+    mkdir -p /etc/skel/Desktop
+    install -g 999 -o 999 -m 644 \
+        /usr/local/share/gnuradio/grc/freedesktop/gnuradio-grc.desktop \
+        /etc/skel/Desktop
+}
+
+# Install live user configuration files
+[ -x /etc/skel/.gnuradio/config.conf ] || {
+    install -d -o 999 -g 999 /etc/skel/.gnuradio &&
+    install -g 999 -o 999 -m 644 $LIVEUB_DIR/custom/gnuradio/config.conf /etc/skel/.gnuradio &&
+    install -g 999 -o 999 -m 644 $LIVEUB_DIR/custom/gnuradio/.bash_aliases /etc/skel &&
+    install -g 999 -o 999 -m 644 $LIVEUB_DIR/custom/gnuradio/.octaverc /etc/skel || {
+        echo Unable to install live user GNU Radio configuration files.
+    }
+}
+
+# Install documentation desktop shortcut
+[ -h "/etc/skel/Desktop/GNU Radio Documentation" ] || {
+    ln -sf /usr/local/share/doc/gnuradio-3.7.6/html/index.html \
+        "/etc/skel/Desktop/GNU Radio Documentation" || {
+        echo Unable to install GNU Radio Documentation shortcut.
+        exit 1
+    }
+}

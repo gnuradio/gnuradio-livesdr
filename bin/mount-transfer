@@ -1,0 +1,11 @@
+#/bin/sh
+
+# Create mount points if needed
+[ -d mnt/vdisk ] || mkdir -p mnt/vdisk
+[ -d mnt/transfer ] || mkdir -p mnt/transfer
+
+# Mount VirtualBox image for disk
+vdfuse -f vm/transfer.vdi mnt/vdisk
+
+# Mount partition inside VirtualBox image
+sudo mount -o loop mnt/vdisk/EntireDisk mnt/transfer

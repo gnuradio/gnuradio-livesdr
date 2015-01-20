@@ -1,6 +1,6 @@
 # Note: use of { } is to allow inclusion in Makefile
 
-REMASTER_SUFFIX=remastered
+REMASTER_SUFFIX=gnuradio-3.7.6.1
 ENCRYPT=NO
 UPGRADE_PKGS=YES
 
@@ -55,6 +55,16 @@ CHROOT_INITRD=${ROOTFSMNT_RW}/boot/initrd.img*
 ISO_INITRD=${ISOMNT_RW}/casper/initrd.gz
 ISO_OLDINIT=${ISOMNT_RW}/casper/initrd.lz
 
+# Chroot locations
+LIVEUB_DIR=/root/live
+
 # Remastered variables
 REMASTER_BASE=${UBUNTU_DIST}-${UBUNTU_REL}-${UBUNTU_CAT}-${UBUNTU_ARCH}-${REMASTER_SUFFIX}
 REMASTER_NAME=${REMASTER_BASE}.iso
+
+# GNU Radio related
+ROOTFS_PREFIX=/usr/local
+ROOTFS_SRCDIR=${ROOTFS_PREFIX}/src
+
+# Pybombs related
+PYBOMBS_GITURL=git://github.com/pybombs/pybombs

@@ -1,0 +1,74 @@
+#!/bin/sh
+
+GITREV=release_003_008_001
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/uhd.lwr
+
+# Test if UHD already installed, silently exit if so
+[ -x $ROOTFS_PREFIX/bin/uhd_find_devices ] || {
+
+    # Edit pybombs recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access UHD pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in UHD recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install UHD
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install uhd || {
+        echo Unable to install UHD via pybombs.
+        exit 1
+    }
+
+    # Nuke compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/uhd/host/build || {
+        echo Unable to clean up after UHD compile.
+        exit 1
+    }
+
+    # Nuke repository history
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/uhd/.git || {
+        echo Unable to remove UHD repository history
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared library
+    # Shouldn't pybombs do this for us?
+    ldconfig
+}
+
+# Install the udev rules file
+[ -f /etc/udev/rules.d/uhd-usrp.rules ] || {
+    install -g root -o root -m 644 $ROOTFS_SRCDIR/pybombs/src/uhd/host/utils/uhd-usrp.rules /etc/udev/rules.d || {
+        echo Unable to install UHD udev rules file.
+        exit 1
+    }
+}
+
+# Install the sysctl params for the network stack
+[ -f /etc/sysctl.d/10-uhd-buffers.conf ] || {
+    install -g root -o root -m 644 $LIVEUB_DIR/custom/uhd/10-uhd-buffers.conf /etc/sysctl.d || {
+        echo Unable to copy UHD sysctl params into place.
+        exit 1
+    }
+}
+
+# Install the limits file for real-time priority
+[ -f /etc/security/limits.d/10-uhd-limits.conf ] || {
+    mkdir -p /etc/security/limits.d
+    install -g root -o root -m 644 $LIVEUB_DIR/custom/uhd/10-uhd-limits.conf /etc/security/limits.d || {
+        echo Unable to copy UHD limits file into place.
+        exit 1
+    }
+}
+
+# Download and install firmware images
+[ -f /usr/local/share/uhd/images/LICENSE ] || uhd_images_downloader || {
+    echo Unable to download UHD firmware images.
+    exit 1
+}

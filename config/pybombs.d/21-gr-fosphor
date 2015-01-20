@@ -1,0 +1,139 @@
+#!/bin/sh
+
+FILENAME=opencl_runtime_14.2_x64_4.5.0.8.tgz
+URLBASE=http://registrationcenter.intel.com/irc_nas/4181
+URL=$URLBASE/$FILENAME
+DIRNM=pset_opencl_runtime_14.1_x64_4.5.0.8
+TMPDIR=$LIVEUB_DIR/tmp
+DESTDIR=/
+
+# Create working area
+[ -d $TMPDIR ] || {
+    echo Creating temporary work area $TMPDIR...
+    mkdir -p $TMPDIR || {
+	echo Unable to create tempdir $TMPDIR
+	exit 1
+    }
+}
+cd $TMPDIR
+
+# Retrieve Intel CPU OpenCL distribution tarball
+[ -f $FILENAME ] || {
+    echo Downloading Intel CPU OpenCL driver...
+    for i in 1 2 3 4 5 6 7 8 9 10; do
+        curl -C - -# $URL -o $FILENAME
+        RET=$?
+        [ $RET -eq 0 ] && break
+        # TODO: Check here if max tries, then exit
+        [ $RET -eq 33 ] && echo Ignoring... && break    # workaround curl bug
+        [ $RET -eq 56 ] && continue # network timeout
+	echo Unable to download Intel CPU OpenCL driver!
+        exit 1
+    done
+}
+
+# Unpack outer tgz
+[ -d $DIRNM ] || {
+    echo Unpacking driver file $FILENAME
+    tar xzf $FILENAME || {
+	echo Unable to unpack driver file $FILENAME!
+	exit 1
+    }
+}
+
+# Unpack Intel base and CPU rpms
+[ -d $DESTDIR/opt/intel ] || {
+    echo Unpacking Intel OpenCL driver file internal RPM files...
+    cd $DESTDIR
+    rpm2cpio $TMPDIR/$DIRNM/rpm/*base* | cpio -idm >/dev/null &&
+    rpm2cpio $TMPDIR/$DIRNM/rpm/*cpu* | cpio -idm >/dev/null || {
+	echo Unable to extract Intel OpenCL driver files!
+	exit 1
+    }
+}
+
+# Install Intel OCL director
+echo Installing Intel OpenCL dispatcher...
+update-alternatives --install /usr/lib/x86_64-linux-gnu/libOpenCL.so.1.2 libOpenCL /opt/intel/opencl-1.2-4.5.0.8/lib64/libOpenCL.so.1.2 100 || {
+    echo Unable to install Intel OpenCL dispatcher!
+    exit 1
+}
+cd /usr/lib/x86_64-linux-gnu &&
+ln -sf libOpenCL.so.1.2 libOpenCL.so.1 &&
+ln -sf libOpenCL.so.1 libOpenCL.so || {
+    echo Unable to create libOpenCL.so symlinks!
+    exit 1
+}
+ldconfig
+
+# Install Intel OCL ICD
+[ -d /etc/OpenCL/vendors/intel.icd ] || {
+    echo Installing Intel OpenCL ICD...
+    mkdir -p /etc/OpenCL/vendors &&
+    ln -sf /opt/intel/opencl-1.2-4.5.0.8/etc/intel64.icd /etc/OpenCL/vendors || {
+	echo Unable to install Intel OpenCL ICD!
+	exit 1
+    }
+}
+
+# Clean up
+[ $TMPDIR/$DIRNM != "/" ] || {
+    echo Stopping the end of world!
+    exit 1
+}
+rm -rf $TMPDIR/$DIRNM
+rm -f $TMPDIR/$FILENAME
+
+# Fetch, patch, and install gr-fosphor
+GITREV=36ce5e78
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/openlte.lwr
+
+# Test if gr-fosphor already installed, silently exit if so
+[ -f $ROOTFS_PREFIX/include/fosphor/api.h ] || {
+    # Edit gr-fosphor recipe for desired revision
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access gr-fosphor pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in gr-fosphor recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to fetch gr-fosphor
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs fetch gr-fosphor || {
+        echo Unable to fetch gr-fosphor via pybombs.
+        exit 1
+    }
+
+    # Patch version compatibility to allow use with Intel CPU driver
+    sed -i -e 's/150 compatibility/130/g' $ROOTFS_SRCDIR/pybombs/src/gr-fosphor/lib/fosphor/* || {
+        echo Unable to patch gr-fosphor compatibility version numbers
+        exit 1
+    }
+
+    # Execute pybombs recipe to install gr-fosphor
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install gr-fosphor || {
+        echo Unable to fetch gr-fosphor via pybombs.
+        exit 1
+    }
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-fosphor/build &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-fosphor/.git || {
+        echo Unable to clean up after gr-fosphor compile.
+        exit 1
+    }
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/glfw3/build &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/glfw3/.git || {
+        echo Unable to clean up after glfw3 compile.
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}

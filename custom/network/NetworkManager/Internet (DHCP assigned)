@@ -1,0 +1,16 @@
+[802-3-ethernet]
+duplex=full
+
+[connection]
+id=Internet (DHCP assigned)
+uuid=24c326d0-6783-4ece-bcfb-66e79af0f030
+type=802-3-ethernet
+timestamp=1409453940
+
+[ipv6]
+method=ignore
+
+[ipv4]
+method=auto
+dns=8.8.8.8;
+may-fail=false

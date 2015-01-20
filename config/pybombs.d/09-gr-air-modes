@@ -1,0 +1,42 @@
+#!/bin/sh
+
+GITREV=9891907e
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-air-modes.lwr
+
+# Test if gr-air-modes already installed, silently exit if so
+[ -x $ROOTFS_PREFIX/bin/modes_gui ] || {
+
+    # Edit gr-air-modes recipe for desired revisio
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        echo Unable to access gr-air-modes pybombs recipe.
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        echo Setting git revision in gr-air-modes recipe
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install gr-air-modes
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install gr-air-modes || {
+        echo Unable to install gr-air-modes via pybombs.
+        exit 1
+    }
+
+    # Replace installed __init__.py to fix RTLDR issue
+    install -g root -o root -m 644 \
+        $LIVEUB_DIR/custom/gr-air-modes/__init__.py \
+        /usr/local/lib/python2.7/dist-packages/air_modes
+
+    # Clean up compilation results
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-air-modes/build clean &&
+    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-air-modes/.git || {
+        echo Unable to clean up after gr-air-modes compile.
+        exit 1
+    }
+
+    # Tell the system we've installed a new shared libraries
+    ldconfig
+}
