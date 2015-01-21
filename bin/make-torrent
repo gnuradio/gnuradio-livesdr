@@ -2,7 +2,7 @@
 
 . config/config-vars
 
-buildtorrent \
+$BUILDTORRENT \
     -a udp://tracker.publicbt.com:80 \
     -w http://s3-dist.gnuradio.org/$REMASTER_BASE.iso,http://eu1-dist.gnuradio.org/s3/$REMASTER_BASE.iso,http://eu2-dist.gnuradio.org/$REMASTER_BASE.iso \
     $ISO_DIR/$REMASTER_BASE.iso  \

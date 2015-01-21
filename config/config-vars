@@ -15,6 +15,7 @@ UMOUNT=/bin/umount
 CHMOD=/bin/chmod
 MKISOFS=/usr/bin/mkisofs
 MKSQUASHFS=/usr/bin/mksquashfs
+BUILDTORRENT=/usr/bin/buildtorrent
 
 # Directory configuration
 # Modify as needed

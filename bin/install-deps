@@ -3,6 +3,7 @@
 . config/config-vars
 
 $SUDO apt-get install \
+     buildtorrent \
      curl \
      gnupg \
      coreutils \

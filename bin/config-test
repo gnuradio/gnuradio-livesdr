@@ -9,6 +9,7 @@ for cmd in \
     $MKSQUASHFS \
     $MD5SUM \
     $MKISOFS \
+    $BUILDTORRENT \
     ; do
 
     if ! test -x $cmd ; then
