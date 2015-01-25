@@ -13,7 +13,7 @@ To create a remastered Ubuntu ISO file, with no further customization
 beyond what is done in these scripts, simply do the following:
 
 $ git clone -b <desired branch> git://github.com/jmcorgan/ubuntu-remaster.git
-$ cd ubuntu-remaster.git
+$ cd ubuntu-remaster
 $ make deps
 <optionally edit config/config-vars as desired>
 $ make
@@ -37,7 +37,7 @@ in the repository):
   encrypted, requiring a passphrase to be entered up bootup.  The
   contents of the image will be decrypted and decompressed on-the-fly
   as needed during operation.  However, the root filesystem on any
-  media the image is written to remain encrypted.  You will be
+  media the image is written to remains encrypted.  You will be
   prompted a total of three times for the passphrase during the
   generation of the encrypted image. The encryption used is based on
   LUKS, which uses PBKDF2 key generation and AES256-ESSIV bulk
