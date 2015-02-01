@@ -1,6 +1,6 @@
 #!/bin/sh
 set -o nounset
-set -x #DEBUG
+#set -x #DEBUG
 
 . config/config-vars
 . bin/functions.sh
