@@ -129,6 +129,7 @@ dist-clean: unmount clean
 	@rm -f ${ISO_DIR}/${REMASTER_NAME}
 	@rm -f ${ISO_DIR}/${UBUNTU_ISO_BASE}.tmp
 	@rm -f ${ISO_DIR}/SHA256SUM*
+	@rm -f ${ISO_DIR}/*.torrent
 	@rm -f stamps/*.stamp
 	@sudo rm -rf ${RWMNT}/iso
 	@sudo rm -rf ${RWMNT}/rootfs
