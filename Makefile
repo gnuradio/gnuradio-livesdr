@@ -31,8 +31,14 @@ ${ROOTFSMNT_RO_SENTINEL}:
 
 mount-rootfs: mount-iso ${ROOTFSMNT_RO_SENTINEL}
 
+${CHROOT_MNT_SENTINEL}:
+	@bin/mount-chroot
+
+# Mount chroot system mounts
+mount-chroot: mount-rootfs ${CHROOT_MNT_SENTINEL}
+
 # Mount everything
-mount: mount-rootfs
+mount: mount-chroot
 
 #################
 # Customization #
@@ -58,7 +64,7 @@ endif
 	@bin/run-in-chroot /root/live/bin/chroot-install-pkgs
 	@touch stamps/packages.stamp
 
-packages: stamps/packages.stamp
+packages: mount stamps/packages.stamp
 
 # Create new initrd from rootfs contents (and with cryptsetup)
 ${CHROOT_INITRD}:
@@ -77,11 +83,11 @@ content: custom packages initrd
 ###############
 
 # Remove files from root filesystem not destined for image
-clean-rootfs: mount
+clean-rootfs: mount-rootfs
 	@bin/clean-rootfs
 
 # Make updated squashfs file from overlay
-rootfs: clean-rootfs mount-rootfs
+rootfs: clean-rootfs unmount-chroot
 	@bin/make-rootfs
 
 luks: rootfs
@@ -109,12 +115,18 @@ clean:
 
 dist-clean: unmount clean
 	@rm -f ${ISO_DIR}/${REMASTER_NAME}
+	@rm -f ${ISO_DIR}/${UBUNTU_ISO_BASE}.tmp
+	@rm -f ${ISO_DIR}/SHA256SUM*
 	@rm -f stamps/*.stamp
 	@sudo rm -rf ${RWMNT}/iso
 	@sudo rm -rf ${RWMNT}/rootfs
 
+# Unmount chroot jail mounts
+unmount-chroot:
+	@bin/unmount-chroot
+
 # Unmount root filesystem image
-unmount-rootfs:
+unmount-rootfs: unmount-chroot
 	@bin/unmount-rootfs
 
 # Unmount Ubuntu ISO image

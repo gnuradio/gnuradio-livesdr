@@ -1,0 +1,21 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. config/config-vars
+. bin/functions.sh
+
+test_chroot_mounted || exit 0
+echo Unmounting chroot jail mounts...
+
+# Undo live script mount
+$SUDO $UMOUNT -l $ROOTFSMNT_RW/root/live
+$SUDO rm -rf $ROOTFSMNT_RW/root/live
+
+# Undo chroot mounts
+$SUDO $UMOUNT -l $ROOTFSMNT_RW/dev/pts
+$SUDO $UMOUNT -l $ROOTFSMNT_RW/sys
+$SUDO $UMOUNT -l $ROOTFSMNT_RW/proc
+$SUDO $UMOUNT -l $ROOTFSMNT_RW/dev
+
+exit 0

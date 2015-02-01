@@ -1,18 +1,13 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
 
-# Verify read-only overlay of ISO is mounted
-[ -f $ISOMNT_RO_SENTINEL ] || {
-    echo Read-only ISO mount point not found!
-    exit 1
-}
-
-# Create read-only mount directory
-mkdir -p $ROOTFSMNT_RO || {
-    echo Unable to create directory for mounting root filesystem!
-    exit 1
-}
+# Create read-only mount directory if needed
+require_iso_ro_mounted
+mkdir_or_fail $ROOTFSMNT_RO "Unable to create directory for mounting root filesystem!"
 
 # Mount root filesystem
 echo Mounting squashfs root filesystem read only.
@@ -21,12 +16,7 @@ $SUDO $MOUNT -t squashfs -oro $ISOMNT_RO/casper/filesystem.squashfs $ROOTFSMNT_R
     exit 1
 }
 
-# Create read-write mount directory
-# TODO: detect presence of btrfs filesystem and create subvolume instead
-mkdir -p $ROOTFSMNT_RW || {
-    echo Unable to create directory for mounting root filesystem read-write overlay!
-    exit 1
-}
+mkdir_or_fail $ROOTFSMNT_RW "Unable to create directory for mounting root filesystem read-write overlay!"
 
 # Mount read-write overlay
 # TODO: use btrfs seed mount?
@@ -35,3 +25,5 @@ $SUDO $MOUNT -t overlayfs -olowerdir=$ROOTFSMNT_RO,upperdir=$ROOTFSMNT_RW overla
     echo Mounting of Ubuntu root filesystem read-write overlay failed!
     exit 1
 }
+
+exit 0

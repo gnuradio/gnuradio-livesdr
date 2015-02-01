@@ -1,4 +1,6 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
 
@@ -13,7 +15,9 @@ for cmd in \
 
     if ! test -x $cmd ; then
         echo ERROR: $cmd not found or not executable
-        echo You may need to install it.
+        echo Try running 'make deps'.
         exit 1
     fi
 done
+
+exit 0

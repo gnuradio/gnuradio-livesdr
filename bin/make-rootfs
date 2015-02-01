@@ -1,18 +1,13 @@
 #!/bin/sh
+set -o nounset
+set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
 
-# Test for presence of root filesystem read-write overlay
-[ -f $ROOTFSMNT_RW_SENTINEL ] || {
-    echo Unable to find root filesystem read-write overlay!
-    exit 1
-}
-
-# Test for presence of ISO filesystem read-write overlay
-[ -f $ISOMNT_RW_SENTINEL ] || {
-    echo Unable to find ISO filesystem read-write overlay!
-    exit 1
-}
+require_rootfs_rw_mounted
+require_iso_rw_mounted
+require_chroot_unmounted
 
 # Delete existing compressed squashfs file
 $SUDO rm -f $ISOMNT_RW/casper/filesystem.squashfs
@@ -32,3 +27,5 @@ $SUDO mv filesystem.size $ISOMNT_RW/casper || {
     exit 1
 }
 $SUDO chown root.root $ISOMNT_RW/casper/filesystem.size
+
+exit 0
