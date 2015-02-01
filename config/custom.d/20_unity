@@ -1,6 +1,9 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
 
 echo Installing custom Unity low graphics mode config
 $SUDO install -m 644 \
@@ -9,3 +12,5 @@ $SUDO install -m 644 \
 $SUDO install -m 644 \
     custom/unity/unity7.conf \
     $ROOTFSMNT_RW/usr/share/upstart/sessions/unity7.conf
+
+exit 0

@@ -1,15 +1,19 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 cd /root/live
-
 . config/config-vars
+
+# Exit if nothing to do
+[ -n "$(ls config/install-pkgs.d)" ] || exit 0
 
 # Temporarily install policy file to prevent services from running
 install -o root -g root -m 755 \
     custom/apt/policy-rc.d \
     /usr/sbin
 
-# Execute each fragment in config/clean-rootfs.d
+# Execute each fragment in config/install-pkgs.d
 for pkglist in config/install-pkgs.d/*; do
     pkgs=`cat $pkglist`
     apt-get install -q -y $pkgs
@@ -17,3 +21,5 @@ done
 
 # Remove policy file
 rm -f /usr/sbin/policy-rc.d
+
+exit 0

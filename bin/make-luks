@@ -1,6 +1,11 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
+
+require_iso_rw_mounted
 
 PLAINTEXT=$ISOMNT_RW/casper/filesystem.squashfs
 MAPPERFILE=squashfs
@@ -10,7 +15,7 @@ LOOPFILE=$PLAINTEXT.luks
 LUKSBLOCKS=4096
 
 [ -f $PLAINTEXT ] || {
-    echo Root filesystem squashfs file not found.
+    echo Root filesystem squashfs file not found!
     exit 1
 }
 
@@ -24,27 +29,27 @@ echo Creating zeroed LUKS container file of $LOOPBLOCKS blocks, using $LUKSBLOCK
 # Create a zeroed container file
 $SUDO rm -f $LOOPFILE &&
 $SUDO dd if=/dev/zero of=$LOOPFILE bs=512 count=$LOOPBLOCKS >/dev/null 2>&1 || {
-    echo Unable to create LUKS container file.
+    echo Unable to create LUKS container file!
     exit 1
 }
 
 # Find an available loop device
 LOOPDEV=`$SUDO losetup -f` || {
-    echo Unable to find available loop device.
+    echo Unable to find available loop device!
     exit 1
 }
 echo Using available loop device $LOOPDEV
 
 # Map container file to loop devie
 $SUDO losetup $LOOPDEV $LOOPFILE || {
-    echo Unable to mount LUKS container onto loop device.
+    echo Unable to mount LUKS container onto loop device!
     exit 1
 }
 
 # Create encrypted luks format
 echo Formatting encrypted device.
 $SUDO cryptsetup luksFormat $LOOPDEV || {
-    echo Unable to format encrypted device.
+    echo Unable to format encrypted device!
     losetup -d $LOOPDEV
     exit 1
 }
@@ -52,7 +57,7 @@ $SUDO cryptsetup luksFormat $LOOPDEV || {
 # Mount encrypted file
 echo Opening encrypted device
 $SUDO cryptsetup luksOpen $LOOPDEV $MAPPERFILE || {
-    echo Unable to mount encrypted device.
+    echo Unable to mount encrypted device!
     losetup -d $LOOPDEV
     exit 1
 }
@@ -60,7 +65,7 @@ $SUDO cryptsetup luksOpen $LOOPDEV $MAPPERFILE || {
 # Copy plaintext into encrypted device
 echo Copying plaintext file into encrypted device
 $SUDO dd if=$PLAINTEXT of=/dev/mapper/$MAPPERFILE bs=512 count=$NBLOCKS || {
-    echo Unable to copy plaintext into encrypted container.
+    echo Unable to copy plaintext into encrypted container!
     losetup -d $LOOPDEV
     exit 1
 }
@@ -68,7 +73,7 @@ $SUDO dd if=$PLAINTEXT of=/dev/mapper/$MAPPERFILE bs=512 count=$NBLOCKS || {
 # Unmount encrypted drive
 echo Unmounting encrypted device
 $SUDO cryptsetup luksClose /dev/mapper/$MAPPERFILE || {
-    echo Unable to unmount encrypted device.
+    echo Unable to unmount encrypted device!
     losetup -d $LOOPDEV
     exit 1
 }
@@ -76,7 +81,7 @@ $SUDO cryptsetup luksClose /dev/mapper/$MAPPERFILE || {
 # Unmount loop device
 echo Releasing loop file
 $SUDO losetup -d $LOOPDEV || {
-    echo Unable to release loop device
+    echo Unable to release loop device!
     exit 1
 }
 
@@ -84,6 +89,8 @@ $SUDO losetup -d $LOOPDEV || {
 # Create symlink to spoof plaintext file
 $SUDO rm -f $PLAINTEXT &&
 $SUDO ln -sf /dev/mapper/$MAPPERFILE $PLAINTEXT || {
-    echo Unable to spoof plaintext file
+    echo Unable to spoof plaintext file!
     exit 1
 }
+
+exit 0

@@ -1,6 +1,11 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
+
+require_rootfs_rw_mounted
 
 echo Installing custom APT sources.list...
 $SUDO install -o root -g root -m 644 \
@@ -16,3 +21,5 @@ echo Enabling force-confold dpkg operation...
 $SUDO install -o root -g root -m 644 \
     custom/apt/force-confold \
     $ROOTFSMNT_RW/etc/dpkg/dpkg.cfg.d
+
+exit 0

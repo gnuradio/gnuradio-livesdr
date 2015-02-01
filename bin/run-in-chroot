@@ -1,12 +1,11 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
 
-# Test for presence of root filesystem read-write overlay
-[ -f $ROOTFSMNT_RW/etc/issue ] || {
-    echo Unable to find root filesystem read-write overlay
-    exit 1
-}
+require_chroot_mounted
 
 # Test for supplied command
 if [ $# -eq 0 ] ; then
@@ -14,16 +13,6 @@ if [ $# -eq 0 ] ; then
 else
     CMD=$1
 fi
-
-# Prepare chroot "system" mounts for operation
-$SUDO $MOUNT --bind /dev/   $ROOTFSMNT_RW/dev/
-$SUDO $MOUNT -t proc   none $ROOTFSMNT_RW/proc/
-$SUDO $MOUNT -t sysfs  none $ROOTFSMNT_RW/sys/
-$SUDO $MOUNT -t devpts none $ROOTFSMNT_RW/dev/pts/
-
-# Mount live scripts inside root directory
-[ -d $ROOTFSMNT_RW/root/live ] || $SUDO mkdir -p $ROOTFSMNT_RW/root/live
-$SUDO $MOUNT --bind . $ROOTFSMNT_RW/root/live
 
 # Copy parent resolv.conf into chroot for DNS resolution
 $SUDO cp /etc/resolv.conf $ROOTFSMNT_RW/run/resolvconf/resolv.conf
@@ -33,19 +22,12 @@ echo Entering into root filesystem chroot jail.
 $SUDO chroot $ROOTFSMNT_RW /usr/bin/env -i \
     HOME=/root TERM=$TERM PS1='\u:\w\# ' DISPLAY=:0.0 \
     PATH=/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \
-    http_proxy=$http_proxy \
+    http_proxy="${http_proxy:-}" \
     /bin/bash --login -c $CMD
 echo Returned from root filesystem chroot jail.
 
 # Remove resolv.conf from chroot
 $SUDO rm -f $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 $SUDO touch $ROOTFSMNT_RW/run/resolvconf/resolv.conf
-# Undo live script mount
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/root/live
-$SUDO rm -rf $ROOTFSMNT_RW/root/live
 
-# Undo chroot mounts
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/dev/pts
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/sys
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/proc
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/dev
+exit 0

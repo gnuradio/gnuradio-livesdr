@@ -51,6 +51,8 @@ ROOTFSMNT_RO_SENTINEL=${ROOTFSMNT_RO}/etc/issue
 ROOTFSMNT_RW=${RWMNT}/rootfs
 ROOTFSMNT_RW_SENTINEL=${ROOTFSMNT_RW}/etc/issue
 
+CHROOT_MNT_SENTINEL=${ROOTFSMNT_RW}/proc/mounts
+
 # initrd locations
 CHROOT_INITRD=${ROOTFSMNT_RW}/boot/initrd.img*
 ISO_INITRD=${ISOMNT_RW}/casper/initrd.gz

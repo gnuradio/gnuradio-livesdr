@@ -1,18 +1,24 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
+
+require_iso_rw_mounted
 
 # Update master contents md5sums
 echo Calculating new ISO image internal checksums...
-# Note: must cd to have this as pwd for md5sum output
+# Note: must cd to have this as cwd for md5sum output
 cd $ISOMNT_RW
 $SUDO rm -f $ISOMNT_RW/md5sum.txt
 $SUDO sh -c 'find . -type f -print0 | \
     $SUDO xargs -0 $MD5SUM | \
     grep -v isolinux/boot.cat | \
     grep -v md5sum.txt | \
-    grep -v isolinux.bin \
-    > md5sum.txt'
+    grep -v isolinux.bin | \
+    cat > md5sum.txt'
+
 cd - >/dev/null
 
 # Create remastered image from ISO read-write overlay
@@ -32,11 +38,13 @@ $SUDO $MKISOFS \
     -boot-info-table \
     -o $ISO_DIR/$REMASTER_NAME $ISOMNT_RW &&
 $SUDO chmod 444 $ISO_DIR/$REMASTER_NAME || {
-    echo Creating remastered ISO image failed.
+    echo Creating remastered ISO image failed!
     exit 1
 }
 
 $SUDO isohybrid $ISO_DIR/$REMASTER_NAME || {
-    echo Unable to make ISO image a hybrid boot.
+    echo Unable to make ISO image a hybrid boot!
     exit 1
 }
+
+exit 0
