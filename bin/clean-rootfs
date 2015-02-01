@@ -1,18 +1,14 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
 
-# Make sure $ROOTFSMNT_RW is defined
-[ "$ROOTFSMNT_RW" != "" ] || {
-    echo Configuration error! ROOTFSMNT_RW=$ROOTFSMNT_RW
-    exit 1
-}
+require_rootfs_rw_mounted
 
-# Test for presence of root filesystem read-write overlay
-[ -f $ROOTFSMNT_RW_SENTINEL ] || {
-    echo Unable to find root filesystem read-write overlay!
-    exit 1
-}
+# Exit if nothing to do
+[ -n "$(ls config/clean-rootfs.d)" ] || exit 0
 
 # Delete each filespec in clean-rootfs.d
 echo Deleting selected files from root filesystem read-write overlay...
@@ -24,3 +20,5 @@ done
 
 # Recreate /var/log/apt/ directory
 $SUDO mkdir -p $ROOTFSMNT_RW/var/log/apt
+
+exit 0

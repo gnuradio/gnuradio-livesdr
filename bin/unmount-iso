@@ -1,23 +1,28 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
 
-# Test for existence of read-write overlay mount
-[ ! -f $ISOMNT_RW_SENTINEL ] || {
+# Unmount Ubuntu ISO image read-write overlay if needed
+test_iso_rw_mounted && {
     # Unmount overlay
     echo Unmounting Ubuntu ISO image read-write overlay.
     $SUDO $UMOUNT $ISOMNT_RW || {
-        echo Failed to unmount Ubuntu ISO image overlay
+        echo Failed to unmount Ubuntu ISO image read-write overlay!
         exit 1
     }
 }
 
-# Test for existence of mounted ISO file
-[ ! -f $ISOMNT_RO_SENTINEL ] || {
+# Unmount Ubuntu ISO image read-only mount if needed
+test_iso_ro_mounted && {
     # Unmount image
     echo Unmounting Ubuntu ISO image.
     $SUDO $UMOUNT $ISOMNT_RO || {
-        echo Failed to unmount Ubuntu ISO image @ $ISOMNT_RO
+        echo Failed to unmount Ubuntu ISO image!
         exit 1
     }
 }
+
+exit 0

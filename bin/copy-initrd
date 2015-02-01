@@ -1,6 +1,11 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
+
+require_rootfs_rw_mounted
 
 # Copy chroot /boot initrd into place on remastered ISO overlay
 echo Copying chroot initrd to ISO...
@@ -8,9 +13,11 @@ $SUDO mkdir -p $(dirname $ISO_INITRD) &&
 $SUDO install -g root -o root -m 644 \
     $CHROOT_INITRD \
     $ISO_INITRD || {
-    echo Unable to copy chroot initrd into master ISO overlay
+    echo Unable to copy chroot initrd into master ISO overlay!
     exit 1
 }
 
 echo Removing original initrd.lz...
 $SUDO rm -f $ISO_OLDINIT
+
+exit 0
