@@ -8,3 +8,9 @@ python-opengl
 python-scipy
 python-sphinx
 python-zmq
+python-cheetah
+python-numpy
+libcppunit-dev
+libfftw3-dev
+python-lxml
+libasound2-dev
