@@ -1,46 +1,9 @@
 #!/bin/sh
 
-GITREV=v3.7.6.1
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnuradio.lwr
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install gnuradio v3.7.6.1 bin/gnuradio-config-info
 
-# Test if UHD already installed, silently exit if so
-[ -x $ROOTFS_PREFIX/bin/gnuradio-config-info ] || {
-
-    # Edit pybombs recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access gnuradio pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gnuradio recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install gnuradio
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gnuradio || {
-        echo Unable to install gnuradio via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gnuradio/build || {
-        echo Unable to clean up after gnuradio compile.
-        exit 1
-    }
-
-    # Nuke repository history
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gnuradio/.git || {
-        echo Unable to clean up gnuradio repository history
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
-
+### Post-installation tasks
 # Install freedesktop files
 [ -f /usr/share/mime/packages/gnuradio-grc.xml ] || {
     /usr/local/libexec/gnuradio/grc_setup_freedesktop install || {

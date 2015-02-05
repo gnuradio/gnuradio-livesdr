@@ -1,46 +1,9 @@
 #!/bin/sh
 
-GITREV=d447a2e9
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/rtl-sdr.lwr
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install rtl-sdr d447a2e9 bin/rtl_test
 
-# Test if rtl-sdr already installed, silently exit if so
-[ -x $ROOTFS_PREFIX/bin/rtl_test ] || {
-
-    # Edit rtl-sdr recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access rtl-sdr pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in rtl-sdr recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install rtl-sdr
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install rtl-sdr || {
-        echo Unable to install rtl-sdr via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/rtl-sdr/build || {
-        echo Unable to clean up after rtl-sdr compile.
-        exit 1
-    }
-
-    # Remove repository history
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/rtl-sdr/.git || {
-        echo Unable to remove repository history after rtl-sdr compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
-
+### Post-installation tasks
 # Install udev permissions for rtl-sdr
 [ -x /etc/udev/rules.d/rtl-sdr.rules ] || {
     install -g root -o root -m 644 $LIVEUB_DIR/custom/rtl-sdr/rtl-sdr.rules /etc/udev/rules.d || {

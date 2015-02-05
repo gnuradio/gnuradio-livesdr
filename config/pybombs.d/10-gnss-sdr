@@ -1,42 +1,10 @@
 #!/bin/sh
 
-GITREV=9b95919d
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnss-sdr.lwr
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnss-sdr
+/root/live/bin/print-msg info "Adding ENABLE_GENERIC_ARCH to config"
+# spaces are important
+# also, config_opt must come before inherit cmake
+sed -i -e '/gitrev:/a var config_opt = " -DENABLE_GENERIC_ARCH=ON "' $LWR
 
-# Test if gnss-sdr already installed, silently exit if so
-[ -x $ROOTFS_PREFIX/bin/gnss-sdr ] || {
-
-    # Edit gnss-sdr recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access gnss-sdr pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gnss-sdr recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    echo Adding ENABLE_GENERIC_ARCH to config
-    # spaces are important
-    # also, config_opt must come before inherit cmake
-    sed -i -e '/gitrev:/a var config_opt = " -DENABLE_GENERIC_ARCH=ON "' $LWR
-
-    # Execute pybombs recipe to install gnss-sdr
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gnss-sdr || {
-        echo Unable to install gnss-sdr via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gnss-sdr/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gnss-sdr/.git || {
-        echo Unable to clean up after gnss-sdr compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install gnss-sdr 9b95919d bin/gnss-sdr

@@ -1,37 +1,4 @@
 #!/bin/sh
 
-GITREV=ff1ca151
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-rds.lwr
-
-# Test if gr-rds already installed, silently exit if so
-[ -f $ROOTFS_PREFIX/include/rds/gnuradio/rds/api.h ] || {
-
-    # Edit gr-rds recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access gr-rds pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gr-rds recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install gr-rds
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gr-rds || {
-        echo Unable to install gr-rds via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-rds/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-rds/.git || {
-        echo Unable to clean up after gr-rds compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install gr-rds ff1ca151 include/rds/gnuradio/rds/api.h

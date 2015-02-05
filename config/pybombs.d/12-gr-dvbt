@@ -1,37 +1,4 @@
 #!/bin/sh
 
-GITREV=434494c1
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-dvbt.lwr
-
-# Test if gr-dvbt already installed, silently exit if so
-[ -f $ROOTFS_PREFIX/include/dvbt/api.h ] || {
-
-    # Edit gr-dvbt recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access gr-dvbt pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gr-dvbt recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install gr-dvbt
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gr-dvbt || {
-        echo Unable to install gr-dvbt via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-dvbt/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-dvbt/.git || {
-        echo Unable to clean up after gr-dvbt compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install gr-dvbt 434494c1 include/dvbt/api.h

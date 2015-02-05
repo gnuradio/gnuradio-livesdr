@@ -1,42 +1,4 @@
 #!/bin/sh
 
-GITREV=effcaa75
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/osmo-sdr.lwr
-
-# Test if osmo-sdr already installed, silently exit if so
-[ -x $ROOTFS_PREFIX/bin/osmo_sdr ] || {
-
-    # Edit osmo-sdr recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access osmo-sdr pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in osmo-sdr recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install osmo-sdr
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install osmo-sdr || {
-        echo Unable to install osmo-sdr via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/osmo-sdr/software/libosmosdr/build || {
-        echo Unable to clean up after osmo-sdr compile.
-        exit 1
-    }
-
-    # Remove repository history
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/osmo-sdr/software/libosmosdr/.git || {
-        echo Unable to remove repository history osmo-sdr compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install osmo-sdr effcaa75 bin/osmo_sdr

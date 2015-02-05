@@ -1,46 +1,9 @@
 #!/bin/sh
 
-GITREV=06703b23
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/bladeRF.lwr
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install bladeRF 06703b23 bin/bladeRF-cli
 
-# Test if bladeRF already installed, silently exit if so
-[ -x $ROOTFS_PREFIX/bin/bladeRF-cli ] || {
-
-    # Edit bladeRF recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access bladeRF pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in bladeRF recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install bladeRF
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install bladeRF || {
-        echo Unable to install bladeRF via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/bladeRF/host/build || {
-        echo Unable to clean up after bladeRF compile.
-        exit 1
-    }
-
-    # Remove repository history
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/bladeRF/.git || {
-        echo Unable to clean up after bladeRF compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
-
+### Post-installation tasks
 # Install udev permissions for bladeRF
 [ -x /etc/udev/rules.d/88-nuand.rules ] || {
     install -g root -o root -m 644 $LIVEUB_DIR/custom/bladeRF/88-nuand.rules /etc/udev/rules.d || {

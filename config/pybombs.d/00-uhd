@@ -1,47 +1,9 @@
 #!/bin/sh
 
-GITREV=release_003_008_001
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/uhd.lwr
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install uhd release_003_008_001 bin/uhd_find_devices
 
-# Test if UHD already installed, silently exit if so
-[ -x $ROOTFS_PREFIX/bin/uhd_find_devices ] || {
-
-    # Edit pybombs recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access UHD pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in UHD recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install UHD
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install uhd || {
-        echo Unable to install UHD via pybombs.
-        exit 1
-    }
-
-    # Nuke compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/uhd/host/build || {
-        echo Unable to clean up after UHD compile.
-        exit 1
-    }
-
-    # Nuke repository history
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/uhd/.git || {
-        echo Unable to remove UHD repository history
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared library
-    # Shouldn't pybombs do this for us?
-    ldconfig
-}
-
+### Post-installation tasks
 # Install the udev rules file
 [ -f /etc/udev/rules.d/uhd-usrp.rules ] || {
     install -g root -o root -m 644 $ROOTFS_SRCDIR/pybombs/src/uhd/host/utils/uhd-usrp.rules /etc/udev/rules.d || {

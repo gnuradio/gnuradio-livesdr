@@ -1,37 +1,4 @@
 #!/bin/sh
 
-GITREV=5113c1f4
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-specest.lwr
-
-# Test if gr-specest already installed, silently exit if so
-[ -f $ROOTFS_PREFIX/include/specest/api.h ] || {
-
-    # Edit gr-specest recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access gr-specest pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gr-specest recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install gr-specest
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gr-specest || {
-        echo Unable to install gr-specest via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-specest/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-specest/.git || {
-        echo Unable to clean up after gr-specest compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install gr-specest 5113c1f4 include/specest/api.h

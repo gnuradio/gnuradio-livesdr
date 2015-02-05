@@ -1,37 +1,4 @@
 #!/bin/sh
 
-GITREV=63cca16b
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-ldpc.lwr
-
-# Test if gr-ldpc already installed, silently exit if so
-[ -f $ROOTFS_PREFIX/include/ldpc/api.h ] || {
-
-    # Edit gr-ldpc recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access gr-ldpc pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gr-ldpc recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install gr-ldpc
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gr-ldpc || {
-        echo Unable to install gr-ldpc via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-ldpc/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-ldpc/.git || {
-        echo Unable to clean up after gr-ldpc compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install gr-ldpc 63cca16b include/ldpc/api.h

@@ -1,37 +1,4 @@
 #!/bin/sh
 
-GITREV=e9df3951
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gr-lte.lwr
-
-# Test if gr-lte already installed, silently exit if so
-[ -f $ROOTFS_PREFIX/include/lte/api.h ] || {
-
-    # Edit gr-lte recipe for desired revision
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        echo Unable to access gr-lte pybombs recipe.
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gr-lte recipe
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install gr-lte
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gr-lte || {
-        echo Unable to install gr-lte via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-lte/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-lte/.git || {
-        echo Unable to clean up after gr-lte compile.
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+/root/live/bin/do-pybombs-install gr-lte e9df3951 include/lte/api.h
