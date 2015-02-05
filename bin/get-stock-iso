@@ -7,67 +7,68 @@ set -o nounset
 
 # Bail if stock ISO file already exists
 [ ! -f $UBUNTU_ISO_FILE ] || {
-    echo Stock ubuntu ISO file already exists.
+    $PRINTERROR Stock ubuntu ISO file already exists!
     exit 1
 }
 
 # Download stock image
-echo Downloading stock Ubuntu ISO image if needed...
+$PRINTINFO Downloading stock Ubuntu ISO image if needed...
 ISOTMP=$UBUNTU_ISO_FILE.tmp
 [ -f $ISOTMP ] || {
-    echo Not found, downloading $UBUNTU_ISO_URL
+    $PRINTINFO Not found, downloading $UBUNTU_ISO_URL
 
     MAXTRIES=10
     for i in $(seq 1 $MAXTRIES) ; do
         $CURL -C - -# $UBUNTU_ISO_URL -o $ISOTMP
         RET=$?
         [ $RET -eq 0 ] && break
-        [ $RET -eq 33 ] && echo Ignoring... && break    # workaround curl bug
-        [ $i -eq $MAXTRIES ] && echo Unable to download stock ISO file && exit 1
-        [ $RET -eq 56 ] && continue # network timeout
+        [ $RET -eq 33 ] && $PRINTINFO Ignoring... && break    # workaround curl bug
+        [ $i -eq $MAXTRIES ] && $PRINTERROR Unable to download stock ISO file! && exit 1
+        [ $RET -eq 56 ] && $PRINTWARN Network timeout, retrying... && continue # network timeout
         exit 1
     done
 }
 
 # Import Ubuntu gpg public key if needed
-echo Checking for Ubuntu gpg public key \($UBUNTU_KEY_ID\)
+$PRINTINFO Checking for Ubuntu gpg public key \($UBUNTU_KEY_ID\)
 $GPG --list-keys $UBUNTU_KEY_ID > /dev/null || {
-    echo Not found, retrieving for import.
+    $PRINTINFO Not found, retrieving for import.
     $GPG --keyserver hkp://keyserver.ubuntu.com --recv-keys $UBUNTU_KEY_ID || {
-        echo Import of key failed!
+        $PRINTERROR Import of key failed!
         exit 1
     }
-    echo Import successful.
+    $PRINTSUCCESS Import successful.
 }
 
 # Retrieve SHA256SUMS and verify signature
-echo Retrieving SHA256 hashes and signature files
+$PRINTINFO Retrieving SHA256 hashes and signature files
 [ -f $UBUNTU_SHA256SUMS_FILE ] || $CURL -# $UBUNTU_SHA256SUMS_URL -o $UBUNTU_SHA256SUMS_FILE || {
-    echo Failed to retrieve SHA256SUMS file from Ubuntu server
+    $PRINTERROR Failed to retrieve SHA256SUMS file from Ubuntu server!
     exit 1
 }
 [ -f $UBUNTU_SHA256SUMS_FILE.gpg ] || $CURL -# $UBUNTU_SHA256SUMS_URL.gpg -o $UBUNTU_SHA256SUMS_FILE.gpg || {
-    echo Failed to retrieve SHA256SUMS.gpg file from Ubuntu server
+    $PRINTERROR Failed to retrieve SHA256SUMS.gpg file from Ubuntu server!
     exit 1
 }
 $GPG --verify $UBUNTU_SHA256SUMS_FILE.gpg $UBUNTU_SHA256SUMS_FILE || {
-    echo SHA256SUMS signature verification failed!
+    $PRINTERROR SHA256SUMS signature verification failed!
     exit 1
 }
 
 # Extract SHA256SUM from file
-echo Calculating checksum of Ubuntu stock ISO image
+$PRINTINFO Calculating checksum of Ubuntu stock ISO image
 CALCULATED=`$SHA256SUM $ISOTMP | cut -f 1 -d ' '`
 EXPECTED=`grep $UBUNTU_ISO_BASE $UBUNTU_SHA256SUMS_FILE | cut -f 1 -d ' '`
-echo "Calculated: $CALCULATED"
-echo "Expected:   $EXPECTED"
+$PRINTINFO "Calculated: $CALCULATED"
+$PRINTINFO "Expected:   $EXPECTED"
 
 if [ $CALCULATED != $EXPECTED ] ; then
-    echo Checksum mismatch, failing.
+    $PRINTERROR Checksum mismatch, failing!
     exit 1
 fi
 
 # Move verified ISO file into place
 mv $ISOTMP $UBUNTU_ISO_FILE || exit 1
 
+$PRINTSUCCESS Sucessfully downloaded Ubuntu stock ISO image.
 exit 0

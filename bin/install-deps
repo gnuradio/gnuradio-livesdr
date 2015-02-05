@@ -3,12 +3,18 @@ set -o nounset
 #set -x #DEBUG
 
 . config/config-vars
+. bin/functions.sh
 
+$PRINTINFO Installing utility packages for build if needed...
 $SUDO apt-get install \
      curl \
      gnupg \
      coreutils \
      squashfs-tools \
-     genisoimage
+     genisoimage || {
+    $PRINTERROR Package installation failed!
+    exit 1
+}
 
+$PRINTSUCCESS done.
 exit 0

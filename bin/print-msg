@@ -1,0 +1,52 @@
+#!/bin/bash
+set -o nounset
+#set -X #DEBUG
+
+# Test for supplied args
+if [ $# -lt 2 ] ; then
+    echo Usage: $0 success|warn|error|info message
+    exit 1
+else
+    MSGTYPE=$1
+    shift
+    MSG=$@
+fi
+
+TPUT=`which tput`
+
+### Detect color
+if [ -t 1 ] && [ -x $TPUT ]; then
+    # see if it supports colors...
+    ncolors=$(tput colors)
+    if test -n "$ncolors" && test $ncolors -ge 8; then
+        bold="$(tput bold)"
+        underline="$(tput smul)"
+        standout="$(tput smso)"
+        normal="$(tput sgr0)"
+        black="$(tput setaf 0)"
+        red="$(tput setaf 1)"
+        green="$(tput setaf 2)"
+        yellow="$(tput setaf 3)"
+        blue="$(tput setaf 4)"
+        magenta="$(tput setaf 5)"
+        cyan="$(tput setaf 6)"
+        white="$(tput setaf 7)"
+    fi
+fi
+
+### Set output
+case "$MSGTYPE" in
+    success) OUTPUT="${green}${bold}[SUCCESS] $MSG${normal}"
+	    ;;
+    warn) OUTPUT="${yellow}${bold}[WARNING] $MSG${normal}"
+	    ;;
+    error) OUTPUT="${red}${bold}[ERROR] $MSG${normal}"
+	    ;;
+    info) OUTPUT="${cyan}${bold}[INFO] $MSG${normal}"
+	    ;;
+esac
+
+### And print
+echo -e $OUTPUT
+
+exit 0

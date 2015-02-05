@@ -6,7 +6,7 @@ set -o nounset
 . bin/functions.sh
 
 test_chroot_mounted || exit 0
-echo Unmounting chroot jail mounts...
+$PRINTINFO Unmounting chroot jail mounts...
 
 # Undo live script mount
 $SUDO $UMOUNT -l $ROOTFSMNT_RW/root/live

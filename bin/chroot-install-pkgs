@@ -4,22 +4,26 @@ set -o nounset
 
 cd /root/live
 . config/config-vars
+. bin/chroot-functions.sh
 
 # Exit if nothing to do
 [ -n "$(ls config/install-pkgs.d)" ] || exit 0
 
 # Temporarily install policy file to prevent services from running
+$PRINTINFO Installing temporary policy-rc.d...
 install -o root -g root -m 755 \
     custom/apt/policy-rc.d \
     /usr/sbin
 
 # Execute each fragment in config/install-pkgs.d
+$PRINTINFO Installing configured extra packages...
 for pkglist in config/install-pkgs.d/*; do
     pkgs=`cat $pkglist`
     apt-get install -q -y $pkgs
 done
 
 # Remove policy file
+$PRINTINFO Removing temporary policy-rc.d
 rm -f /usr/sbin/policy-rc.d
 
 exit 0
