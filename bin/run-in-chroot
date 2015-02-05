@@ -18,13 +18,13 @@ fi
 $SUDO cp /etc/resolv.conf $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 
 # Drop into chroot with simple environment
-echo Entering into root filesystem chroot jail.
+$PRINTINFO Entering into root filesystem chroot jail.
 $SUDO chroot $ROOTFSMNT_RW /usr/bin/env -i \
     HOME=/root TERM=$TERM PS1='\u:\w\# ' DISPLAY=:0.0 \
     PATH=/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin \
     http_proxy="${http_proxy:-}" \
     /bin/bash --login -c $CMD
-echo Returned from root filesystem chroot jail.
+$PRINTINFO Returned from root filesystem chroot jail.
 
 # Remove resolv.conf from chroot
 $SUDO rm -f $ROOTFSMNT_RW/run/resolvconf/resolv.conf

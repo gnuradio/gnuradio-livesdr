@@ -12,9 +12,9 @@ test_iso_ro_mounted && exit 0
 mkdir_or_fail $ISOMNT_RO "Unable to create directory for mounting Ubuntu ISO image!"
 
 # Mount original ISO image
-echo Mounting Ubuntu ISO image file read-only.
+$PRINTINFO Mounting Ubuntu ISO image file read-only...
 $SUDO $MOUNT -t iso9660 -oloop,ro $UBUNTU_ISO_FILE $ISOMNT_RO || {
-    echo Mounting of Ubuntu ISO image failed.
+    $PRINTERROR Mounting of Ubuntu ISO image failed!
     exit 1
 }
 
@@ -24,9 +24,9 @@ mkdir_or_fail $ISOMNT_RW "Unable to create directory for mounting Ubuntu ISO rea
 
 # Mount read-write overlay
 # TODO: use btrfs seed mount?
-echo Mounting Ubuntu ISO image file read-write overlay.
+$PRINTINFO Mounting Ubuntu ISO image file read-write overlay...
 $SUDO $MOUNT -t overlayfs -olowerdir=$ISOMNT_RO,upperdir=$ISOMNT_RW overlayfs $ISOMNT_RW || {
-    echo Mounting of Ubuntu ISO read-write overlay failed.
+    $PRINTERROR Mounting of Ubuntu ISO read-write overlay failed!
     exit 1
 }
 

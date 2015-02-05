@@ -8,7 +8,7 @@ set -o nounset
 require_rootfs_rw_mounted
 
 # Prepare chroot "system" mounts for operation
-echo Mounting chroot jail system mounts...
+$PRINTINFO Mounting chroot jail system mounts...
 $SUDO $MOUNT --bind    /dev/ $ROOTFSMNT_RW/dev/
 $SUDO $MOUNT -t proc   none  $ROOTFSMNT_RW/proc/
 $SUDO $MOUNT -t sysfs  none  $ROOTFSMNT_RW/sys/

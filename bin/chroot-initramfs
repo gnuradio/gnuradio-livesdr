@@ -4,11 +4,13 @@ set -o nounset
 
 cd /root/live
 . config/config-vars
+. bin/functions.sh
 
 # Create new initramfs that includes cryptsetup
+$PRINTINFO Creating new initramfs with crypto hooks...
 export CRYPTSETUP=y
 update-initramfs -k all -u || {
-    echo Unable to execute update-initramfs!
+    $PRINTERROR Unable to execute update-initramfs!
     exit 1
 }
 

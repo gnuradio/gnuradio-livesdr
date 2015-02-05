@@ -8,9 +8,9 @@ set -o nounset
 # Unmount Ubuntu ISO image read-write overlay if needed
 test_iso_rw_mounted && {
     # Unmount overlay
-    echo Unmounting Ubuntu ISO image read-write overlay.
+    $PRINTINFO Unmounting Ubuntu ISO image read-write overlay...
     $SUDO $UMOUNT $ISOMNT_RW || {
-        echo Failed to unmount Ubuntu ISO image read-write overlay!
+        $PRINTERROR Failed to unmount Ubuntu ISO image read-write overlay!
         exit 1
     }
 }
@@ -18,9 +18,9 @@ test_iso_rw_mounted && {
 # Unmount Ubuntu ISO image read-only mount if needed
 test_iso_ro_mounted && {
     # Unmount image
-    echo Unmounting Ubuntu ISO image.
+    $PRINTINFO Unmounting Ubuntu ISO image...
     $SUDO $UMOUNT $ISOMNT_RO || {
-        echo Failed to unmount Ubuntu ISO image!
+        $PRINTERROR Failed to unmount Ubuntu ISO image!
         exit 1
     }
 }

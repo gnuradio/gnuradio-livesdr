@@ -13,19 +13,20 @@ require_chroot_unmounted
 $SUDO rm -f $ISOMNT_RW/casper/filesystem.squashfs
 
 # Create compressed squashfs file from root filesystem read-write overlay
-echo Creating new squashfs root filesystem image from read-write overlay.
+$PRINTINFO Creating new squashfs root filesystem image from read-write overlay...
 $SUDO $MKSQUASHFS \
     $ROOTFSMNT_RW \
     $ISOMNT_RW/casper/filesystem.squashfs || {
-    echo Unable to create squashfs root filesystem image!
+    $PRINTERROR Unable to create squashfs root filesystem image!
     exit 1
 }
 
 $SUDO printf $($SUDO du -sx --block-size=1 $ISOMNT_RW | cut -f1) > filesystem.size &&
 $SUDO mv filesystem.size $ISOMNT_RW/casper || {
-    echo Unable to calculate generated filesystem image.
+    $PRINTERROR Unable to calculate generated filesystem image.
     exit 1
 }
 $SUDO chown root.root $ISOMNT_RW/casper/filesystem.size
 
+$PRINTSUCCESS Created squashfs root filesystem image.
 exit 0
