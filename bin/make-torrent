@@ -1,7 +1,9 @@
 #!/bin/sh
 
 . config/config-vars
+. bin/functions.sh
 
+$PRINTINFO Creating torrent tracker file for custom ISO image
 $BUILDTORRENT \
     -a udp://tracker.publicbt.com:80 \
     -w http://s3-dist.gnuradio.org/$REMASTER_BASE.iso,http://eu1-dist.gnuradio.org/s3/$REMASTER_BASE.iso,http://eu2-dist.gnuradio.org/$REMASTER_BASE.iso \

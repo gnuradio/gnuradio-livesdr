@@ -1,13 +1,17 @@
 #!/bin/sh
 
+. config/config-vars
+. bin/functions.sh
+
+
 # Install resolv.conf to allow resolution from inside chroot
-echo Installing custom resolv.conf...
+$PRINTINFO Installing custom resolv.conf...
 sudo install -o root -g root -m 664 \
     custom/network/resolv.conf \
     $ROOTFSMNT_RW/etc/
 
 # Install network manager profiles
-echo Installing custom Network Manager profiles...
+$PRINTINFO Installing custom Network Manager profiles...
 sudo install -o root -g root -m 400 \
     -t $ROOTFSMNT_RW/etc/NetworkManager/system-connections/ \
     custom/network/NetworkManager/*
