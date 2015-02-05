@@ -7,7 +7,7 @@ set -o nounset
 
 require_rootfs_rw_mounted
 
-echo Enabling force-confold dpkg operation...
+$PRINTINFO Enabling force-confold dpkg operation...
 $SUDO install -o root -g root -m 644 \
     custom/apt/force-confold \
     $ROOTFSMNT_RW/etc/dpkg/dpkg.cfg.d

@@ -10,9 +10,9 @@ require_iso_ro_mounted
 mkdir_or_fail $ROOTFSMNT_RO "Unable to create directory for mounting root filesystem!"
 
 # Mount root filesystem
-echo Mounting squashfs root filesystem read only.
+$PRINTINFO Mounting squashfs root filesystem read only...
 $SUDO $MOUNT -t squashfs -oro $ISOMNT_RO/casper/filesystem.squashfs $ROOTFSMNT_RO || {
-    echo Mounting of root filesystem failed!
+    $PRINTERROR Mounting of root filesystem failed!
     exit 1
 }
 
@@ -20,9 +20,9 @@ mkdir_or_fail $ROOTFSMNT_RW "Unable to create directory for mounting root filesy
 
 # Mount read-write overlay
 # TODO: use btrfs seed mount?
-echo Mounting squashfs root filesystem read-write overlay.
+$PRINTINFO Mounting squashfs root filesystem read-write overlay...
 $SUDO $MOUNT -t overlayfs -olowerdir=$ROOTFSMNT_RO,upperdir=$ROOTFSMNT_RW overlayfs $ROOTFSMNT_RW || {
-    echo Mounting of Ubuntu root filesystem read-write overlay failed!
+    $PRINTERROR Mounting of Ubuntu root filesystem read-write overlay failed!
     exit 1
 }
 

@@ -11,7 +11,7 @@ require_rootfs_rw_mounted
 [ -n "$(ls config/clean-rootfs.d)" ] || exit 0
 
 # Delete each filespec in clean-rootfs.d
-echo Deleting selected files from root filesystem read-write overlay...
+$PRINTINFO Deleting selected files from root filesystem read-write overlay...
 for filelist in config/clean-rootfs.d/*; do
     while read fs; do
         $SUDO rm -rf $ROOTFSMNT_RW/$fs

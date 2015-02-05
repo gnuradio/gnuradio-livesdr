@@ -8,9 +8,9 @@ set -o nounset
 # Unmount root filesystem read-write overlay mount if needed
 test_rootfs_rw_mounted && {
     # Unmount overlay
-    echo Unmounting squashfs root filesystem read-write overlay.
+    $PRINTINFO Unmounting squashfs root filesystem read-write overlay...
     $SUDO $UMOUNT -l $ROOTFSMNT_RW || {
-        echo Failed to unmount root filesystem overlay!
+        $PRINTERROR Failed to unmount root filesystem overlay!
         exit 1
     }
 }
@@ -18,9 +18,9 @@ test_rootfs_rw_mounted && {
 # Unmount root filesystem read-only mount if needed
 test_rootfs_ro_mounted && {
     # Unmount image
-    echo Unmounting squashfs root filesystem.
+    $PRINTINFO Unmounting squashfs root filesystem...
     $SUDO $UMOUNT -l $ROOTFSMNT_RO || {
-        echo Failed to unmount root filesystem image!
+        $PRINTERROR Failed to unmount root filesystem image!
         exit 1
     }
 }

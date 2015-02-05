@@ -10,8 +10,13 @@ export ROOTFSMNT_RW=$ROOTFSMNT_RW
 export ISOMNT_RW=$ISOMNT_RW
 
 # Execute each fragment in config/clean-rootfs.d
-echo Executing customization scripts.
+$PRINTINFO Executing customization scripts...
 require_rootfs_rw_mounted
 run-parts \
     --exit-on-err \
-    config/custom.d
+    config/custom.d || {
+    $PRINTERROR One or more customization scripts failed!
+    exit 1
+}
+
+$PRINTINFO Customization scripts completed.
