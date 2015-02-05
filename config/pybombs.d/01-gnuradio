@@ -69,7 +69,7 @@ LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnuradio.lwr
 
 # Install documentation desktop shortcut
 [ -h "/etc/skel/Desktop/GNU Radio Documentation" ] || {
-    ln -sf /usr/local/share/doc/gnuradio-3.7.6/html/index.html \
+    ln -sf /usr/local/share/doc/gnuradio-3.7.6.1/html/index.html \
         "/etc/skel/Desktop/GNU Radio Documentation" || {
         echo Unable to install GNU Radio Documentation shortcut.
         exit 1
