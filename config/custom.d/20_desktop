@@ -1,5 +1,8 @@
 #!/bin/sh
 
+. config/config-vars
+. bin/functions.sh
+
 $PRINTINFO Removing desktop examples shortcut...
 sudo rm -f $ROOTFSMNT_RW/etc/skel/examples.desktop
 
