@@ -5,7 +5,7 @@ set -o nounset
 . config/config-vars
 . bin/functions.sh
 
-echo Installing custom Unity low graphics mode config
+$PRINTINFO Installing custom Unity low graphics mode config
 $SUDO install -m 644 \
     custom/unity/ubuntu.session \
     $ROOTFSMNT_RW/usr/share/gnome-session/sessions/
