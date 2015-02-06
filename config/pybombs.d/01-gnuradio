@@ -75,3 +75,22 @@ LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnuradio.lwr
         exit 1
     }
 }
+
+# Install Guided tutorials
+TUTDIR="/etc/skel/tutorials"
+[ -d "$TUTDIR" ] || {
+    mkdir -p "$TUTDIR"
+    $PRINTINFO "Installing GNU Radio guided tutorials..."
+    wget --page-requisites --convert-links --adjust-extension \
+         --recursive --level=1 --no-clobber --no-directories \
+         --no-host-directories \
+         --reject-regex "history|rename|protect|edit|watch|news|issues|activity|Development|Sponsor|search|users|index|roadmap|gnuradio$|wiki$|Installing|projects$|login|register|repository|files$|gnuradio$" \
+         --directory-prefix="$TUTDIR" \
+         http://gnuradio.org/redmine/projects/gnuradio/wiki/Guided_Tutorials || {
+        $PRINTERROR Failed to retrieve guided tutorials content!
+        exit 1
+    }
+
+    cd /etc/skel/Desktop
+    ln -s "/home/ubuntu/tutorials/Guided_Tutorials.html" .
+}
