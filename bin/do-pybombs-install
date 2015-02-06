@@ -1,29 +1,48 @@
 #!/bin/sh
 # Call signature:
 #     do-pybombs-install <PACKAGE> <GITREV> <TESTFILE>
+set -o nounset
+#set -X #DEBUG
+
+. config/config-vars
+. bin/chroot-functions.sh
 
 ### Setup
-PKG=$1
-GITREV=$2
-TESTFILE=$3
+
+# Test for required arguments
+if [ $# -lt 3 ] ; then
+    $PRINTERROR "Usage: $0 <PACKAGE> <GITREV> <TESTFILE>"
+    exit 1
+else
+    PKG=$1
+    GITREV=$2
+    TESTFILE=$3
+fi
+
 LWR=$ROOTFS_SRCDIR/pybombs/recipes/${PKG}.lwr
 # Check LWR exists:
 [ -r $LWR ] || {
-    /root/live/bin/print-msg error "Cannot find LWR for package $PKG"
+    $PRINTERROR "Cannot find LWR for package $PKG!"
+    exit 1
 }
+
 # This is where the repo is checked out by PyBOMBS:
 REPODIR=$ROOTFS_SRCDIR/pybombs/src/$PKG
+
 # This is where the build process is run:
 MAKEDIR=$REPODIR/build
+
 # Check if the recipe overrides this:
 MAKEDIR_FROM_LWR=`sed -n '/^makedir:/p' $LWR | sed 's/^makedir:[ \t]*//'`
 if [ -n $MAKEDIR_FROM_LWR ]; then
     MAKEDIR=$REPODIR/$MAKEDIR_FROM_LWR
 fi
+
 # Repo history etc.:
-REPODOTDIR=$ROOTFS_SRCDIR/pybombs/src/$PKG/.git
+REPODOTDIR=$REPODIR/.git
 
 ### Run install
+
 # Test if package already installed, silently exit if so
 [ -x $ROOTFS_PREFIX/$TESTFILE ] || {
     # Edit pybombs recipe for desired revision
@@ -31,25 +50,25 @@ REPODOTDIR=$ROOTFS_SRCDIR/pybombs/src/$PKG/.git
     grep gitrev $LWR
     RET=$?
     if [ $RET -ge 2 ] ; then
-        echo Unable to access gnuradio pybombs recipe.
+        $PRINTERROR Unable to access gnuradio pybombs recipe!
         exit 1
     fi
     if [ $RET -eq 1 ] ; then
-        echo Setting git revision in gnuradio recipe
+        $PRINTINFO Setting git revision in gnuradio recipe...
         sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
     fi
 
     # Execute pybombs recipe to install package
     cd $ROOTFS_SRCDIR/pybombs
     ./pybombs install $PKG || {
-        /root/live/bin/print-msg error "Unable to install package $PKG via pybombs."
+        $PRINTERROR Unable to install package $PKG via pybombs!
         exit 1
     }
 
     # Clean up compilation results
     if [ -d $MAKEDIR ]; then
         rm -rf $MAKEDIR || {
-            /root/live/bin/print-msg error "Unable to clean up after compiling package $PKG"
+            $PRINTERROR Unable to clean up after compiling package $PKG!
             exit 1
         }
     fi
@@ -57,14 +76,14 @@ REPODOTDIR=$ROOTFS_SRCDIR/pybombs/src/$PKG/.git
     # Nuke repository history
     if [ -d $REPODOTDIR ]; then
         rm -rf $REPODOTDIR || {
-            /root/live/bin/print-msg error "Unable to clean up repository history for package $PKG"
+            $PRINTERROR Unable to clean up repository history for package $PKG!
             exit 1
         }
     else
-        /root/live/bin/print-msg warn "No repo directory (e.g. .git/) found for package $PKG"
+        $PRINTWARN "No repo directory (e.g. .git/) found for package $PKG!"
     fi
 
-    # Tell the system we've installed a new shared libraries
+    # Tell the system we've possibly installed a new shared libraries
     # TODO: PyBOMBS might do this in the future, check this
     ldconfig
 }
