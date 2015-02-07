@@ -1,24 +1,30 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install bladeRF 06703b23 bin/bladeRF-cli
+bin/do-pybombs-install bladeRF 06703b23 bin/bladeRF-cli
 
 ### Post-installation tasks
+
 # Install udev permissions for bladeRF
-[ -x /etc/udev/rules.d/88-nuand.rules ] || {
+[ -f /etc/udev/rules.d/88-nuand.rules ] || {
+    $PRINTINFO Installing udev permissions for bladeRF...
     install -g root -o root -m 644 $LIVEUB_DIR/custom/bladeRF/88-nuand.rules /etc/udev/rules.d || {
-        echo Unable to install bladeRF udev rules file.
+        $PRINTERROR Unable to install bladeRF udev rules file!
         exit 1
     }
 }
 
 # Install FPGA bistream files for bladeRF
 NUAND_SHARE=/usr/share/Nuand/bladeRF
-[ -x $NUAND_SHARE/hostedx40.rbf ] || {
+[ -f $NUAND_SHARE/hostedx40.rbf ] || {
+    $PRINTINFO Installing FPGA bitstream files for bladeRF
     install -d -g root -o root $NUAND_SHARE
     install -g root -o root -m 644 $LIVEUB_DIR/custom/bladeRF/hostedx40.rbf $NUAND_SHARE &&
     install -g root -o root -m 644 $LIVEUB_DIR/custom/bladeRF/hostedx115.rbf $NUAND_SHARE || {
-        echo Unable to install bladeRF FPGA bitstream files.
+        $PRINTERROR Unable to install bladeRF FPGA bitstream files!
         exit 1
     }
 }

@@ -1,4 +1,7 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install gr-specest 5113c1f4 include/specest/api.h
+bin/do-pybombs-install gr-specest 5113c1f4 include/specest/api.h

@@ -1,36 +1,49 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install uhd release_003_008_001 bin/uhd_find_devices
+bin/do-pybombs-install uhd release_003_008_001 bin/uhd_find_devices
 
 ### Post-installation tasks
+
 # Install the udev rules file
 [ -f /etc/udev/rules.d/uhd-usrp.rules ] || {
+    $PRINTINFO Installing UHD udev rules file...
     install -g root -o root -m 644 $ROOTFS_SRCDIR/pybombs/src/uhd/host/utils/uhd-usrp.rules /etc/udev/rules.d || {
-        echo Unable to install UHD udev rules file.
+        $PRINTERROR Unable to install UHD udev rules file!
         exit 1
     }
 }
 
 # Install the sysctl params for the network stack
 [ -f /etc/sysctl.d/10-uhd-buffers.conf ] || {
+    $PRINTINFO Installing UHD sysctl params...
     install -g root -o root -m 644 $LIVEUB_DIR/custom/uhd/10-uhd-buffers.conf /etc/sysctl.d || {
-        echo Unable to copy UHD sysctl params into place.
+        $PRINTERROR Unable to copy UHD sysctl params into place!
         exit 1
     }
 }
 
 # Install the limits file for real-time priority
 [ -f /etc/security/limits.d/10-uhd-limits.conf ] || {
+    $PRINTINFO Installing UHD limits file...
     mkdir -p /etc/security/limits.d
     install -g root -o root -m 644 $LIVEUB_DIR/custom/uhd/10-uhd-limits.conf /etc/security/limits.d || {
-        echo Unable to copy UHD limits file into place.
+        $PRINTERROR Unable to copy UHD limits file into place!
         exit 1
     }
 }
 
 # Download and install firmware images
-[ -f /usr/local/share/uhd/images/LICENSE ] || uhd_images_downloader || {
-    echo Unable to download UHD firmware images.
-    exit 1
+[ -f /usr/local/share/uhd/images/LICENSE ] || {
+    $PRINTINFO Installing UHD firmware images...
+    uhd_images_downloader || {
+        $PRINTERROR Unable to download UHD firmware images!
+        exit 1
+    }
 }
+
+exit 0

@@ -1,4 +1,7 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install gr-dvbt 434494c1 include/dvbt/api.h
+bin/do-pybombs-install gr-dvbt 434494c1 include/dvbt/api.h

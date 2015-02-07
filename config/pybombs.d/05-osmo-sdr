@@ -1,4 +1,7 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install osmo-sdr effcaa75 bin/osmo_sdr
+bin/do-pybombs-install osmo-sdr effcaa75 bin/osmo_sdr

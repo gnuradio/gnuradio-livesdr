@@ -8,4 +8,4 @@ cd /root/live
 export LIVEUB_DIR=$LIVEUB_DIR
 export ROOTFS_PREFIX=$ROOTFS_PREFIX
 export ROOTFS_SRCDIR=$ROOTFS_SRCDIR
-run-parts config/pybombs.d/
+run-parts --exit-on-error config/pybombs.d/

@@ -1,4 +1,7 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install gr-rds ff1ca151 include/rds/gnuradio/rds/api.h
+bin/do-pybombs-install gr-rds ff1ca151 include/rds/gnuradio/rds/api.h

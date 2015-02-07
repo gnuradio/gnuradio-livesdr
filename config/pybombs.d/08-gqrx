@@ -1,8 +1,13 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Pre-install tasks
+
 # Patch out -mt suffix addition
+LWR=$ROOTFS_SRCDIR/pybombs/recipes/gqrx.lwr
 sed -i -e 's/BOOST_SUFFIX=-mt/BOOST_SUFFIX=/' $LWR
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install gqrx v2.3.2 bin/gqrx
+bin/do-pybombs-install gqrx v2.3.2 bin/gqrx

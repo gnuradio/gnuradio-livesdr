@@ -1,4 +1,7 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install gr-iqbal 44ab02f6 lib/libgnuradio-iqbalance.so
+bin/do-pybombs-install gr-iqbal 44ab02f6 lib/libgnuradio-iqbalance.so

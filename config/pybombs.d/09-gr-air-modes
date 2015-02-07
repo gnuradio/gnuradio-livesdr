@@ -1,7 +1,10 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-/root/live/bin/do-pybombs-install gr-air-modes 9891907e bin/modes_gui
+bin/do-pybombs-install gr-air-modes 9891907e bin/modes_gui
 
 ### Post-install tasks
 # Replace installed __init__.py to fix RTLDR issue
