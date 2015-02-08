@@ -1,6 +1,6 @@
 # Note: use of { } is to allow inclusion in Makefile
 
-REMASTER_SUFFIX=gnuradio-3.7.6.1
+REMASTER_SUFFIX=gnuradio-3.7.7git-snapshot-$(date +%Y-%m%d)
 ENCRYPT=NO
 UPGRADE_PKGS=YES
 
