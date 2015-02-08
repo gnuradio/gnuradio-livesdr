@@ -17,14 +17,31 @@ bin/do-pybombs-install bladeRF 06703b23 bin/bladeRF-cli
     }
 }
 
-# Install FPGA bistream files for bladeRF
+# Download and install associated FPGA bitstream and firmware files
 NUAND_SHARE=/usr/share/Nuand/bladeRF
 [ -f $NUAND_SHARE/hostedx40.rbf ] || {
-    $PRINTINFO Installing FPGA bitstream files for bladeRF
-    install -d -g root -o root $NUAND_SHARE
-    install -g root -o root -m 644 $LIVEUB_DIR/custom/bladeRF/hostedx40.rbf $NUAND_SHARE &&
-    install -g root -o root -m 644 $LIVEUB_DIR/custom/bladeRF/hostedx115.rbf $NUAND_SHARE || {
-        $PRINTERROR Unable to install bladeRF FPGA bitstream files!
+    $PRINTINFO Downloading FPGA bitstream and firmware files...
+    mkdir -p /tmp/bladeRF &&
+    curl -# http://nuand.com/fpga/v0.1.2/hostedx40.rbf \
+        -o /tmp/bladeRF/hostedx40.rbf &&
+    curl -# http://nuand.com/fpga/v0.1.2/hostedx115.rbf \
+        -o /tmp/bladeRF/hostedx115.rbf &&
+    curl -# http://nuand.com/fx3/bladeRF_fw_v1.8.0.img \
+        -o /tmp/bladeRF/bladeRF_fw_v1.8.0.img || {
+        $PRINTERROR Unable to download bladeRF FPGA and firmware files!
         exit 1
     }
+
+    $PRINTINFO Installing FPGA bitstream and firmware files...
+    mkdir -p $NUAND_SHARE &&
+    install -g root -o root -m 644 \
+        -t $NUAND_SHARE \
+        /tmp/bladeRF/hostedx40.rbf \
+        /tmp/bladeRF/hostedx115.rbf \
+        /tmp/bladeRF/bladeRF_fw_v1.8.0.img || {
+        $PRINTERROR Unable to install bladeRF FPGA bitstream and firmware files!
+        exit 1
+    }
+
+    rm -rf /tmp/bladeRF
 }
