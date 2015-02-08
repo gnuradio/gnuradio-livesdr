@@ -4,7 +4,7 @@ set -o nounset
 . bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-bin/do-pybombs-install bladeRF 06703b23 bin/bladeRF-cli
+bin/do-pybombs-install bladeRF 4e78b059 bin/bladeRF-cli
 
 ### Post-installation tasks
 
