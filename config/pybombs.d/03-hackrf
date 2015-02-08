@@ -52,6 +52,7 @@ bin/do-pybombs-install hackrf 4e98bc6b bin/hackrf_info
         $PRINTERROR Unable to install hackrf firmware files!
     }
 
+    cd - >/dev/null
     rm -rf /tmp/hackrf
 }
 
@@ -84,5 +85,6 @@ bin/do-pybombs-install hackrf 4e98bc6b bin/hackrf_info
         exit 1
     }
 
+    cd - >/dev/null
     rm -rf /tmp/hackrf
 }
