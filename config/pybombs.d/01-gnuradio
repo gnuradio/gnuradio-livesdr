@@ -5,7 +5,7 @@ set -o nounset
 . bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-bin/do-pybombs-install gnuradio v3.7.6.1 bin/gnuradio-config-info
+bin/do-pybombs-install gnuradio 42c1d6d3 bin/gnuradio-config-info
 
 ### Post-installation tasks
 
