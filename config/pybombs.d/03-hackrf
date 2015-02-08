@@ -4,7 +4,7 @@ set -o nounset
 . bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-bin/do-pybombs-install hackrf 4e98bc6b bin/hackrf_info
+bin/do-pybombs-install hackrf 50a6622f bin/hackrf_info
 
 ### Post-installation tasks
 
