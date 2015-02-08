@@ -5,7 +5,7 @@ set -o nounset
 . bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-bin/do-pybombs-install uhd release_003_008_001 bin/uhd_find_devices
+bin/do-pybombs-install uhd 003_008_002_rc1 bin/uhd_find_devices
 
 ### Post-installation tasks
 
