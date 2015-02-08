@@ -4,4 +4,4 @@ set -o nounset
 . bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-bin/do-pybombs-install gr-osmosdr 46bb1ad1 bin/osmocom_fft
+bin/do-pybombs-install gr-osmosdr 48045b59 bin/osmocom_fft
