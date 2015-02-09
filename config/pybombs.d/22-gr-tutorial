@@ -1,0 +1,7 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
+
+### Call PyBOMBS install
+bin/do-pybombs-install gr-tutorial 040b19ef include/tutorial/api.h
