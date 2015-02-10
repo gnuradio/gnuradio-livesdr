@@ -1,0 +1,20 @@
+Branch 'livesdr':
+
+This is a superset of the basic branch and has all the customization
+used to create the GNU Radio Live SDR Environment image.  The
+remastering script adds these changes:
+
+* Installs GNU Radio and many 3rd party GNU Radio software packages by
+  using the PyBOMBS installation utility to compile from source
+
+* Installs several binary packages for use with GNU Radio (Octave,
+  Matplotlib, SciPy and others)
+
+* Creates both a remastered ISO and a bittorrent tracker file.
+
+* Creates basic desktop, networking configuration, Mozilla profile,
+  and live user home directory configuration and shortcut files.
+
+If you want to create your own custom remastered ISO to add, for
+example, a GNU Radio based out-of-tree module, or additional binary
+packages, this is the place to start.
