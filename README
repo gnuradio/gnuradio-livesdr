@@ -1,10 +1,9 @@
 Ubuntu Remaster is a set of automated scripts for taking a stock ISO
 distribution image from Canonical and recreating it with changes and
-additional content.  Originally written as the basis for creating the
-GNU Radio Live SDR Environment, it is now broken up into layered
-branches to allow you to make your own optionally encrypted ISO
-images.  Customizers can branch off various 'layers' to add their
-custom content to an existing image.
+additional content.  It is broken up into layered branches to allow
+you to make your own optionally encrypted ISO images.  Customizers can
+branch off various 'layers' to add their custom content to an existing
+image.
 
 
 Using the Ubuntu Remaster build scripts
@@ -82,25 +81,3 @@ live ISO image with a some important changes:
 
 Branch off here to incorporate the above changes into a baseline for
 your own further customization.
-
-
-Branch 'livesdr':
-
-This is a superset of the basic branch and has all the customization
-used to create the GNU Radio Live SDR Environment image.  The
-remastering script adds these changes:
-
-* Installs GNU Radio and many 3rd party GNU Radio software packages by
-  using the PyBOMBS installation utility to compile from source
-
-* Installs several binary packages for use with GNU Radio (Octave,
-  Matplotlib, SciPy and others)
-
-* Creates both a remastered ISO and a bittorrent tracker file.
-
-* Creates basic desktop, networking configuration, Mozilla profile,
-  and live user home directory configuration and shortcut files.
-
-If you want to create your own custom remastered ISO to add, for
-example, a GNU Radio based out-of-tree module, or additional binary
-packages, this is the place to start.
