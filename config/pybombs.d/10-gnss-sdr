@@ -8,11 +8,11 @@ set -o nounset
 # Force gnss-sdr to use libvolk for everything
 LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnss-sdr.lwr
 if ! grep -q ENABLE_GENERIC_ARCH $LWR ; then
-    $PRINTINFO "Adding ENABLE_GENERIC_ARCH to gnss-sdr configuration"
+    $PRINTINFO "Adding ENABLE_GENERIC_ARCH and ENABLE_OSMOSDR to gnss-sdr configuration"
     # spaces are important
     # also, config_opt must come before inherit cmake
-    sed -i -e '/gitrev:/a var config_opt = " -DENABLE_GENERIC_ARCH=ON "' $LWR
+    sed -i -e '/gitbranch:/a var config_opt = " -DENABLE_GENERIC_ARCH=ON -DENABLE_OSMOSDR=ON "' $LWR
 fi
 
 ### Call PyBOMBS install
-bin/do-pybombs-install gnss-sdr 9b95919d bin/gnss-sdr
+bin/do-pybombs-install gnss-sdr v0.0.5 bin/gnss-sdr
