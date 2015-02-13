@@ -1,7 +1,0 @@
-#!/bin/sh
-set -o nounset
-#set -x #DEBUG
-. bin/chroot-functions.sh
-
-### Call PyBOMBS install
-bin/do-pybombs-install gr-ieee-80211 4e662cff include/ieee802-11/gnuradio/ieee802_11/api.h

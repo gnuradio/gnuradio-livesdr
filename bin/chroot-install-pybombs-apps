@@ -1,11 +1,46 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 cd /root/live
 
 . config/config-vars
+. bin/chroot-functions.sh
 
 # Execute each fragment in config/pybombs.d
 export LIVEUB_DIR=$LIVEUB_DIR
 export ROOTFS_PREFIX=$ROOTFS_PREFIX
 export ROOTFS_SRCDIR=$ROOTFS_SRCDIR
-run-parts --exit-on-error config/pybombs.d/
+
+while read LINE ; do
+    # Skip comments and whitespace
+    if echo $LINE | grep -v -q ^[^#] ; then continue ; fi
+
+    # Extract columnwise data
+    COMP=$(echo $LINE | cut -f 1 -d ' ')
+    REV=$(echo $LINE | cut -f 2 -d ' ')
+    FILE=$(echo $LINE | cut -f 3 -d ' ')
+
+    [ -f $ROOTFS_PREFIX/$FILE ] || {
+        $PRINTINFO Installing component $COMP at revision $REV
+
+        # Check for pre-installation actions
+        [ -f config/pybombs.d/preinst.d/$COMP ] && {
+            config/pybombs.d/preinst.d/$COMP || {
+                $PRINTERROR Pre-installation for $COMP failed!
+                exit 1
+            }
+        }
+
+        # DOOO EEEET
+        bin/do-pybombs-install $COMP $REV
+
+        # Check for post-installation actions
+        [ -f config/pybombs.d/postinst.d/$COMP ] && {
+            config/pybombs.d/postinst.d/$COMP || {
+                $PRINTERROR Post-installation for $COMP failed!
+                exit 1
+            }
+        }
+    }
+done < config/pybombs.d/install.conf

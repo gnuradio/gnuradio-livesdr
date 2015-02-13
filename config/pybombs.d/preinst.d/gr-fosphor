@@ -87,6 +87,4 @@ DESTDIR=/
     rm -f $TMPDIR/$FILENAME
 }
 
-### Call PyBOMBS install
-cd /root/live
-bin/do-pybombs-install gr-fosphor 985c78ff include/gnuradio/fosphor/api.h
+exit 0

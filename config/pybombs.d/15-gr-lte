@@ -1,7 +1,0 @@
-#!/bin/sh
-set -o nounset
-#set -x #DEBUG
-. bin/chroot-functions.sh
-
-### Call PyBOMBS install
-bin/do-pybombs-install gr-lte e9df3951 include/lte/api.h

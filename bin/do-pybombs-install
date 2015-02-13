@@ -1,6 +1,6 @@
 #!/bin/sh
 # Call signature:
-#     do-pybombs-install <PACKAGE> <GITREV> <TESTFILE>
+#     do-pybombs-install <PACKAGE> <GITREV>
 set -o nounset
 #set -X #DEBUG
 
@@ -10,13 +10,12 @@ set -o nounset
 ### Setup
 
 # Test for required arguments
-if [ $# -lt 3 ] ; then
-    $PRINTERROR "Usage: $0 <PACKAGE> <GITREV> <TESTFILE>"
+if [ $# -lt 2 ] ; then
+    $PRINTERROR "Usage: $0 <PACKAGE> <GITREV>"
     exit 1
 else
     PKG=$1
     GITREV=$2
-    TESTFILE=$3
 fi
 
 LWR=$ROOTFS_SRCDIR/pybombs/recipes/${PKG}.lwr
@@ -45,49 +44,43 @@ REPODOTDIR=$REPODIR/.git
 
 ### Run install
 
-# Test if package already installed, silently exit if so
-[ -f $ROOTFS_PREFIX/$TESTFILE ] || {
-    $PRINTINFO Installing package $PKG with PyBOMBS...
+# Edit pybombs recipe for desired revision
+# TODO: PyBOMBS might be able to do this in the future
+grep gitrev $LWR
+RET=$?
+if [ $RET -ge 2 ] ; then
+    $PRINTERROR Unable to access gnuradio pybombs recipe!
+    exit 1
+fi
+if [ $RET -eq 1 ] ; then
+    sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+fi
 
-    # Edit pybombs recipe for desired revision
-    # TODO: PyBOMBS might be able to do this in the future
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        $PRINTERROR Unable to access gnuradio pybombs recipe!
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        $PRINTINFO Setting git revision in gnuradio recipe...
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
+# Execute pybombs recipe to install package
+cd $ROOTFS_SRCDIR/pybombs
+./pybombs install $PKG || {
+    $PRINTERROR Unable to install package $PKG via pybombs!
+    exit 1
+}
 
-    # Execute pybombs recipe to install package
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install $PKG || {
-        $PRINTERROR Unable to install package $PKG via pybombs!
+# Clean up compilation results
+if [ -d $MAKEDIR ]; then
+    rm -rf $MAKEDIR || {
+        $PRINTERROR Unable to clean up after compiling package $PKG!
         exit 1
     }
+fi
 
-    # Clean up compilation results
-    if [ -d $MAKEDIR ]; then
-        rm -rf $MAKEDIR || {
-            $PRINTERROR Unable to clean up after compiling package $PKG!
-            exit 1
-        }
-    fi
+# Nuke repository history
+if [ -d $REPODOTDIR ]; then
+    rm -rf $REPODOTDIR || {
+        $PRINTERROR Unable to clean up repository history for package $PKG!
+        exit 1
+    }
+else
+    $PRINTWARN "Repo directory $REPODOTDIR not found!"
+fi
 
-    # Nuke repository history
-    if [ -d $REPODOTDIR ]; then
-        rm -rf $REPODOTDIR || {
-            $PRINTERROR Unable to clean up repository history for package $PKG!
-            exit 1
-        }
-    else
-        $PRINTWARN "Repo directory $REPODOTDIR not found!"
-    fi
-
-    # Tell the system we've possibly installed a new shared libraries
-    # TODO: PyBOMBS might do this in the future, check this
-    ldconfig
-}
+# Tell the system we've possibly installed a new shared libraries
+# TODO: PyBOMBS might do this in the future, check this
+ldconfig

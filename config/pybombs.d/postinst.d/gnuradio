@@ -4,11 +4,6 @@ set -o nounset
 
 . bin/chroot-functions.sh
 
-### Call PyBOMBS install
-bin/do-pybombs-install gnuradio 42c1d6d3 bin/gnuradio-config-info
-
-### Post-installation tasks
-
 # Install freedesktop files
 [ -f /usr/share/mime/packages/gnuradio-grc.xml ] || {
     $PRINTINFO Installing GNU Radio freedesktop files...

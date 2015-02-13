@@ -3,11 +3,6 @@ set -o nounset
 #set -x #DEBUG
 . bin/chroot-functions.sh
 
-### Call PyBOMBS install
-bin/do-pybombs-install hackrf 50a6622f bin/hackrf_info
-
-### Post-installation tasks
-
 # Install udev permissions for hackrf
 [ -f /etc/udev/rules.d/53-hackrf.rules ] || {
     $PRINTINFO Installing udev permissions for hackrf...

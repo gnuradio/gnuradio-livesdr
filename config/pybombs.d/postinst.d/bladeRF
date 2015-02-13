@@ -3,11 +3,6 @@ set -o nounset
 #set -x #DEBUG
 . bin/chroot-functions.sh
 
-### Call PyBOMBS install
-bin/do-pybombs-install bladeRF 4e78b059 bin/bladeRF-cli
-
-### Post-installation tasks
-
 # Install udev permissions for bladeRF
 [ -f /etc/udev/rules.d/88-nuand.rules ] || {
     $PRINTINFO Installing udev permissions for bladeRF...
