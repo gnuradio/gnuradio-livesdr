@@ -3,6 +3,7 @@
 REMASTER_SUFFIX=gnuradio-3.7.6.1
 ENCRYPT=NO
 UPGRADE_PKGS=YES
+MAKEWIDTH=2
 
 # Executable commands
 CURL=/usr/bin/curl
