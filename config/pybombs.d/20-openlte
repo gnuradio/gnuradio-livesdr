@@ -4,4 +4,4 @@ set -o nounset
 . bin/chroot-functions.sh
 
 ### Call PyBOMBS install
-bin/do-pybombs-install openlte 76945c80 bin/LTE_file_recorder
+bin/do-pybombs-install openlte 99eccc54 bin/LTE_file_recorder
