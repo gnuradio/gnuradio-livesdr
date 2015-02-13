@@ -1,4 +1,6 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 cd /root/live
 . config/config-vars
@@ -26,6 +28,8 @@ fi
         $PRINTERROR Unable to install pybombs configuration file.
         exit 1
     }
+
+    sed -i -e 's/makewidth = 2/makewidth = '$MAKEWIDTH'/' $ROOTFS_SRCDIR/pybombs/config.dat
 }
 
 # Patch out running volk performance test
@@ -35,3 +39,5 @@ SRCFILE=$ROOTFS_SRCDIR/pybombs/mod_pybombs/pybombs_ops.py
     sed -i -e '/Run VOLK Profile/d' $SRCFILE
     sed -i -e '/run_volk_profile.*;/d' $SRCFILE
 }
+
+exit 0
