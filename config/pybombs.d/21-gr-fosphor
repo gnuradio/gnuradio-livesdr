@@ -74,10 +74,10 @@ DESTDIR=/
 
     # Install Intel OCL ICD
     [ -d /etc/OpenCL/vendors/intel.icd ] || {
-        echo Installing Intel OpenCL ICD...
+        $PRINTINFO Installing Intel OpenCL ICD...
         mkdir -p /etc/OpenCL/vendors &&
         ln -sf /opt/intel/opencl-1.2-4.5.0.8/etc/intel64.icd /etc/OpenCL/vendors || {
-	    echo Unable to install Intel OpenCL ICD!
+	    $PRINTERROR Unable to install Intel OpenCL ICD!
 	    exit 1
         }
     }
@@ -87,61 +87,6 @@ DESTDIR=/
     rm -f $TMPDIR/$FILENAME
 }
 
-# Fetch, patch, and install gr-fosphor
-GITREV=36ce5e78
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/openlte.lwr
-
-# Test if gr-fosphor already installed, silently exit if so
-[ -f $ROOTFS_PREFIX/include/gnuradio/fosphor/api.h ] || {
-    # Edit gr-fosphor recipe for desired revision
-    $PRINTINFO Editing gr-fosphor recipe with desired git version...
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        $PRINTERROR Unable to access gr-fosphor pybombs recipe!
-        exit 1
-    fi
-    if [ $RET -eq 1 ] ; then
-        $PRINTERROR Setting git revision in gr-fosphor recipe!
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to fetch gr-fosphor
-    $PRINTINFO Fetching gr-fosphor sources with PyBOMBS...
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs fetch gr-fosphor || {
-        $PRINTERROR Unable to fetch gr-fosphor via pybombs.
-        exit 1
-    }
-
-    # Patch version compatibility to allow use with Intel CPU driver
-    $PRINTINFO Patching gr-fosphor source for Intel OpenCL driver compatibility...
-    sed -i -e 's/150 compatibility/130/g' $ROOTFS_SRCDIR/pybombs/src/gr-fosphor/lib/fosphor/* || {
-        $PRINTERROR Unable to patch gr-fosphor compatibility version numbers
-        exit 1
-    }
-
-    # Execute pybombs recipe to install gr-fosphor
-    $PRINTINFO Installing gr-fosphor with PyBOMBS
-    cd $ROOTFS_SRCDIR/pybombs
-    ./pybombs install gr-fosphor || {
-        $PRINTERROR Unable to fetch gr-fosphor via pybombs.
-        exit 1
-    }
-
-    # Clean up compilation results
-    $PRINTINFO Cleaning up after gr-fosphor installation...
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-fosphor/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/gr-fosphor/.git || {
-        $PRINTERROR Unable to clean up after gr-fosphor compile!
-        exit 1
-    }
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/glfw3/build &&
-    rm -rf $ROOTFS_SRCDIR/pybombs/src/glfw3/.git || {
-        $PRINTERROR Unable to clean up after glfw3 compile!
-        exit 1
-    }
-
-    # Tell the system we've installed a new shared libraries
-    ldconfig
-}
+### Call PyBOMBS install
+cd /root/live
+bin/do-pybombs-install gr-fosphor 985c78ff include/gnuradio/fosphor/api.h
