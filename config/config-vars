@@ -56,8 +56,8 @@ CHROOT_MNT_SENTINEL=${ROOTFSMNT_RW}/proc/mounts
 
 # initrd locations
 CHROOT_INITRD=${ROOTFSMNT_RW}/boot/initrd.img*
-ISO_INITRD=${ISOMNT_RW}/casper/initrd.gz
-ISO_OLDINIT=${ISOMNT_RW}/casper/initrd.lz
+ISO_INITRD=${ISOMNT_RW}/casper/initrd.lz
+#ISO_OLDINIT=${ISOMNT_RW}/casper/initrd.lz
 
 # Chroot locations
 LIVEUB_DIR=/root/live
