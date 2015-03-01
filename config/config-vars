@@ -3,6 +3,7 @@
 REMASTER_SUFFIX=gnuradio-3.7.6.1
 ENCRYPT=NO
 UPGRADE_PKGS=YES
+USE_CCACHE=YES
 MAKEWIDTH=2
 
 # Executable commands
@@ -16,6 +17,7 @@ UMOUNT=/bin/umount
 CHMOD=/bin/chmod
 MKISOFS=/usr/bin/mkisofs
 MKSQUASHFS=/usr/bin/mksquashfs
+CCACHE=/usr/bin/ccache
 BUILDTORRENT=/usr/bin/buildtorrent
 
 # Directory configuration
