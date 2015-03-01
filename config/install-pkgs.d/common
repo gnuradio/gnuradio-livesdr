@@ -6,3 +6,4 @@ htop
 indicator-cpufreq
 indicator-multiload
 mc
+ccache

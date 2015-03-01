@@ -121,6 +121,9 @@ dist-clean: unmount clean
 	@sudo rm -rf ${RWMNT}/iso
 	@sudo rm -rf ${RWMNT}/rootfs
 
+really-clean: dist-clean
+	@sudo rm -rf ccache/*
+
 # Unmount chroot jail mounts
 unmount-chroot:
 	@bin/unmount-chroot

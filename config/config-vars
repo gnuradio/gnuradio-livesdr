@@ -3,6 +3,7 @@
 REMASTER_SUFFIX=remastered
 ENCRYPT=NO
 UPGRADE_PKGS=YES
+USE_CCACHE=YES
 
 # Executable commands
 CURL=/usr/bin/curl
@@ -15,6 +16,7 @@ UMOUNT=/bin/umount
 CHMOD=/bin/chmod
 MKISOFS=/usr/bin/mkisofs
 MKSQUASHFS=/usr/bin/mksquashfs
+CCACHE=/usr/bin/ccache
 
 # Directory configuration
 # Modify as needed

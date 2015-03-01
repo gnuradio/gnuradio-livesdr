@@ -12,6 +12,7 @@ for cmd in \
     $MKSQUASHFS \
     $MD5SUM \
     $MKISOFS \
+    $CCACHE \
     ; do
 
     if ! test -x $cmd ; then
