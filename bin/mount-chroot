@@ -18,4 +18,8 @@ $SUDO $MOUNT -t devpts none  $ROOTFSMNT_RW/dev/pts/
 [ -d $ROOTFSMNT_RW/root/live ] || $SUDO mkdir -p $ROOTFSMNT_RW/root/live
 $SUDO $MOUNT --bind . $ROOTFSMNT_RW/root/live
 
+# Mount ccache directory inside root directory
+$SUDO mkdir -p $ROOTFSMNT_RW/root/.ccache
+$SUDO $MOUNT --bind ./ccache $ROOTFSMNT_RW/root/.ccache
+
 exit 0
