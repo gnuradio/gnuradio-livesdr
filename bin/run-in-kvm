@@ -1,0 +1,30 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. config/config-vars
+. bin/functions.sh
+
+KVM=/usr/bin/kvm
+
+if ! [ -x $KVM ] ; then
+    $PRINTERROR The kvm virtual machine program is not installed.
+    exit 1
+fi
+
+CDROM=$ISO_DIR/$REMASTER_NAME
+
+if ! [ -f $CDROM ] ; then
+    $PRINTERROR $CDROM does not exist or is not readable!
+    exit 1
+fi
+
+$KVM \
+    -name $REMASTER_NAME \
+    -cdrom $ISO_DIR/$REMASTER_NAME \
+    -smp cpus=4 \
+    -m 4096 \
+    -vga std \
+    -boot d
+
+exit 0
