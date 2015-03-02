@@ -151,3 +151,10 @@ unmount-iso: unmount-rootfs
 
 # Unmount everything
 unmount: unmount-iso
+
+###########
+# Testing #
+###########
+
+kvm:
+	@bin/run-in-kvm
