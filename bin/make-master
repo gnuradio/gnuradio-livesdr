@@ -44,7 +44,7 @@ $SUDO chmod 444 $ISO_DIR/$REMASTER_NAME || {
 
 # Allow booting either as CD or as HD image
 $PRINTINFO Converting ISO to hybrid boot...
-$SUDO isohybrid $ISO_DIR/$REMASTER_NAME || {
+$SUDO $ISOHYBRID $ISO_DIR/$REMASTER_NAME || {
     $PRINTERROR Unable to make ISO image a hybrid boot!
     exit 1
 }
