@@ -11,7 +11,8 @@ $SUDO apt-get install \
      gnupg \
      coreutils \
      squashfs-tools \
-     genisoimage || {
+     genisoimage \
+     syslinux || {
     $PRINTERROR Package installation failed!
     exit 1
 }
