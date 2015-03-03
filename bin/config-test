@@ -13,6 +13,7 @@ for cmd in \
     $MD5SUM \
     $MKISOFS \
     $CCACHE \
+    $ISOHYBRID \
     ; do
 
     if ! test -x $cmd ; then

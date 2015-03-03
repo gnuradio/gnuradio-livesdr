@@ -17,6 +17,7 @@ CHMOD=/bin/chmod
 MKISOFS=/usr/bin/mkisofs
 MKSQUASHFS=/usr/bin/mksquashfs
 CCACHE=/usr/bin/ccache
+ISOHYBRID=/usr/bin/isohybrid
 
 # Directory configuration
 # Modify as needed
