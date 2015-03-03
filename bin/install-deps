@@ -13,7 +13,8 @@ $SUDO apt-get install \
      coreutils \
      squashfs-tools \
      ccache \
-     genisoimage || {
+     genisoimage \
+     syslinux || {
     $PRINTERROR Package installation failed!
     exit 1
 }

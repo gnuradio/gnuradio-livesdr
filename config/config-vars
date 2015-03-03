@@ -18,6 +18,7 @@ CHMOD=/bin/chmod
 MKISOFS=/usr/bin/mkisofs
 MKSQUASHFS=/usr/bin/mksquashfs
 CCACHE=/usr/bin/ccache
+ISOHYBRID=/usr/bin/isohybrid
 BUILDTORRENT=/usr/bin/buildtorrent
 
 # Directory configuration
