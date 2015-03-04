@@ -2,7 +2,7 @@
 # Call signature:
 #     do-pybombs-install <PACKAGE> <GITREV>
 set -o nounset
-#set -X #DEBUG
+#set -x #DEBUG
 
 . config/config-vars
 . bin/chroot-functions.sh

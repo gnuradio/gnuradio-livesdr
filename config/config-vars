@@ -75,3 +75,4 @@ ROOTFS_SRCDIR=${ROOTFS_PREFIX}/src
 
 # Pybombs related
 PYBOMBS_GITURL=git://github.com/pybombs/pybombs
+GITCACHE=/root/live/gitcache

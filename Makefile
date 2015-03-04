@@ -133,9 +133,11 @@ dist-clean: unmount clean
 	@rm -f stamps/*.stamp
 	@sudo rm -rf ${RWMNT}/iso
 	@sudo rm -rf ${RWMNT}/rootfs
+	@sudo rm -rf tmp/*
 
 really-clean: dist-clean
 	@sudo rm -rf ccache/*
+	@sudo rm -rf gitcache/*
 
 # Unmount chroot jail mounts
 unmount-chroot:
