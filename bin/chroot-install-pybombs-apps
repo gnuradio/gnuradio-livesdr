@@ -53,6 +53,7 @@ while read LINE ; do
 
         # Check for pre-installation actions
         [ -f config/pybombs.d/preinst.d/$COMP ] && {
+            $PRINTINFO Executing pre-installation script for $COMP
             config/pybombs.d/preinst.d/$COMP || {
                 $PRINTERROR Pre-installation for $COMP failed!
                 exit 1
@@ -64,6 +65,7 @@ while read LINE ; do
 
         # Check for post-installation actions
         [ -f config/pybombs.d/postinst.d/$COMP ] && {
+            $PRINTINFO Executing post-installation script for $COMP
             config/pybombs.d/postinst.d/$COMP || {
                 $PRINTERROR Post-installation for $COMP failed!
                 exit 1
