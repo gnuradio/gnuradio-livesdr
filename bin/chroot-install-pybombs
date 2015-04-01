@@ -15,7 +15,7 @@ cd $ROOTFS_SRCDIR || {
 # Install pybombs from git repository
 if [ ! -f $ROOTFS_SRCDIR/pybombs/.git/config ] ; then
     $PRINTINFO Installing PyBOMBS installation program...
-    git clone $PYBOMBS_GITURL || {
+    git clone --recursive $PYBOMBS_GITURL || {
         $PRINTERROR Unable to clone pybombs from $PYBOMBS_GITURL!
         exit 1
     }
