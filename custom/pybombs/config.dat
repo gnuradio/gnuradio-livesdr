@@ -1,6 +1,7 @@
 [config]
 gituser =
-gitcache = /root/live/gitcache
+gitcache =
+gitoptions = --reference=/root/live/gitcache
 prefix = /usr/local
 satisfy_order = deb,src
 forcepkgs =
