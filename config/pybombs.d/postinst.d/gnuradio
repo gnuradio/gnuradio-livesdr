@@ -28,6 +28,7 @@ set -o nounset
     install -d -o 999 -g 999 /etc/skel/.gnuradio &&
     install -g 999 -o 999 -m 644 $LIVEUB_DIR/custom/gnuradio/config.conf /etc/skel/.gnuradio &&
     install -g 999 -o 999 -m 644 $LIVEUB_DIR/custom/gnuradio/.bash_aliases /etc/skel &&
+    install -g 999 -o 999 -m 644 $LIVEUB_DIR/custom/gnuradio/clabs.qss /usr/local/share/gnuradio/themes &&
     install -g 999 -o 999 -m 644 $LIVEUB_DIR/custom/gnuradio/.octaverc /etc/skel || {
         $PRINTERROR Unable to install live user GNU Radio configuration files!
     }
