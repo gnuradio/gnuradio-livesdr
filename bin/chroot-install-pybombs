@@ -19,6 +19,14 @@ if [ ! -f $ROOTFS_SRCDIR/pybombs/.git/config ] ; then
         $PRINTERROR Unable to clone pybombs from $PYBOMBS_GITURL!
         exit 1
     }
+
+    # Get latest recipes
+    $PRINTINFO Retrieving latest recipes database...
+    cd $ROOTFS_SRCDIR/pybombs/recipes
+    git pull origin master || {
+        $PRINTERROR Unable to retrieve latest recipes database
+    }
+    cd - >/dev/null
 fi
 
 # Test for configuration file and install if needed
