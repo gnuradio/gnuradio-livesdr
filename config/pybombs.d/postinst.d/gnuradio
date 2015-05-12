@@ -38,7 +38,7 @@ set -o nounset
 [ -h "/etc/skel/Desktop/GNU Radio Documentation" ] || {
     $PRINTINFO Installing GNU Radio documentation shortcut...
     # FIXME automate the below versioned directory
-    ln -sf /usr/local/share/doc/gnuradio-3.7.7/html/index.html \
+    ln -sf /usr/local/share/doc/gnuradio-3.7.7.1/html/index.html \
         "/etc/skel/Desktop/GNU Radio Documentation" || {
         $PRINTERROR Unable to install GNU Radio Documentation shortcut!
         exit 1
