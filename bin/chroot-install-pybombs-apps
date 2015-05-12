@@ -43,7 +43,9 @@ while read LINE ; do
             git -C $GITCACHE remote add $COMP $TEMPDIR/
             git -C $GITCACHE fetch $COMP --tags
             # Finally, set the remote to the actual remote URL
-            git -C $GITCACHE remote set-url $COMP $REMOTE_URL
+            git -C $GITCACHE remote rm $COMP
+            git -C $GITCACHE remote add $COMP $REMOTE_URL
+            git -C $GITCACHE fetch $COMP --tags
             # And clean up
             rm -rf $TEMPDIR/
         fi
