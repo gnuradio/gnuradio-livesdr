@@ -71,14 +71,14 @@ if [ -d $MAKEDIR ]; then
     }
 fi
 
-# Nuke repository history
+# Nuke repository history for git repos
 if [ -d $REPODOTDIR ]; then
     rm -rf $REPODOTDIR || {
         $PRINTERROR Unable to clean up repository history for package $PKG!
         exit 1
     }
 else
-    $PRINTWARN "Repo directory $REPODOTDIR not found!"
+    $PRINTINFO "Repo directory $REPODOTDIR not found."
 fi
 
 # Tell the system we've possibly installed a new shared libraries
