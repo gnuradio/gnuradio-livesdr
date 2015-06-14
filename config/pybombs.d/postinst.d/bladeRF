@@ -3,15 +3,6 @@ set -o nounset
 #set -x #DEBUG
 . bin/chroot-functions.sh
 
-# Install udev permissions for bladeRF
-[ -f /etc/udev/rules.d/88-nuand.rules ] || {
-    $PRINTINFO Installing udev permissions for bladeRF...
-    install -g root -o root -m 644 $LIVEUB_DIR/custom/bladeRF/88-nuand.rules /etc/udev/rules.d || {
-        $PRINTERROR Unable to install bladeRF udev rules file!
-        exit 1
-    }
-}
-
 # Download and install associated FPGA bitstream and firmware files
 NUAND_SHARE=/usr/share/Nuand/bladeRF
 [ -f $NUAND_SHARE/hostedx40.rbf ] || {
