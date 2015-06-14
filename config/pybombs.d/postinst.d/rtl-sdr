@@ -5,7 +5,9 @@ set -o nounset
 
 # Install udev permissions for rtl-sdr
 [ -x /etc/udev/rules.d/rtl-sdr.rules ] || {
-    install -g root -o root -m 644 $LIVEUB_DIR/custom/rtl-sdr/rtl-sdr.rules /etc/udev/rules.d || {
+    install -g root -o root -m 644 \
+        $ROOTFS_SRCDIR/pybombs/src/rtl-sdr/rtl-sdr.rules \
+        /etc/udev/rules.d || {
         $PRINTERROR Unable to install rtl-sdr udev rules file!
         exit 1
     }
