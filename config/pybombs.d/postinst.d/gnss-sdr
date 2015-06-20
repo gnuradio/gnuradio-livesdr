@@ -1,0 +1,10 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+. bin/chroot-functions.sh
+
+# Install udev permissions for rtl-sdr
+$PRINTINFO Removing gnss-sdr installation binaries...
+rm -f $ROOTFS_SRCDIR/pybombs/src/gnss-sdr/install/*
+
+exit 0
