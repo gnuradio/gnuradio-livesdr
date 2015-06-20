@@ -16,4 +16,5 @@ python-lxml
 libasound2-dev
 libgl1-mesa-dev-lts-utopic
 mesa-common-dev-lts-utopic
-liblog4cpp5-dev
+python-networkx
+python-pygraphviz

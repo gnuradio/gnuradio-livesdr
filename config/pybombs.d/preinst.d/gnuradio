@@ -1,9 +1,0 @@
-#!/bin/sh
-set -o nounset
-#set -x #DEBUG
-. bin/chroot-functions.sh
-
-# Patch out custom config options in recipe
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnuradio.lwr
-$PRINTINFO "Removing custom config options for gnuradio in recipe"
-sed -i -e '/config_opt/d' $LWR
