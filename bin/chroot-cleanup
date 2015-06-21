@@ -1,0 +1,13 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd /root/live
+. config/config-vars
+. bin/functions.sh
+
+# Remove unneeded packages
+$PRINTINFO Removing unneeded packages
+apt-get autoremove -q -y
+
+exit 0
