@@ -83,8 +83,11 @@ ${ISO_INITRD}: ${CHROOT_INITRD}
 
 initrd: mount ${ISO_INITRD}
 
+cleanup: mount
+	@bin/run-in-chroot /root/live/bin/chroot-cleanup
+
 # Target for entire custom content generation
-content: custom packages install-pybombs-apps initrd
+content: custom packages install-pybombs-apps cleanup initrd
 
 ###############
 # Remastering #
