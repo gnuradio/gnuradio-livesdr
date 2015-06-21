@@ -75,8 +75,11 @@ ${ISO_INITRD}: ${CHROOT_INITRD}
 
 initrd: mount ${ISO_INITRD}
 
+cleanup: mount
+	@bin/run-in-chroot /root/live/bin/chroot-cleanup
+
 # Target for entire custom content generation
-content: custom packages initrd
+content: custom packages cleanup initrd
 
 ###############
 # Remastering #
