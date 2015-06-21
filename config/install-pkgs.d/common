@@ -7,3 +7,4 @@ indicator-cpufreq
 indicator-multiload
 mc
 ccache
+linux-tools-3.16.0-30-generic
