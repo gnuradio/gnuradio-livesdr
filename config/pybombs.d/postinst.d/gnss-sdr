@@ -7,4 +7,7 @@ set -o nounset
 $PRINTINFO Removing gnss-sdr installation binaries...
 rm -f $ROOTFS_SRCDIR/pybombs/src/gnss-sdr/install/*
 
+$PRINTINFO Removing gnss-sdr third party downloads...
+rm -rf $ROOTFS_SRCDIR/pybombs/src/gnss-sdr/thirdparty/*
+
 exit 0

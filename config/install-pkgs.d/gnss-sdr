@@ -1,1 +1,3 @@
 libssl-dev
+libgoogle-glog-dev
+libgflags-dev
