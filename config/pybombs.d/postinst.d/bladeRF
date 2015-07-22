@@ -21,6 +21,42 @@ NUAND_SHARE=/usr/share/Nuand/bladeRF
         exit 1
     }
 
+    $PRINTINFO Downloading checksums...
+    curl -# http://nuand.com/fpga/${BLADERF_FPGA_VERSION}/hostedx40.rbf.sha256sum \
+        -o /tmp/bladeRF/hostedx40.rbf.sha256sum &&
+    curl -# http://nuand.com/fpga/${BLADERF_FPGA_VERSION}/hostedx115.rbf.sha256sum \
+        -o /tmp/bladeRF/hostedx115.rbf.sha256sum &&
+    curl -# http://nuand.com/fx3/bladeRF_fw_${BLADERF_FW_VERSION}.img.sha256sum \
+        -o /tmp/bladeRF/bladeRF_fw_v1.8.0.img.sha256sum || {
+        $PRINTERROR Unable to download checksums!
+        exit 1
+    }
+
+    $PRINTINFO Verifying checksums...
+    CHECKSUMS_OKAY=true
+    cd /tmp/bladeRF
+
+    sha256sum -c --status hostedx40.rbf.sha256sum || {
+        $PRINTERROR Checksum verification failed for hostedx40.rbf
+        CHECKSUMS_OKAY=false
+    }
+
+    sha256sum -c --status hostedx115.rbf.sha256sum || {
+        $PRINTERROR Checksum verification failed for hostedx115.rbf
+        CHECKSUMS_OKAY=false
+    }
+
+    sha256sum -c --status bladeRF_fw_${BLADERF_FW_VERSION}.img.sha256sum || {
+        $PRINTERROR Checksum verification failed for bladeRF_fw_${BLADERF_FW_VERSION}.img
+        CHECKSUMS_OKAY=false
+    }
+
+    cd - >/dev/null
+    if ! $CHECKSUMS_OKAY; then
+        $PRINTERROR Exiting due to failed checksums.
+        exit 1
+    fi
+
     $PRINTINFO Installing FPGA bitstream and firmware files...
     mkdir -p $NUAND_SHARE &&
     install -g root -o root -m 644 \
