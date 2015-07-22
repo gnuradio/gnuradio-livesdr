@@ -3,16 +3,19 @@ set -o nounset
 #set -x #DEBUG
 . bin/chroot-functions.sh
 
+BLADERF_FPGA_VERSION=v0.3.3
+BLADERF_FW_VERSION=v1.8.0
+
 # Download and install associated FPGA bitstream and firmware files
 NUAND_SHARE=/usr/share/Nuand/bladeRF
 [ -f $NUAND_SHARE/hostedx40.rbf ] || {
     $PRINTINFO Downloading FPGA bitstream and firmware files...
     mkdir -p /tmp/bladeRF &&
-    curl -# http://nuand.com/fpga/v0.1.2/hostedx40.rbf \
+    curl -# http://nuand.com/fpga/${BLADERF_FPGA_VERSION}/hostedx40.rbf \
         -o /tmp/bladeRF/hostedx40.rbf &&
-    curl -# http://nuand.com/fpga/v0.1.2/hostedx115.rbf \
+    curl -# http://nuand.com/fpga/${BLADERF_FPGA_VERSION}/hostedx115.rbf \
         -o /tmp/bladeRF/hostedx115.rbf &&
-    curl -# http://nuand.com/fx3/bladeRF_fw_v1.8.0.img \
+    curl -# http://nuand.com/fx3/bladeRF_fw_${BLADERF_FW_VERSION}.img \
         -o /tmp/bladeRF/bladeRF_fw_v1.8.0.img || {
         $PRINTERROR Unable to download bladeRF FPGA and firmware files!
         exit 1
@@ -24,7 +27,7 @@ NUAND_SHARE=/usr/share/Nuand/bladeRF
         -t $NUAND_SHARE \
         /tmp/bladeRF/hostedx40.rbf \
         /tmp/bladeRF/hostedx115.rbf \
-        /tmp/bladeRF/bladeRF_fw_v1.8.0.img || {
+        /tmp/bladeRF/bladeRF_fw_${BLADERF_FW_VERSION}.img || {
         $PRINTERROR Unable to install bladeRF FPGA bitstream and firmware files!
         exit 1
     }
