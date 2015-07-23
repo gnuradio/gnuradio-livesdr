@@ -3,11 +3,13 @@ set -o nounset
 #set -x #DEBUG
 . bin/chroot-functions.sh
 
+# Download and install associated FPGA bitstream and firmware files
+
 BLADERF_FPGA_VERSION=v0.3.3
 BLADERF_FW_VERSION=v1.8.0
 
-# Download and install associated FPGA bitstream and firmware files
-NUAND_SHARE=/usr/share/Nuand/bladeRF
+NUAND_SHARE=/usr/local/share/Nuand/bladeRF
+
 [ -f $NUAND_SHARE/hostedx40.rbf ] || {
     $PRINTINFO Downloading FPGA bitstream and firmware files...
     mkdir -p /tmp/bladeRF &&
