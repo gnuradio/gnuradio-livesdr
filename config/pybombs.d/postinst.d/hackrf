@@ -52,36 +52,3 @@ set -o nounset
     cd - >/dev/null
     rm -rf /tmp/hackrf
 }
-
-# Download, compile, and install dfu-util 0.5
-[ -x /usr/local/bin/dfu-util ] || {
-    $PRINTINFO Downloading dfu-util-0.5...
-    # Download source tarball
-    mkdir -p /tmp/hackrf &&
-    curl -# http://dfu-util.sourceforge.net/releases/dfu-util-0.5.tar.gz \
-        -o /tmp/hackrf/dfu-util-0.5.tar.gz || {
-        $PRINTERROR Unable to download dfu-util-0.5!
-        exit 1
-    }
-
-    # Unpack source tarball
-    $PRINTINFO Unpacking dfu-util-0.5 source tarball...
-    cd /tmp/hackrf &&
-    tar xzf dfu-util-0.5.tar.gz || {
-        $PRINTERROR Unable to unpack hackrf firmware!
-        exit 1
-    }
-
-    # Compile and install source tarball
-    $PRINTINFO Compiling dfu-util-0.5...
-    cd /tmp/hackrf/dfu-util-0.5 &&
-    ./configure --prefix=/usr/local &&
-    make &&
-    make install || {
-        $PRINTERROR Unable to compile/install dfu-util 0.5!
-        exit 1
-    }
-
-    cd - >/dev/null
-    rm -rf /tmp/hackrf
-}
