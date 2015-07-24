@@ -53,32 +53,33 @@ set -o nounset
     rm -rf /tmp/hackrf
 }
 
-# Download, compile, and install dfu-util 0.5
+# Download, compile, and install dfu-util
+DFU_UTIL_VERSION=0.7
 [ -x /usr/local/bin/dfu-util ] || {
-    $PRINTINFO Downloading dfu-util-0.5...
+    $PRINTINFO Downloading dfu-util-$DFU_UTIL_VERSION...
     # Download source tarball
     mkdir -p /tmp/hackrf &&
-    curl -# http://dfu-util.sourceforge.net/releases/dfu-util-0.5.tar.gz \
-        -o /tmp/hackrf/dfu-util-0.5.tar.gz || {
-        $PRINTERROR Unable to download dfu-util-0.5!
+    curl -# http://dfu-util.sourceforge.net/releases/dfu-util-$DFU_UTIL_VERSION.tar.gz \
+        -o /tmp/hackrf/dfu-util-$DFU_UTIL_VERSION.tar.gz || {
+        $PRINTERROR Unable to download dfu-util-$DFU_UTIL_VERSION!
         exit 1
     }
 
     # Unpack source tarball
-    $PRINTINFO Unpacking dfu-util-0.5 source tarball...
+    $PRINTINFO Unpacking dfu-util-$DFU_UTIL_VERSION source tarball...
     cd /tmp/hackrf &&
-    tar xzf dfu-util-0.5.tar.gz || {
+    tar xzf dfu-util-$DFU_UTIL_VERSION.tar.gz || {
         $PRINTERROR Unable to unpack hackrf firmware!
         exit 1
     }
 
     # Compile and install source tarball
-    $PRINTINFO Compiling dfu-util-0.5...
-    cd /tmp/hackrf/dfu-util-0.5 &&
+    $PRINTINFO Compiling dfu-util-$DFU_UTIL_VERSION...
+    cd /tmp/hackrf/dfu-util-$DFU_UTIL_VERSION &&
     ./configure --prefix=/usr/local &&
     make &&
     make install || {
-        $PRINTERROR Unable to compile/install dfu-util 0.5!
+        $PRINTERROR Unable to compile/install dfu-util $DFU_UTIL_VERSION!
         exit 1
     }
 
