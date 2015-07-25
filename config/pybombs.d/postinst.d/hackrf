@@ -1,6 +1,6 @@
 #!/bin/sh
 set -o nounset
-set -x #DEBUG
+#set -x #DEBUG
 . bin/chroot-functions.sh
 
 # Install udev permissions for hackrf
