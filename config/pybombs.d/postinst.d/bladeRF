@@ -5,7 +5,7 @@ set -o nounset
 
 # Download and install associated FPGA bitstream and firmware files
 
-BLADERF_FPGA_VERSION=v0.3.3
+BLADERF_FPGA_VERSION=v0.3.4
 BLADERF_FW_VERSION=v1.8.0
 
 NUAND_SHARE=/usr/local/share/Nuand/bladeRF
