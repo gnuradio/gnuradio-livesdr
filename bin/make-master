@@ -49,4 +49,14 @@ $SUDO $ISOHYBRID $ISO_DIR/$REMASTER_NAME || {
     exit 1
 }
 
+# Calculate checksums
+$PRINTINFO Calculating MD5 and SHA256 checksums...
+cd $ISO_DIR
+md5sum $REMASTER_NAME > md5sums &&
+sha256sum $REMASTER_NAME > sha256sums || {
+    $PRINTERROR Unable to calculate checksums!
+    exit 1
+}
+cd - >/dev/null
+
 exit 0
