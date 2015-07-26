@@ -5,6 +5,7 @@ ENCRYPT=NO
 UPGRADE_PKGS=YES
 USE_CCACHE=YES
 MAKEWIDTH=2
+MAKE_UEFI=NO
 
 # Executable commands
 CURL=/usr/bin/curl
