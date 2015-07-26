@@ -22,6 +22,13 @@ $SUDO sh -c 'find . -type f -print0 | \
 cd - >/dev/null
 
 # Create remastered image from ISO read-write overlay
+MKISOFS_UEFI_OPTS=''
+ISOHYBRID_UEFI_OPTS=''
+if [ "$MAKE_UEFI" = "YES" ] ; then
+    MKISOFS_UEFI_OPTS='-eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot'
+    ISOHYBRID_UEFI_OPTS='--uefi'
+fi
+
 $PRINTINFO Creating remastered ISO image from read-write overlay...
 $SUDO $MKISOFS \
     -quiet \
@@ -30,12 +37,10 @@ $SUDO $MKISOFS \
     -cache-inodes \
     -J \
     -l \
-    -b isolinux/isolinux.bin \
     -c isolinux/boot.cat \
+    -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table \
+    $MKISOFS_UEFI_OPTS \
     -input-charset utf8 \
-    -no-emul-boot \
-    -boot-load-size 4 \
-    -boot-info-table \
     -o $ISO_DIR/$REMASTER_NAME $ISOMNT_RW &&
 $SUDO chmod 444 $ISO_DIR/$REMASTER_NAME || {
     $PRINTERROR Creating remastered ISO image failed!
@@ -44,7 +49,7 @@ $SUDO chmod 444 $ISO_DIR/$REMASTER_NAME || {
 
 # Allow booting either as CD or as HD image
 $PRINTINFO Converting ISO to hybrid boot...
-$SUDO $ISOHYBRID $ISO_DIR/$REMASTER_NAME || {
+$SUDO $ISOHYBRID $ISOHYBRID_UEFI_OPTS $ISO_DIR/$REMASTER_NAME || {
     $PRINTERROR Unable to make ISO image a hybrid boot!
     exit 1
 }

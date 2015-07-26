@@ -3,6 +3,7 @@
 REMASTER_SUFFIX=remastered
 ENCRYPT=NO
 UPGRADE_PKGS=NO
+MAKE_UEFI=NO
 
 # Executable commands
 CURL=/usr/bin/curl
