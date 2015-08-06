@@ -1,8 +1,0 @@
-#!/bin/sh
-set -o nounset
-#set -x #DEBUG
-. bin/chroot-functions.sh
-
-# Patch out -mt suffix addition
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gqrx.lwr
-sed -i -e 's/BOOST_SUFFIX=-mt/BOOST_SUFFIX=/' $LWR
