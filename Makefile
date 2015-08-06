@@ -69,7 +69,7 @@ packages: mount stamps/packages.stamp
 ${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config:
 	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs
 
-pybombs: ${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config
+pybombs: mount ${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config
 
 install-pybombs-apps: pybombs
 	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs-apps
