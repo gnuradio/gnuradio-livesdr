@@ -18,7 +18,5 @@ libcppunit-dev
 libfftw3-dev
 python-lxml
 libasound2-dev
-libgl1-mesa-dev-lts-utopic
-mesa-common-dev-lts-utopic
 python-networkx
 python-pygraphviz
