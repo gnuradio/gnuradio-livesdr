@@ -7,4 +7,5 @@ indicator-cpufreq
 indicator-multiload
 mc
 ccache
-linux-tools-3.16.0-30-generic
+linux-lts-vivid-tools-3.19.0-25
+linux-tools-3.19.0-25-generic
