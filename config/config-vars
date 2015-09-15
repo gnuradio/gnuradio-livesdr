@@ -1,10 +1,10 @@
 # Note: use of { } is to allow inclusion in Makefile
 
-REMASTER_SUFFIX=gnuradio-3.7.8
+REMASTER_SUFFIX=gnuradio-3.7.8-1
 ENCRYPT=NO
 UPGRADE_PKGS=YES
 USE_CCACHE=YES
-MAKEWIDTH=2
+MAKEWIDTH=48
 MAKE_UEFI=NO
 
 # Executable commands
