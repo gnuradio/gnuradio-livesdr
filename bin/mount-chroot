@@ -16,6 +16,6 @@ $SUDO $MOUNT -t devpts none  $ROOTFSMNT_RW/dev/pts/
 
 # Mount live scripts inside root directory
 [ -d $ROOTFSMNT_RW/root/live ] || $SUDO mkdir -p $ROOTFSMNT_RW/root/live
-$SUDO $MOUNT --bind . $ROOTFSMNT_RW/root/live
+$SUDO $MOUNT --rbind . $ROOTFSMNT_RW/root/live
 
 exit 0
