@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -o nounset
+#set -x #DEBUG
+
+cd /root/live
+. config/config-vars
+. bin/functions.sh
+
+# DO SOMETHING HERE
+
+exit 0

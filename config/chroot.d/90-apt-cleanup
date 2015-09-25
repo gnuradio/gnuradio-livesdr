@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -o nounset
 #set -x #DEBUG
 
@@ -7,7 +8,7 @@ cd /root/live
 . bin/functions.sh
 
 # Remove unneeded packages
-$PRINTINFO Removing unneeded packages
-apt-get autoremove -q -y
+$PRINTINFO Removing unneeded packages...
+apt-get autoremove -qq -y
 
 exit 0
