@@ -66,20 +66,19 @@ endif
 
 packages: mount stamps/packages.stamp
 
-# Create new initrd from rootfs contents (and with cryptsetup)
-${CHROOT_INITRD}:
-	@bin/run-in-chroot /root/live/bin/chroot-initramfs
+stamps/chroot-ops.stamp:
+	@bin/run-in-chroot /root/live/bin/chroot-run-parts
+	@touch stamps/chroot-ops.stamp
 
-${ISO_INITRD}: ${CHROOT_INITRD}
+chroot-ops: mount stamps/chroot-ops.stamp
+
+${ISO_INITRD}: stamps/chroot-ops.stamp $(wildcard ${CHROOT_INITRD})
 	@bin/copy-initrd
 
 initrd: mount ${ISO_INITRD}
 
-cleanup: mount
-	@bin/run-in-chroot /root/live/bin/chroot-cleanup
-
 # Target for entire custom content generation
-content: custom packages cleanup initrd
+content: custom packages chroot-ops initrd
 
 ###############
 # Remastering #
