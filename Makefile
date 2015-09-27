@@ -55,17 +55,6 @@ stamps/install-custom.stamp:
 
 custom: mount stamps/install-custom.stamp
 
-# Remove, update, and install custom packages
-stamps/packages.stamp:
-	@bin/run-in-chroot /root/live/bin/chroot-uninstall-pkgs
-ifeq (${UPGRADE_PKGS},YES)
-	@bin/run-in-chroot /root/live/bin/chroot-upgrade-pkgs
-endif
-	@bin/run-in-chroot /root/live/bin/chroot-install-pkgs
-	@touch stamps/packages.stamp
-
-packages: mount stamps/packages.stamp
-
 stamps/chroot-ops.stamp:
 	@bin/run-in-chroot /root/live/bin/chroot-run-parts
 	@touch stamps/chroot-ops.stamp
@@ -78,7 +67,7 @@ ${ISO_INITRD}: stamps/chroot-ops.stamp $(wildcard ${CHROOT_INITRD})
 initrd: mount ${ISO_INITRD}
 
 # Target for entire custom content generation
-content: custom packages chroot-ops initrd
+content: custom chroot-ops initrd
 
 ###############
 # Remastering #

@@ -6,14 +6,19 @@ cd /root/live
 . config/config-vars
 . bin/chroot-functions.sh
 
+# Exit if stamp file exists
+[ ! -f /root/live/stamps/20-packages-02-install.stamp ] || exit 0
+
 # Exit if nothing to do
 [ -n "$(ls config/install-pkgs.d)" ] || exit 0
 
 # Temporarily install policy file to prevent services from running
-$PRINTINFO Installing temporary policy-rc.d...
-install -o root -g root -m 755 \
-    custom/apt/policy-rc.d \
-    /usr/sbin
+[ -f /usr/bin/policy-rc.d ] || {
+    $PRINTINFO Installing temporary policy file to prevent services running...
+    install -o root -g root -m 755 \
+        /root/live/custom/apt/policy-rc.d \
+        /usr/sbin
+}
 
 # Execute each fragment in config/install-pkgs.d
 $PRINTINFO Installing configured extra packages...
@@ -25,5 +30,6 @@ done
 # Remove policy file
 $PRINTINFO Removing temporary policy-rc.d
 rm -f /usr/sbin/policy-rc.d
+touch /root/live/stamps/20-packages-02-install.stamp
 
 exit 0
