@@ -16,4 +16,11 @@ cd /root/live
         /etc/dpkg/dpkg.cfg.d
 }
 
+[ -f /etc/dpkg/dpkg.cfg.d/force-unsafe-io ] || {
+    $PRINTINFO Enabling force-unsafe-io dpkg operation...
+    install -o root -g root -m 644 \
+        /root/live/custom/apt/force-unsafe-io \
+        /etc/dpkg/dpkg.cfg.d
+}
+
 exit 0
