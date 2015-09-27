@@ -1,0 +1,27 @@
+#!/bin/sh
+
+cd /root/live
+. config/config-vars
+. bin/functions.sh
+
+[ ! -f /etc/skel/examples.desktop ] || {
+    $PRINTINFO Removing desktop examples shortcut...
+    rm -f /etc/skel/examples.desktop
+}
+
+[ ! -f /usr/share/applications/ubuntu-amazon-default.desktop ] || {
+    $PRINTINFO Nuking Amazon icon from Unity...
+    rm -f /usr/share/applications/ubuntu-amazon-default.desktop
+}
+
+[ -f /etc/skel/.config/autostart/indicator-multiload.desktop ] || {
+    $PRINTINFO Installing desktop autostart for indicator-multiload...
+    mkdir -p /etc/skel/.config/autostart
+    install -g 999 -o 999 -m 644 \
+        /root/live/custom/desktop/autostart/indicator-multiload.desktop \
+        /etc/skel/.config/autostart
+}
+
+touch /root/live/stamps/30-desktop.stamp
+
+exit 0

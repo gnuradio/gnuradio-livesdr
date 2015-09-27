@@ -1,0 +1,25 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd /root/live
+. config/config-vars
+. bin/functions.sh
+
+# Exit if already run
+[ ! -f /root/live/stamps/30-unity.stamp ] || exit 0
+
+[ /usr/share/gnome-session/sessions/ubuntu.session -nt \
+  /root/live/custom/unity/ubuntu.session ] || {
+    $PRINTINFO Installing custom Unity low graphics mode config
+    install -m 644 \
+        /root/live/custom/unity/ubuntu.session \
+        /usr/share/gnome-session/sessions/
+
+    install -m 644 \
+        /root/live/custom/unity/unity7.conf \
+        /usr/share/upstart/sessions/unity7.conf
+}
+
+touch /root/live/stamps/30-unity.stamp
+exit 0
