@@ -48,12 +48,12 @@ mount: mount-chroot
 chroot: mount
 	@bin/run-in-chroot
 
-# Install custom files
-stamps/install-custom.stamp:
-	@bin/install-custom
-	@touch stamps/install-custom.stamp
+# Run pre-chroot job queue
+stamps/pre-chroot.stamp:
+	@bin/pre-chroot-run-parts
+	@touch stamps/pre-chroot.stamp
 
-custom: mount stamps/install-custom.stamp
+pre-chroot: mount stamps/pre-chroot.stamp
 
 stamps/chroot-ops.stamp:
 	@bin/run-in-chroot /root/live/bin/chroot-run-parts
@@ -67,18 +67,14 @@ ${ISO_INITRD}: stamps/chroot-ops.stamp $(wildcard ${CHROOT_INITRD})
 initrd: mount ${ISO_INITRD}
 
 # Target for entire custom content generation
-content: custom chroot-ops initrd
+content: pre-chroot chroot-ops initrd
 
 ###############
 # Remastering #
 ###############
 
-# Remove files from root filesystem not destined for image
-clean-rootfs: mount-rootfs
-	@bin/clean-rootfs
-
 # Make updated squashfs file from overlay
-rootfs: clean-rootfs unmount-chroot
+rootfs: unmount-chroot
 	@bin/make-rootfs
 
 luks: rootfs
