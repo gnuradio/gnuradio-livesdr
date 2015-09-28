@@ -2,12 +2,12 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
 # Exit if stamp file exists
-[ ! -f /root/live/stamps/30-ccache.stamp ] || exit 0
+[ ! -f $STAMPDIR/30-ccache.stamp ] || exit 0
 
 # Set ccache size to 20G
 if [ "$USE_CCACHE" = "YES" ] ; then
@@ -15,6 +15,6 @@ if [ "$USE_CCACHE" = "YES" ] ; then
     CCACHE_DIR=/root/.ccache $CCACHE -M 20G
 fi
 
-touch /root/live/stamps/30-ccache.stamp
+touch $STAMPDIR/30-ccache.stamp
 
 exit 0

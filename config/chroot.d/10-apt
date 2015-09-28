@@ -25,10 +25,10 @@ cd $SCRIPT_BINDDIR
 }
 
 # Install new apt sources file for exanded repositories
-[ /etc/apt/sources.list -nt /root/live/custom/apt/sources.list ] || {
+[ /etc/apt/sources.list -nt $CUSTOMDIR/apt/sources.list ] || {
     $PRINTINFO Installing updated apt repository list...
     install -o root -g root -m 644 \
-        /root/live/custom/apt/sources.list \
+        $CUSTOMDIR/apt/sources.list \
         /etc/apt/
 }
 

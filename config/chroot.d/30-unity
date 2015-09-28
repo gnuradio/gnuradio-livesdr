@@ -2,24 +2,25 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
 # Exit if already run
-[ ! -f /root/live/stamps/30-unity.stamp ] || exit 0
+[ ! -f $STAMPDIR/30-unity.stamp ] || exit 0
 
 [ /usr/share/gnome-session/sessions/ubuntu.session -nt \
-  /root/live/custom/unity/ubuntu.session ] || {
-    $PRINTINFO Installing custom Unity low graphics mode config
+  $CUSTOMDIR/unity/ubuntu.session ] || {
+    $PRINTINFO Installing custom Unity low graphics mode configuration...
     install -m 644 \
-        /root/live/custom/unity/ubuntu.session \
+        $CUSTOMDIR/unity/ubuntu.session \
         /usr/share/gnome-session/sessions/
 
     install -m 644 \
-        /root/live/custom/unity/unity7.conf \
+        $CUSTOMDIR/unity/unity7.conf \
         /usr/share/upstart/sessions/unity7.conf
 }
 
-touch /root/live/stamps/30-unity.stamp
+touch $STAMPDIR/30-unity.stamp
+
 exit 0
