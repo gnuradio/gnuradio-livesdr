@@ -1,0 +1,24 @@
+#!/bin/sh
+
+cd $SCRIPT_BINDDIR
+. config/config-vars
+. bin/functions.sh
+
+# Exit if already run
+[ ! -f $STAMPDIR/30-network.stamp ] || exit 0
+
+# Install resolv.conf to allow resolution from inside chroot
+$PRINTINFO Installing custom resolv.conf...
+install -o root -g root -m 664 \
+    $CUSTOMDIR/network/resolv.conf \
+    /etc/
+
+# Install network manager profiles
+$PRINTINFO Installing custom Network Manager profiles...
+install -o root -g root -m 400 \
+    -t /etc/NetworkManager/system-connections/ \
+    $CUSTOMDIR/network/NetworkManager/*
+
+touch $STAMPDIR/30-network.stamp
+
+exit 0
