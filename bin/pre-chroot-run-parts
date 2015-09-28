@@ -1,0 +1,29 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. config/config-vars
+. bin/functions.sh
+
+# Exit if already run
+[ ! -f stamps/pre-chroot.stamp ] || exit 0
+
+# TODO: export these in config-vars along with anything else needed
+export ROOTFSMNT_RW=$ROOTFSMNT_RW
+export ISOMNT_RW=$ISOMNT_RW
+export SCRIPT_BINDDIR=$SCRIPT_BINDDIR
+export CUSTOMDIR=$CUSTOMDIR
+export STAMPDIR=$STAMPDIR
+
+# Execute each fragment in config/pre-chroot.d
+$PRINTINFO Executing pre-chroot customization scripts...
+require_rootfs_rw_mounted
+
+run-parts \
+    --exit-on-err \
+    config/pre-chroot.d || {
+    $PRINTERROR One or more pre-chroot scripts failed!
+    exit 1
+}
+
+$PRINTINFO Pre-chroot customization scripts completed.

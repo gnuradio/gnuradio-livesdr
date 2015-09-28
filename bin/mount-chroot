@@ -20,6 +20,6 @@ $SUDO $MOUNT --rbind . $ROOTFSMNT_RW/root/live
 
 # Mount ccache directory inside root directory
 $SUDO mkdir -p $ROOTFSMNT_RW/root/.ccache
-$SUDO $MOUNT --bind ./ccache $ROOTFSMNT_RW/root/.ccache
+$SUDO $MOUNT --rbind ./ccache $ROOTFSMNT_RW/root/.ccache
 
 exit 0

@@ -48,23 +48,16 @@ mount: mount-chroot
 chroot: mount
 	@bin/run-in-chroot
 
-# Install custom files
-stamps/install-custom.stamp:
-	@bin/install-custom
-	@touch stamps/install-custom.stamp
+# Run pre-chroot job queue
+stamps/pre-chroot.stamp:
+	@bin/pre-chroot-run-parts
+	@touch stamps/pre-chroot.stamp
 
-custom: mount stamps/install-custom.stamp
+pre-chroot: mount stamps/pre-chroot.stamp
 
-# Remove, update, and install custom packages
-stamps/packages.stamp:
-	@bin/run-in-chroot /root/live/bin/chroot-uninstall-pkgs
-ifeq (${UPGRADE_PKGS},YES)
-	@bin/run-in-chroot /root/live/bin/chroot-upgrade-pkgs
-endif
-	@bin/run-in-chroot /root/live/bin/chroot-install-pkgs
-	@touch stamps/packages.stamp
-
-packages: mount stamps/packages.stamp
+stamps/chroot-ops.stamp:
+	@bin/run-in-chroot /root/live/bin/chroot-run-parts
+	@touch stamps/chroot-ops.stamp
 
 ${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config:
 	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs
@@ -74,31 +67,22 @@ pybombs: mount ${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config
 install-pybombs-apps: pybombs
 	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs-apps
 
-# Create new initrd from rootfs contents (and with cryptsetup)
-${CHROOT_INITRD}:
-	@bin/run-in-chroot /root/live/bin/chroot-initramfs
+chroot-ops: mount stamps/chroot-ops.stamp
 
-${ISO_INITRD}: ${CHROOT_INITRD}
+${ISO_INITRD}: stamps/chroot-ops.stamp $(wildcard ${CHROOT_INITRD})
 	@bin/copy-initrd
 
 initrd: mount ${ISO_INITRD}
 
-cleanup: mount
-	@bin/run-in-chroot /root/live/bin/chroot-cleanup
-
 # Target for entire custom content generation
-content: custom packages install-pybombs-apps cleanup initrd
+content: pre-chroot chroot-ops install-pybombs-apps initrd
 
 ###############
 # Remastering #
 ###############
 
-# Remove files from root filesystem not destined for image
-clean-rootfs: mount-rootfs
-	@bin/clean-rootfs
-
 # Make updated squashfs file from overlay
-rootfs: clean-rootfs unmount-chroot
+rootfs: unmount-chroot
 	@bin/make-rootfs
 
 luks: rootfs

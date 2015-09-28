@@ -1,0 +1,33 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. config/config-vars
+. bin/functions.sh
+
+# Exit if already run once
+[ ! -f $STAMPDIR/90-regen-initramfs.stamp ] || exit 0
+
+$PRINTINFO Installing custom initrd configuration...
+install -g root -o root -m 664 \
+    $CUSTOMDIR/initramfs/initramfs.conf \
+    /etc/initramfs-tools
+
+$PRINTINFO Installing custom casper boot script...
+install -g root -o root -m 664 \
+    $CUSTOMDIR/casper/casper \
+    /usr/share/initramfs-tools/scripts
+
+# Create new initramfs that includes cryptsetup
+$PRINTINFO Creating new initramfs with crypto hooks...
+export CRYPTSETUP=y
+update-initramfs -k all -u || {
+    $PRINTERROR Unable to execute update-initramfs!
+    exit 1
+}
+
+touch $STAMPDIR/90-regen-initramfs.stamp
+$PRINTSUCCESS done.
+
+exit 0
