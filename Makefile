@@ -73,12 +73,8 @@ content: pre-chroot chroot-ops initrd
 # Remastering #
 ###############
 
-# Remove files from root filesystem not destined for image
-clean-rootfs: mount-rootfs
-	@bin/clean-rootfs
-
 # Make updated squashfs file from overlay
-rootfs: clean-rootfs unmount-chroot
+rootfs: unmount-chroot
 	@bin/make-rootfs
 
 luks: rootfs
