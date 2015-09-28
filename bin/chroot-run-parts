@@ -9,6 +9,11 @@ cd /root/live
 # Exit if nothing to do
 [ -n "$(ls config/chroot.d)" ] || exit 0
 
+# TODO: export these in config-vars along with anything else needed
+export SCRIPT_BINDDIR=$SCRIPT_BINDDIR
+export CUSTOMDIR=$CUSTOMDIR
+export STAMPDIR=$STAMPDIR
+
 # Execute each fragment in config/clean-rootfs.d
 $PRINTINFO Executing chroot customization scripts...
 run-parts \

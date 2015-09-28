@@ -2,12 +2,12 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/chroot-functions.sh
 
 # Exit if stamp file exists
-[ ! -f /root/live/stamps/20-packages-01-upgrade.stamp ] || exit 0
+[ ! -f $STAMPDIR/20-packages-01-upgrade.stamp ] || exit 0
 
 # Exit if upgrading packages is not configured
 if [ "$UPGRADE_PKGS" != "YES" ]; then exit 0; fi
@@ -16,7 +16,7 @@ if [ "$UPGRADE_PKGS" != "YES" ]; then exit 0; fi
 [ -f /usr/bin/policy-rc.d ] || {
     $PRINTINFO Installing temporary policy file to prevent services running...
     install -o root -g root -m 755 \
-        /root/live/custom/apt/policy-rc.d \
+        $CUSTOMDIR/apt/policy-rc.d \
         /usr/sbin
 }
 
@@ -27,7 +27,7 @@ apt-get upgrade -q -y
 # Remove policy file
 rm -f /usr/sbin/policy-rc.d
 
-touch /root/live/stamps/20-packages-01-upgrade.stamp
+touch $STAMPDIR/20-packages-01-upgrade.stamp
 $PRINTSUCCESS Completed upgrading packages.
 
 exit 0

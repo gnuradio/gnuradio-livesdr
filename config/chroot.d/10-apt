@@ -3,7 +3,7 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
@@ -12,14 +12,14 @@ cd /root/live
 [ -f /etc/dpkg/dpkg.cfg.d/force-confold ] || {
     $PRINTINFO Enabling force-confold dpkg operation...
     install -o root -g root -m 644 \
-        /root/live/custom/apt/force-confold \
+        $CUSTOMDIR/apt/force-confold \
         /etc/dpkg/dpkg.cfg.d
 }
 
 [ -f /etc/dpkg/dpkg.cfg.d/force-unsafe-io ] || {
     $PRINTINFO Enabling force-unsafe-io dpkg operation...
     install -o root -g root -m 644 \
-        /root/live/custom/apt/force-unsafe-io \
+        $CUSTOMDIR/apt/force-unsafe-io \
         /etc/dpkg/dpkg.cfg.d
 }
 
