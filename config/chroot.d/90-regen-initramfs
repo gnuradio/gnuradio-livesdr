@@ -2,12 +2,12 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
 # Exit if already run once
-[ ! -f /root/live/stamps/90-regen-initramfs.stamp ] || exit 0
+[ ! -f $STAMPDIR/90-regen-initramfs.stamp ] || exit 0
 
 # Create new initramfs that includes cryptsetup
 $PRINTINFO Creating new initramfs with crypto hooks...
@@ -17,7 +17,7 @@ update-initramfs -k all -u || {
     exit 1
 }
 
-touch /root/live/stamps/90-regen-initramfs.stamp
+touch $STAMPDIR/90-regen-initramfs.stamp
 $PRINTSUCCESS done.
 
 exit 0

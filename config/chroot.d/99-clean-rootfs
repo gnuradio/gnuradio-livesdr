@@ -2,19 +2,19 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
 # Exit if already run
-[ ! -f stamps/99-clean-rootfs.stamp ] || exit 0
+[ ! -f $STAMPDIR/99-clean-rootfs.stamp ] || exit 0
 
 # Exit if nothing to do
 [ -n "$(ls config/clean-rootfs.d)" ] || exit 0
 
 # Delete each filespec in clean-rootfs.d
 $PRINTINFO Deleting selected files from chroot filesystem...
-for filelist in /root/live/config/clean-rootfs.d/*; do
+for filelist in $SCRIPT_BINDDIR/config/clean-rootfs.d/*; do
     while read fs; do
         rm -rf $fs
     done < $filelist
@@ -24,6 +24,6 @@ done
 # TODO: figure out how to make this unnecessary
 mkdir -p /var/log/apt
 
-touch stamps/99-clean-rootfs.stamp
+touch $STAMPDIR/99-clean-rootfs.stamp
 
 exit 0

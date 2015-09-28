@@ -3,12 +3,12 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
 # Exit if stamp file exists
-[ ! -f /root/live/stamps/packages-uninstall.stamp ] || exit 0
+[ ! -f $STAMPDIR/packages-uninstall.stamp ] || exit 0
 
 # Exit if nothing to do
 [ -n "$(ls config/remove-pkgs.d)" ] || exit 0
@@ -17,12 +17,12 @@ cd /root/live
 [ -f /usr/bin/policy-rc.d ] || {
     $PRINTINFO Installing temporary policy file to prevent services running...
     install -o root -g root -m 755 \
-        /root/live/custom/apt/policy-rc.d \
+        $CUSTOMDIR/apt/policy-rc.d \
         /usr/sbin
 }
 
 $PRINTINFO Removing configured packages...
-for pkglist in /root/live/config/remove-pkgs.d/*; do
+for pkglist in $SCRIPT_BINDDIR/config/remove-pkgs.d/*; do
     pkgs=`cat $pkglist`
     apt-get -q -q -y purge $pkgs
     apt-get -q -q -y autoremove
@@ -31,7 +31,7 @@ done
 # Remove policy file
 rm -f /usr/sbin/policy-rc.d
 
-touch /root/live/stamps/20-packages-00-uninstall.stamp
+touch $STAMPDIR/20-packages-00-uninstall.stamp
 $PRINTINFO Completed removing configured packages.
 
 exit 0
