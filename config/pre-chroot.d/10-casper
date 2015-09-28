@@ -7,16 +7,6 @@ set -o nounset
 
 require_rootfs_rw_mounted
 
-$PRINTINFO Installing custom initrd configuration...
-$SUDO install -g root -o root -m 664 \
-    custom/initramfs/initramfs.conf \
-    $ROOTFSMNT_RW/etc/initramfs-tools
-
-$PRINTINFO Installing custom casper boot script...
-$SUDO install -g root -o root -m 664 \
-    custom/casper/casper \
-    $ROOTFSMNT_RW/usr/share/initramfs-tools/scripts
-
 $PRINTINFO Installing custom isolinux menu configuration...
 $SUDO mkdir -p $ISOMNT_RW/isolinux
 $SUDO install -g root -o root -m 664 \
