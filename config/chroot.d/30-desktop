@@ -4,6 +4,9 @@ cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
+# Exit if already run
+[ ! -f $STAMPDIR/30-desktop.stamp ] || exit 0
+
 [ ! -f /etc/skel/examples.desktop ] || {
     $PRINTINFO Removing desktop examples shortcut...
     rm -f /etc/skel/examples.desktop
