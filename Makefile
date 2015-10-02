@@ -59,14 +59,6 @@ stamps/chroot-ops.stamp:
 	@bin/run-in-chroot /root/live/bin/chroot-run-parts
 	@touch stamps/chroot-ops.stamp
 
-${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config:
-	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs
-
-pybombs: mount ${ROOTFSMNT_RW}/${ROOTFS_SRCDIR}/pybombs/.git/config
-
-install-pybombs-apps: pybombs
-	@bin/run-in-chroot /root/live/bin/chroot-install-pybombs-apps
-
 chroot-ops: mount stamps/chroot-ops.stamp
 
 ${ISO_INITRD}: stamps/chroot-ops.stamp $(wildcard ${CHROOT_INITRD})
@@ -75,7 +67,7 @@ ${ISO_INITRD}: stamps/chroot-ops.stamp $(wildcard ${CHROOT_INITRD})
 initrd: mount ${ISO_INITRD}
 
 # Target for entire custom content generation
-content: pre-chroot chroot-ops install-pybombs-apps initrd
+content: pre-chroot chroot-ops initrd
 
 ###############
 # Remastering #

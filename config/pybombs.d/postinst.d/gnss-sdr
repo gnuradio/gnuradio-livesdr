@@ -4,9 +4,9 @@ set -o nounset
 . bin/chroot-functions.sh
 
 $PRINTINFO Removing gnss-sdr installation binaries...
-rm -f $ROOTFS_SRCDIR/pybombs/src/gnss-sdr/install/*
+rm -f /usr/local/src/pybombs/src/gnss-sdr/install/*
 
 $PRINTINFO Removing gnss-sdr third party downloads...
-rm -rf $ROOTFS_SRCDIR/pybombs/src/gnss-sdr/thirdparty/*
+rm -rf /usr/local/src/pybombs/src/gnss-sdr/thirdparty/*
 
 exit 0

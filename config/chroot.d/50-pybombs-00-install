@@ -2,9 +2,12 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
+cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/chroot-functions.sh
+
+# Exit if already run
+[ ! -f $STAMPDIR/50-pybombs-00-install.stamp ] || exit 0
 
 # Clone pybombs git repository into source dir
 cd $ROOTFS_SRCDIR || {
@@ -32,7 +35,7 @@ fi
 # Test for configuration file and install if needed
 [ -f $ROOTFS_SRCDIR/pybombs/config.dat ] || {
     $PRINTINFO Updating PyBOMBS with custom configuration...
-    cp ~root/live/custom/pybombs/config.dat $ROOTFS_SRCDIR/pybombs || {
+    cp $CUSTOMDIR/pybombs/config.dat $ROOTFS_SRCDIR/pybombs || {
         $PRINTERROR Unable to install pybombs configuration file.
         exit 1
     }
@@ -47,5 +50,7 @@ SRCFILE=$ROOTFS_SRCDIR/pybombs/mod_pybombs/pybombs_ops.py
     sed -i -e '/Run VOLK Profile/d' $SRCFILE
     sed -i -e '/run_volk_profile.*;/d' $SRCFILE
 }
+
+touch $STAMPDIR/50-pybombs-00-install.stamp
 
 exit 0

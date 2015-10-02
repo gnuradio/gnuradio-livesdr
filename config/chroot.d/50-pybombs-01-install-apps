@@ -1,0 +1,159 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. config/config-vars
+. bin/chroot-functions.sh
+
+# Exit if already run
+[ ! -f $STAMPDIR/50-pybombs-01-install-apps.stamp ] || exit 0
+
+# Function to execute a single PyBOMBS package install
+do_pybombs_install () {
+    # Test for required arguments
+    if [ $# -lt 2 ] ; then
+        $PRINTERROR "Usage: $0 <PACKAGE> <GITREV>"
+        exit 1
+    else
+        PKG=$1
+        GITREV=$2
+    fi
+
+    LWR=/usr/local/src/pybombs/recipes/${PKG}.lwr
+    # Check LWR exists:
+    [ -r $LWR ] || {
+        $PRINTERROR "Cannot find LWR for package $PKG!"
+        exit 1
+    }
+
+    # This is where the repo is checked out by PyBOMBS:
+    REPODIR=/usr/local/src/pybombs/src/$PKG
+
+    # This is where the build process is run:
+    MAKEDIR=$REPODIR/build
+
+    # Check if the recipe overrides this:
+    MAKEDIR_FROM_LWR=`sed -n '/^makedir:/p' $LWR | sed 's/^makedir:[ \t]*//'`
+
+    # NOTE: -n below requires "" escaping
+    if [ -n "$MAKEDIR_FROM_LWR" ]; then
+        MAKEDIR=$REPODIR/$MAKEDIR_FROM_LWR
+    fi
+
+    # Repo history etc.:
+    REPODOTDIR=$REPODIR/.git
+
+    ### Run install
+
+    # Edit pybombs recipe for desired revision
+    # TODO: PyBOMBS might be able to do this in the future
+    grep gitrev $LWR
+    RET=$?
+    if [ $RET -ge 2 ] ; then
+        $PRINTERROR Unable to access gnuradio pybombs recipe!
+        exit 1
+    fi
+    if [ $RET -eq 1 ] ; then
+        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
+    fi
+
+    # Execute pybombs recipe to install package
+    cd $ROOTFS_SRCDIR/pybombs
+    ./pybombs install $PKG || {
+        $PRINTERROR Unable to install package $PKG via pybombs!
+        exit 1
+    }
+
+    # Clean up compilation results
+    if [ -d $MAKEDIR ]; then
+        rm -rf $MAKEDIR || {
+            $PRINTERROR Unable to clean up after compiling package $PKG!
+            exit 1
+        }
+    fi
+
+    # Nuke repository history for git repos
+    if [ -d $REPODOTDIR ]; then
+        rm -rf $REPODOTDIR || {
+            $PRINTERROR Unable to clean up repository history for package $PKG!
+            exit 1
+        }
+    else
+        $PRINTINFO "Repo directory $REPODOTDIR not found."
+    fi
+
+    # Tell the system we've possibly installed a new shared libraries
+    # TODO: PyBOMBS might do this in the future, check this
+    ldconfig
+    cd - >/dev/null
+}
+
+# Create git cache repository if needed
+if ! [ -f $GITCACHE/config ] ; then
+    $PRINTINFO Initializing git cache repository...
+    git init --bare gitcache/
+fi
+
+# Run through each line in install.conf
+while read LINE ; do
+    # Skip comments and whitespace
+    if echo $LINE | grep -v -q ^[^#] ; then continue ; fi
+
+    # Extract columnwise data
+    COMP=$(echo $LINE | cut -f 1 -d ' ')
+    REV=$(echo $LINE | cut -f 2 -d ' ')
+    FILE=$(echo $LINE | cut -f 3 -d ' ')
+
+    [ -f $FILE ] || {
+        $PRINTINFO Installing component $COMP at revision $REV...
+
+        # Check if remote repo needs adding to gitcache
+        if ! git -C $GITCACHE remote | grep -q $COMP ; then
+            $PRINTINFO Adding remote repository for $COMP to gitcache...
+            REMOTE_URL=$(grep ^source: $ROOTFS_SRCDIR/pybombs/recipes/$COMP.lwr | cut -f 3- -d /)
+            # Clone into temp dir to avoid long waits identifying "no common commits"
+            TEMPDIR=$SCRIPT_BINDDIR`mktemp -d`
+            $PRINTINFO Cloning remote repository into tmpdir...
+            git clone $REMOTE_URL $TEMPDIR
+            # Now add this temp repo as remote to fetch from and update
+            $PRINTINFO Adding temp repository into gitcache...
+            git -C $GITCACHE remote add $COMP $TEMPDIR/
+            git -C $GITCACHE fetch $COMP --tags
+            # Finally, set the remote to the actual remote URL
+            git -C $GITCACHE remote rm $COMP
+            git -C $GITCACHE remote add $COMP $REMOTE_URL
+            git -C $GITCACHE fetch $COMP --tags
+            # And clean up
+            rm -rf $TEMPDIR/
+        fi
+
+        $PRINTINFO Updating gitcache with latest commits from remote repo...
+        git -C $GITCACHE remote update -p $COMP
+
+        # Check for pre-installation actions
+        [ -f $SCRIPT_BINDDIR/config/pybombs.d/preinst.d/$COMP ] && {
+            $PRINTINFO Executing pre-installation script for $COMP
+            config/pybombs.d/preinst.d/$COMP || {
+                $PRINTERROR Pre-installation for $COMP failed!
+                exit 1
+            }
+        }
+
+        # DOOO EEET! DOOO EEET NOW!
+        do_pybombs_install $COMP $REV
+
+        # Check for post-installation actions
+        [ -f config/pybombs.d/postinst.d/$COMP ] && {
+            $PRINTINFO Executing post-installation script for $COMP
+            config/pybombs.d/postinst.d/$COMP || {
+                $PRINTERROR Post-installation for $COMP failed!
+                exit 1
+            }
+        }
+    }
+done < config/pybombs.d/install.conf
+
+touch $STAMPDIR/50-pybombs-01-install-apps.stamp
+
+exit 0

@@ -4,7 +4,7 @@ set -o nounset
 . bin/chroot-functions.sh
 
 # Force gnss-sdr to use libvolk for everything
-LWR=$ROOTFS_SRCDIR/pybombs/recipes/gnss-sdr.lwr
+LWR=/usr/local/src/pybombs/recipes/gnss-sdr.lwr
 if ! grep -q ENABLE_GENERIC_ARCH $LWR ; then
     $PRINTINFO "Adding ENABLE_GENERIC_ARCH and ENABLE_OSMOSDR to gnss-sdr configuration"
     # spaces are important

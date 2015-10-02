@@ -4,9 +4,9 @@ set -o nounset
 . bin/chroot-functions.sh
 
 # Remove compilation results
-[ -d $ROOTFS_SRCDIR/pybombs/src/apache-thrift ] && {
+[ -d /usr/local/src/pybombs/src/apache-thrift ] && {
     $PRINTINFO Removing apache-thrift build output...
-    make -C $ROOTFS_SRCDIR/pybombs/src/apache-thrift distclean >/dev/null || {
+    make -C /usr/local/src/pybombs/src/apache-thrift distclean >/dev/null || {
         $PRINTERROR Unable to remove apache-thrift compilation files!
         exit 1
     }
