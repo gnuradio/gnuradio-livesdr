@@ -8,7 +8,7 @@ cd $SCRIPT_BINDDIR
 . bin/functions.sh
 
 # Exit if stamp file exists
-[ ! -f $STAMPDIR/packages-uninstall.stamp ] || exit 0
+[ ! -f $STAMPDIR/20-packages-00-uninstall.stamp ] || exit 0
 
 # Exit if nothing to do
 [ -n "$(ls config/remove-pkgs.d)" ] || exit 0
