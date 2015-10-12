@@ -59,6 +59,12 @@ $GPG --verify $UBUNTU_SHA256SUMS_FILE.gpg $UBUNTU_SHA256SUMS_FILE || {
 $PRINTINFO Calculating checksum of Ubuntu stock ISO image
 CALCULATED=`$SHA256SUM $ISOTMP | cut -f 1 -d ' '`
 EXPECTED=`grep $UBUNTU_ISO_BASE $UBUNTU_SHA256SUMS_FILE | cut -f 1 -d ' '`
+
+if [ -z "$EXPECTED" ]; then
+    $PRINTERROR "The checksum for $UBUNTU_ISO_FILE was not found in $UBUNTU_SHA256SUMS_FILE"
+    exit 1
+fi
+
 $PRINTINFO "Calculated: $CALCULATED"
 $PRINTINFO "Expected:   $EXPECTED"
 
