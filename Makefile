@@ -1,4 +1,4 @@
-include ./.config
+-include ./.config
 include config/config-vars
 
 # Get rid of Kconfig quoted strings
