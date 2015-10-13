@@ -2,6 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
+. ./.config
 . config/config-vars
 . bin/functions.sh
 
@@ -24,7 +25,7 @@ cd - >/dev/null
 # Create remastered image from ISO read-write overlay
 MKISOFS_UEFI_OPTS=''
 ISOHYBRID_UEFI_OPTS=''
-if [ "$MAKE_UEFI" = "YES" ] ; then
+if [ "${CONFIG_ISO_UEFI-x}" = "y" ] ; then
     MKISOFS_UEFI_OPTS='-eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot'
     ISOHYBRID_UEFI_OPTS='--uefi'
 fi

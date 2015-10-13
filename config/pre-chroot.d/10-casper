@@ -2,6 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
+. ./.config
 . config/config-vars
 . bin/functions.sh
 

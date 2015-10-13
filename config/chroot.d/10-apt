@@ -4,6 +4,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
+. ./.config
 . config/config-vars
 . bin/functions.sh
 
