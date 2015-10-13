@@ -12,6 +12,17 @@ source config/Kconfig.ubuntu
 
 menu "Content generation options"
 
+config APT_INSTALL_SOURCES
+  bool "Install expanded apt repository list"
+  default y
+  help
+
+    Select no here to disable installing a new apt repository source
+    file that includes the full set of Ubuntu repositories. If this is
+    disabled, some installations later on may fail.
+
+    If in question, say yes here.
+
 config UPGRADE_PACKAGES
   bool "Upgrade packages in root filesystem"
   default y
