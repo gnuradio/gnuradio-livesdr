@@ -24,6 +24,16 @@ config UPGRADE_PACKAGES
 
     If in question, say yes here.
 
+config USE_CCACHE
+  bool "Add ccache to $PATH for compiling in root filesytem"
+  default y
+  help
+
+    Select no here to turn off the use of ccache when compiling software
+    in the chroot.
+
+    If in question, say yes here.
+
 endmenu
 
 menu "Target ISO image options"

@@ -10,7 +10,7 @@ test_chroot_mounted || exit 0
 $PRINTINFO Unmounting chroot jail mounts...
 
 # Undo ccache mount
-if [ "$USE_CCACHE" = "YES" ] ; then
+if [ "${CONFIG_USE_CCACHE-x}" = "y" ] ; then
     $SUDO $UMOUNT -l $ROOTFSMNT_RW/root/.ccache
     $SUDO rmdir $ROOTFSMNT_RW/root/.ccache
 fi
