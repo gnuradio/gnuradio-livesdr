@@ -2,6 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
+. ./.config
 . config/config-vars
 . bin/functions.sh
 
@@ -14,6 +15,12 @@ $SUDO apt-get install \
      genisoimage \
      syslinux || {
     $PRINTERROR Package installation failed!
+    exit 1
+}
+
+$PRINTINFO Add PPA repository and kconfig-frontends packages if needed...
+$SUDO apt-add-repository ppa:george-hopkins/kconfig-frontends || {
+    $PRINTERROR Unable to install kconfig-frontends!
     exit 1
 }
 

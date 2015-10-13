@@ -1,4 +1,8 @@
+include ./.config
 include config/config-vars
+
+# Get rid of Kconfig quoted strings
+UBUNTU_ISO_FILE_UNQ=$(shell echo $(UBUNTU_ISO_FILE))
 
 all: config-test binary
 
@@ -13,11 +17,18 @@ config-test:
 # Initialization #
 ##################
 
+# Configuration
+.PHONY: config
+
+config:
+	kconfig-mconf config/Kconfig
+
 # Download stock Ubuntu ISO image if needed
-${UBUNTU_ISO_FILE}:
+${UBUNTU_ISO_FILE_UNQ}:
+	@echo ${UBUNTU_ISO_FILE_UNQ}
 	@bin/get-stock-iso
 
-stock: ${UBUNTU_ISO_FILE}
+stock: ${UBUNTU_ISO_FILE_UNQ}
 
 # Mount stock Ubuntu ISO image and overlay
 ${ISOMNT_RO_SENTINEL}:
@@ -85,7 +96,7 @@ master: mount-iso
 	@bin/make-master
 
 # Build a new master image based on current overlays
-ifeq (${ENCRYPT},YES)
+ifeq (${CONFIG_ENCRYPT_ROOTFS},y)
 binary: content luks master unmount
 else
 binary: content rootfs master unmount

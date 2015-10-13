@@ -14,7 +14,7 @@ beyond what is done in these scripts, simply do the following:
 $ git clone -b <desired branch> git://github.com/jmcorgan/ubuntu-remaster.git
 $ cd ubuntu-remaster
 $ make deps
-<optionally edit config/config-vars as desired>
+$ make config
 $ make
 
 This will require 'sudo' access. Everything is completely automated,

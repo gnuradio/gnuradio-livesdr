@@ -1,0 +1,66 @@
+mainmenu "Ubuntu Live Boot Image Remaster Options"
+
+config EXPERIMENTAL
+  bool "Configure experimental or untested features"
+  default n
+  help
+
+    Select yes here to allow configuring of features that haven't been
+    fully tested or are experimental in nature.
+
+source config/Kconfig.ubuntu
+
+menu "Content generation options"
+
+config UPGRADE_PACKAGES
+  bool "Upgrade packages in root filesystem"
+  default y
+  help
+
+    Select yes here to upgrade apt packages in the root
+    filesystem. This will happen after any packages configured for
+    removal are purged. If the base ISO is too old, some later package
+    installations might fail if this step is not performed.
+
+    If in question, say yes here.
+
+endmenu
+
+menu "Target ISO image options"
+
+config REMASTER_SUFFIX
+  string "Suffix to append to remastered ISO file"
+  default "remastered"
+  help
+
+    Choose a string to be appended to the ISO file name to distinguish
+    the binary from the original stock image ISO.
+
+    If in question leave this at the default.
+
+config ENCRYPT_ROOTFS
+  bool "Encrypt root filesystem"
+  default n
+  help
+
+    Enabling this option will replace the compressed root-filesystem
+    with an encrypted LUKS container. During build of the image, you
+    will be prompted for a decryption passphrase (3 times).  During
+    operation, you will be required to enter this passphrase, and the
+    root filesystem will be automatically decrypted and decompressed
+    on-the-fly as needed.
+
+    If in question, say no here.
+
+
+config ISO_UEFI
+  bool "Create UEFI-compatible ISO image (EXPERIMENTAL)"
+  depends on EXPERIMENTAL
+  default n
+  help
+
+    Enable this to add an El-Torito alternate boot record pointing at
+    an EFI boot loader image inside the ISO file.  This is
+    experimental and not known to reliably work.
+
+endmenu
