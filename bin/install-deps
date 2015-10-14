@@ -2,11 +2,9 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+SUDO=/usr/bin/sudo
 
-$PRINTINFO Installing utility packages for build if needed...
+echo Installing utility packages for build if needed...
 $SUDO apt-get install \
      curl \
      gnupg \
@@ -15,15 +13,15 @@ $SUDO apt-get install \
      ccache \
      genisoimage \
      syslinux || {
-    $PRINTERROR Package installation failed!
+    echo Package installation failed!
     exit 1
 }
 
-$PRINTINFO Add PPA repository and kconfig-frontends packages if needed...
+echo Add PPA repository and kconfig-frontends packages if needed...
 $SUDO apt-add-repository ppa:george-hopkins/kconfig-frontends || {
-    $PRINTERROR Unable to install kconfig-frontends!
+    echo Unable to install kconfig-frontends!
     exit 1
 }
 
-$PRINTSUCCESS done.
+echo done.
 exit 0
