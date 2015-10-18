@@ -30,8 +30,8 @@ if [ "${CONFIG_UBUNTU_RELEASE_VIVID-x}" = "y" ] ; then
 fi
 
 $PRINTINFO Upgrading packages...
-apt-get update -q
-apt-get upgrade -q -y
+apt-get update
+apt-get upgrade -y
 
 # Remove policy file
 rm -f /usr/sbin/policy-rc.d
