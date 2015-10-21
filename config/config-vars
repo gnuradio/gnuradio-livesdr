@@ -1,7 +1,5 @@
 # Note: use of { } is to allow inclusion in Makefile
 
-USE_CCACHE=YES
-
 # Executable commands
 CURL=/usr/bin/curl
 GPG=/usr/bin/gpg
