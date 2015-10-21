@@ -10,6 +10,9 @@ cd $SCRIPT_BINDDIR
 # Exit if stamp file exists
 [ ! -f $STAMPDIR/20-packages-02-install.stamp ] || exit 0
 
+# Exit if installing packages is not configured
+[ -z ${CONFIG_INSTALL_PACKAGES+x} ] || [ "$CONFIG_INSTALL_PACKAGES" != "y" ] && exit 0
+
 # Exit if nothing to do
 [ -n "$(ls config/install-pkgs.d)" ] || exit 0
 

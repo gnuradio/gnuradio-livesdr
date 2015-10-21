@@ -10,30 +10,9 @@ config EXPERIMENTAL
 
 source config/Kconfig.ubuntu
 
+source config/Kconfig.packages
+
 menu "Content generation options"
-
-config APT_INSTALL_SOURCES
-  bool "Install expanded apt repository list"
-  default y
-  help
-
-    Select no here to disable installing a new apt repository source
-    file that includes the full set of Ubuntu repositories. If this is
-    disabled, some installations later on may fail.
-
-    If in question, say yes here.
-
-config UPGRADE_PACKAGES
-  bool "Upgrade packages in root filesystem"
-  default y
-  help
-
-    Select yes here to upgrade apt packages in the root
-    filesystem. This will happen after any packages configured for
-    removal are purged. If the base ISO is too old, some later package
-    installations might fail if this step is not performed.
-
-    If in question, say yes here.
 
 config USE_CCACHE
   bool "Add ccache to $PATH for compiling in root filesytem"
