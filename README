@@ -5,6 +5,9 @@ you to make your own optionally encrypted ISO images.  Customizers can
 branch off various 'layers' to add their custom content to an existing
 image.
 
+This branch extends the master branch to create the GNU Radio Live SDR
+Environment image.
+
 
 Using the Ubuntu Remaster build scripts
 
