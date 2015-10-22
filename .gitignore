@@ -1,4 +1,4 @@
 *~
-/archive
 /gitcache
-/vm
+/.config
+/.config.old

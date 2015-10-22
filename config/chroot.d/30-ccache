@@ -3,17 +3,19 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
+. ./.config
 . config/config-vars
 . bin/functions.sh
+
+# Exit if not configured
+[ "${CONFIG_USE_CCACHE-x}" = "y" ] || exit 0
 
 # Exit if stamp file exists
 [ ! -f $STAMPDIR/30-ccache.stamp ] || exit 0
 
 # Set ccache size to 20G
-if [ "$USE_CCACHE" = "YES" ] ; then
-    $PRINTINFO Configuring ccache for chroot...
-    CCACHE_DIR=/root/.ccache $CCACHE -M 20G
-fi
+$PRINTINFO Configuring ccache for chroot...
+CCACHE_DIR=/root/.ccache $CCACHE -M 20G
 
 touch $STAMPDIR/30-ccache.stamp
 

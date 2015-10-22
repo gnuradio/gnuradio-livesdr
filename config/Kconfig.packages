@@ -1,0 +1,48 @@
+menu "Package management options"
+
+config APT_INSTALL_SOURCES
+  bool "Install expanded APT repository list"
+  default y
+  help
+
+    Select yes here to enable installing a new apt repository source
+    file that includes the full set of Ubuntu repositories. If this is
+    disabled, some installation options may not be available.
+
+    If in question, say yes here.
+
+config REMOVE_PACKAGES
+  bool "Remove packages defined in config/remove-pkgs.d"
+  default y
+  help
+
+    Select yes here to remove packages that have been specified in the
+    config/remove-pkgs.d directory.  Saying no here may prevent other
+    configuration choices from being available.
+
+    If in question, say yes here.
+
+config UPGRADE_PACKAGES
+  bool "Upgrade packages in root filesystem"
+  default y
+  help
+
+    Select yes here to upgrade apt packages in the root
+    filesystem. This will happen after any packages configured for
+    removal are purged. If the base ISO is too old, some later package
+    installations might fail if this step is not performed.
+
+    If in question, say yes here.
+
+config INSTALL_PACKAGES
+  bool "Install new packages as specified in config/install-pkgs.d"
+  default y
+  help
+
+    Select yes here to install new packages into the system as specified
+    in the config/install-pkgs.d directory.  If you say no here, some
+    configuration options will become unavailable.
+
+    If in question, say yes here.
+
+endmenu

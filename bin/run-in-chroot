@@ -2,6 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
+. ./.config
 . config/config-vars
 . bin/functions.sh
 
@@ -19,7 +20,7 @@ $SUDO cp /etc/resolv.conf $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 
 # Create minimal path for chroot operations
 CHROOT_PATH=/usr/local/bin:/bin:/usr/bin:/sbin:/usr/sbin
-if [ "$USE_CCACHE" = "YES" ] ; then
+if [ "${CONFIG_USE_CCACHE-x}" = "y" ] ; then
     CHROOT_PATH="/usr/lib/ccache:$CHROOT_PATH"
 fi
 

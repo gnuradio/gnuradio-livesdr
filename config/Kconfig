@@ -1,0 +1,30 @@
+mainmenu "Ubuntu Live Boot Image Remaster Options"
+
+config EXPERIMENTAL
+  bool "Configure experimental or untested features"
+  default n
+  help
+
+    Select yes here to allow configuring of features that haven't been
+    fully tested or are experimental in nature.
+
+source config/Kconfig.ubuntu
+
+source config/Kconfig.packages
+
+menu "Content generation options"
+
+config USE_CCACHE
+  bool "Add ccache to $PATH for compiling in root filesytem"
+  depends on INSTALL_PACKAGES
+  default y
+  help
+
+    Select no here to turn off the use of ccache when compiling software
+    in the chroot.
+
+    If in question, say yes here.
+
+endmenu
+
+source config/Kconfig.iso

@@ -2,6 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
+. ./.config
 . config/config-vars
 . bin/functions.sh
 
@@ -19,7 +20,9 @@ $SUDO $MOUNT -t devpts none  $ROOTFSMNT_RW/dev/pts/
 $SUDO $MOUNT --rbind . $ROOTFSMNT_RW/root/live
 
 # Mount ccache directory inside root directory
-$SUDO mkdir -p $ROOTFSMNT_RW/root/.ccache
-$SUDO $MOUNT --rbind ./ccache $ROOTFSMNT_RW/root/.ccache
+if [ ${CONFIG_USE_CCACHE-x} = "y" ] ; then
+    $SUDO mkdir -p $ROOTFSMNT_RW/root/.ccache
+    $SUDO $MOUNT --rbind ./ccache $ROOTFSMNT_RW/root/.ccache
+fi
 
 exit 0

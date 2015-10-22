@@ -4,8 +4,12 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
+. ./.config
 . config/config-vars
 . bin/functions.sh
+
+# Exit if stamp file exists
+[ ! -f $STAMPDIR/10-apt.stamp ] || exit 0
 
 # Install dpkg config file to force using "old" config files found
 # during installation.
@@ -25,11 +29,21 @@ cd $SCRIPT_BINDDIR
 }
 
 # Install new apt sources file for exanded repositories
-[ /etc/apt/sources.list -nt $CUSTOMDIR/apt/sources.list ] || {
+if [ "${CONFIG_APT_INSTALL_SOURCES-x}" = "y" ] ; then
+
+    if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+        SRCFILE=sources.list-14.04.3
+    else if [ "${CONFIG_UBUNTU_RELEASE_VIVID-x}" = "y" ] ; then
+        SRCFILE=sources.list-15.04
+         fi
+    fi
+
     $PRINTINFO Installing updated apt repository list...
-    install -o root -g root -m 644 \
-        $CUSTOMDIR/apt/sources.list \
-        /etc/apt/
-}
+    install -T -o root -g root -m 644 \
+        $CUSTOMDIR/apt/$SRCFILE \
+        /etc/apt/sources.list
+fi
+
+touch $STAMPDIR/10-apt.stamp
 
 exit 0

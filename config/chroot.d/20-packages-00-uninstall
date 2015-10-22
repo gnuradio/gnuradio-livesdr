@@ -4,11 +4,15 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
+. ./.config
 . config/config-vars
 . bin/functions.sh
 
 # Exit if stamp file exists
 [ ! -f $STAMPDIR/20-packages-00-uninstall.stamp ] || exit 0
+
+# Exit if removing packages is not configured
+[ -z ${CONFIG_REMOVE_PACKAGES+x} ] || [ "$CONFIG_REMOVE_PACKAGES" != "y" ] && exit 0
 
 # Exit if nothing to do
 [ -n "$(ls config/remove-pkgs.d)" ] || exit 0

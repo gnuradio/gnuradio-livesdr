@@ -3,6 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd /root/live
+. ./.config
 . config/config-vars
 
 # Test for being inside chroot

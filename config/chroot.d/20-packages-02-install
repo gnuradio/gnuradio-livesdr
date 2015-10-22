@@ -3,11 +3,15 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
+. ./.config
 . config/config-vars
 . bin/chroot-functions.sh
 
 # Exit if stamp file exists
 [ ! -f $STAMPDIR/20-packages-02-install.stamp ] || exit 0
+
+# Exit if installing packages is not configured
+[ -z ${CONFIG_INSTALL_PACKAGES+x} ] || [ "$CONFIG_INSTALL_PACKAGES" != "y" ] && exit 0
 
 # Exit if nothing to do
 [ -n "$(ls config/install-pkgs.d)" ] || exit 0
@@ -24,7 +28,7 @@ cd $SCRIPT_BINDDIR
 $PRINTINFO Installing configured extra packages...
 for pkglist in config/install-pkgs.d/*; do
     pkgs=`cat $pkglist`
-    apt-get install -q -y $pkgs
+    apt-get install -y $pkgs
 done
 
 # Remove policy file

@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cd $SCRIPT_BINDDIR
+. ./.config
 . config/config-vars
 . bin/functions.sh
 

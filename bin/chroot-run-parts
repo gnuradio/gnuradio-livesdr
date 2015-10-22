@@ -3,6 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd /root/live
+. ./.config
 . config/config-vars
 . bin/chroot-functions.sh
 

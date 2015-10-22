@@ -14,70 +14,9 @@ beyond what is done in these scripts, simply do the following:
 $ git clone -b <desired branch> git://github.com/jmcorgan/ubuntu-remaster.git
 $ cd ubuntu-remaster
 $ make deps
-<optionally edit config/config-vars as desired>
+$ make config
 $ make
 
 This will require 'sudo' access. Everything is completely automated,
 except for passphrase entry when making an encrypted image (see
 below), and possible password prompts for 'sudo' operation.
-
-You may edit these three configuration variables (config/config-vars
-in the repository):
-
-* REMASTER_SUFFIX=<string> defines the string that will get added to the stock
-  image file name.
-
-* UPDATE_PKGS={NO,YES} determines whether the remastering will attempt
-  to updated existing packages in the stock image at time of
-  remastering.  This may also be required if new packages are to be
-  installed.
-
-* ENCRYPTED={NO,YES} determines whether the the created image will be
-  encrypted, requiring a passphrase to be entered up bootup.  The
-  contents of the image will be decrypted and decompressed on-the-fly
-  as needed during operation.  However, the root filesystem on any
-  media the image is written to remains encrypted.  You will be
-  prompted a total of three times for the passphrase during the
-  generation of the encrypted image. The encryption used is based on
-  LUKS, which uses PBKDF2 key generation and AES256-ESSIV bulk
-  encryption.
-
-There are several branches to choose from, depending on the type of
-customization you want to do.
-
-Branch 'master':
-
-This branch creates a remastered ISO image with the bare minimum of
-changes from the stock ISO. Branch off this if you want to start from
-scratch and make whatever changes you need.  Updates to this branch
-will ripple through to all other branches.
-
-
-Branch 'basic':
-
-This branch is a superset of master and is designed to create a basic
-live ISO image with a some important changes:
-
-* Configures apt to use the full list of repositories
-
-* Removes the Ubiquity installer package and provides direct boot up
-  into the desktop.  This may become configurable in the future.
-
-* Removes noisy, annoying, high CPU, or privacy reducing packages:
-
-  - Ubuntu Unity 'scopes' that search remotely
-  - The 'zeitgeist' package, which tracks desktop activity
-  - The 'avahi' package that broadcasts local network info
-  - Ubuntu Unity overlay scrollbars
-
-* Updates all other packages on the stock image from Ubuntu
-  repositories, at the time of remastering
-
-* Adds desktop indicators for system resource usage and CPU frequency
-  selection
-
-* Sets the compiz window manager to 'low graphics' mode to lower CPU
-  usage
-
-Branch off here to incorporate the above changes into a baseline for
-your own further customization.
