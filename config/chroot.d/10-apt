@@ -8,6 +8,9 @@ cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
+# Exit if stamp file exists
+[ ! -f $STAMPDIR/10-apt.stamp ] || exit 0
+
 # Install dpkg config file to force using "old" config files found
 # during installation.
 [ -f /etc/dpkg/dpkg.cfg.d/force-confold ] || {
@@ -35,12 +38,12 @@ if [ "${CONFIG_APT_INSTALL_SOURCES-x}" = "y" ] ; then
          fi
     fi
 
-    [ /etc/apt/sources.list -nt $CUSTOMDIR/apt/$SRCFILE ] || {
-        $PRINTINFO Installing updated apt repository list...
-        install -T -o root -g root -m 644 \
-            $CUSTOMDIR/apt/$SRCFILE \
-            /etc/apt/sources.list
-    }
+    $PRINTINFO Installing updated apt repository list...
+    install -T -o root -g root -m 644 \
+        $CUSTOMDIR/apt/$SRCFILE \
+        /etc/apt/sources.list
 fi
+
+touch $STAMPDIR/10-apt.stamp
 
 exit 0
