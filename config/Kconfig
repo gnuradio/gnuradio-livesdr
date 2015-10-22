@@ -16,6 +16,7 @@ menu "Content generation options"
 
 config USE_CCACHE
   bool "Add ccache to $PATH for compiling in root filesytem"
+  depends on INSTALL_PACKAGES
   default y
   help
 
