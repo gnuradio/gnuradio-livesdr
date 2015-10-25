@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Unmount persistence storage
-sudo umount -l mnt/transfer
-
-# Unmount VirtualBox image
-fusermount -u mnt/vdisk

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+. ./.config
 . config/config-vars
 . bin/functions.sh
 
