@@ -1,0 +1,11 @@
+deb http://us.archive.ubuntu.com/ubuntu/ wily main restricted
+deb http://us.archive.ubuntu.com/ubuntu/ wily multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ wily universe
+deb http://us.archive.ubuntu.com/ubuntu/ wily-backports main restricted universe multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ wily-updates main restricted
+deb http://us.archive.ubuntu.com/ubuntu/ wily-updates multiverse
+deb http://us.archive.ubuntu.com/ubuntu/ wily-updates universe
+deb http://security.ubuntu.com/ubuntu wily-security main restricted
+deb http://security.ubuntu.com/ubuntu wily-security multiverse
+deb http://security.ubuntu.com/ubuntu wily-security universe
+deb http://archive.canonical.com/ubuntu wily partner
