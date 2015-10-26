@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cd $SCRIPT_BINDDIR
+
+. ./.config
+. config/config-vars
+. bin/functions.sh
+
+[ -f /etc/skel/.config/autostart/indicator-multiload.desktop ] || {
+    $PRINTINFO Installing desktop autostart for indicator-multiload...
+    mkdir -p /etc/skel/.config/autostart
+    install -g 999 -o 999 -m 644 \
+        $CUSTOMDIR/desktop/autostart/indicator-multiload.desktop \
+        /etc/skel/.config/autostart
+}
+
+exit 0

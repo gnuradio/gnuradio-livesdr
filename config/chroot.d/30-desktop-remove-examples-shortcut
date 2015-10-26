@@ -1,0 +1,14 @@
+#!/bin/sh
+
+cd $SCRIPT_BINDDIR
+
+. ./.config
+. config/config-vars
+. bin/functions.sh
+
+[ ! -f /etc/skel/examples.desktop ] || {
+    $PRINTINFO Removing desktop examples shortcut...
+    rm -f /etc/skel/examples.desktop
+}
+
+exit 0
