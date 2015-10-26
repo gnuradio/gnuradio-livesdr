@@ -9,12 +9,6 @@ cd $SCRIPT_BINDDIR
 # Exit if already run
 [ ! -f $STAMPDIR/40-gnuradio-desktop.stamp ] || exit 0
 
-$PRINTINFO Installing live user dconf configuration...
-mkdir -p /etc/skel/.config/dconf
-install -g 999 -o 999 -m 644 \
-    $CUSTOMDIR/desktop/dconf/user \
-    /etc/skel/.config/dconf/
-
 $PRINTINFO Installing GNU Radio logo file...
 mkdir -p /usr/local/share/gnuradio
 install -g root -o root -m 644 \
