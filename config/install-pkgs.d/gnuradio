@@ -6,7 +6,6 @@ octave
 octave-audio
 octave-communications
 octave-signal
-qtoctave
 python-matplotlib
 python-opengl
 python-scipy
