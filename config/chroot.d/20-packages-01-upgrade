@@ -21,7 +21,7 @@ cd $SCRIPT_BINDDIR
         /usr/sbin
 }
 
-if [ "${CONFIG_UBUNTU_RELEASE_VIVID-x}" = "y" ] ; then
+if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
     # HACK HACK HACK
     # See https://bugs.launchpad.net/y-ppa-manager/+bug/1464440
     $PRINTINFO Unfscking wacom package for upgrade...

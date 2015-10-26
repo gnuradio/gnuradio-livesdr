@@ -12,8 +12,8 @@ cd $SCRIPT_BINDDIR
 
     if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
         SRCFILE=user-trusty
-    else if [ "${CONFIG_UBUNTU_RELEASE_VIVID-x}" = "y" ] ; then
-        SRCFILE=user-vivid
+    else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
+        SRCFILE=user-wily
          fi
     fi
 

@@ -179,7 +179,7 @@ copy_live_to() {
         fi
     fi
     if [ "${freespace}" -lt "${size}" ] ; then
-        [ "$quiet" != "y" ] && log_warning_msg "Not enough free ${free_string} (${freespace}k > ${size}k) to copy live media in ${copytodev}."
+        [ "$quiet" != "y" ] && log_warning_msg "Not enough free ${free_string} (${freespace}k < ${size}k) to copy live media in ${copytodev}."
         return 1
     fi
 
@@ -375,10 +375,65 @@ try_snap ()
     return 0
 }
 
+cow_write_format() {
+    {
+        echo "# This records the union filesystem format used for this cow medium; do not delete or alter."
+        echo "UNIONFS=$1"
+    } >"$2"
+}
+
 setup_unionfs() {
     image_directory="$1"
     rootmnt="$2"
 
+    # Mount up the writable layer, if it is persistent then it may well
+    # tell us what format we should be using.
+    mkdir -p /cow
+    cowdevice="tmpfs"
+    cow_fstype="tmpfs"
+    cow_mountopt="rw,noatime,mode=755"
+
+    # Looking for "${root_persistence}" device or file
+    if [ -n "${PERSISTENT}" ]; then
+        cowprobe=$(find_cow_device "${root_persistence}")
+        if [ -b "${cowprobe}" ]; then
+            cowdevice=${cowprobe}
+            cow_fstype=$(get_fstype "${cowprobe}")
+            cow_mountopt="rw,noatime"
+        else
+            [ "$quiet" != "y" ] && log_warning_msg "Unable to find the persistent medium"
+        fi
+    fi
+
+    mount -t ${cow_fstype} -o ${cow_mountopt} ${cowdevice} /cow || panic "Can not mount $cowdevice on /cow"
+
+    # Work out if this is an existing persistance partition and if so
+    # move its existing "upper" into a new upper directory.
+    if [ ! -d /cow/upper ]; then
+        mkdir -p /cow/upper
+        for cow_content in /cow/*
+        do
+            case "$cow_content" in
+            /cow/lost+found|/cow/upper)     continue ;;
+            esac
+
+            mv "$cow_content" /cow/upper
+
+            # We have no format information, so fake some up.  If they
+            # have not specified any then we simply assume it was
+            # overlayfs (V1 format).
+            cow_write_format "overlayfs" /cow/format
+        done
+    fi
+    mkdir -p /cow/work
+
+    # Look and see if we have a current format, it is essential we use
+    # a compatible format.  Relies on the recovery above having cleaned
+    # out the top level.
+    [ -f /cow/format ] && . /cow/format
+
+    # See if we have the appropriate format, pick the first one if
+    # unspecified.
     if [ "${UNIONFS}" = 'DEFAULT' ]; then
         for union in 'overlay' 'overlayfs' 'aufs' 'unionfs'
         do
@@ -396,6 +451,15 @@ setup_unionfs() {
     if [ "${UNIONFS}" = 'DEFAULT' ]; then
         UNIONFS='aufs'
     fi
+    # Confirm the final format was valid.
+    if [ "${UNIONFS}" != "unionfs-fuse" ]; then
+        modprobe "${MP_QUIET}" -b "${UNIONFS}" || true
+        if cut -f2 /proc/filesystems | grep -q "^${UNIONFS}\$"; then
+            :
+        else
+            panic "/cow format specified as ${UNIONFS} and no support found"
+        fi
+    fi 
 
     # run-init can't deal with images in a subdir, but we're going to
     # move all of these away before it runs anyway.  No, we're not,
@@ -444,26 +508,8 @@ setup_unionfs() {
     done
     rofsstring=${rofsstring%:}
 
-    mkdir -p /cow
-    cowdevice="tmpfs"
-    cow_fstype="tmpfs"
-    cow_mountopt="rw,noatime,mode=755"
-
-    # Looking for "${root_persistence}" device or file
-    if [ -n "${PERSISTENT}" ]; then
-        cowprobe=$(find_cow_device "${root_persistence}")
-        if [ -b "${cowprobe}" ]; then
-            cowdevice=${cowprobe}
-            cow_fstype=$(get_fstype "${cowprobe}")
-            cow_mountopt="rw,noatime"
-        else
-            [ "$quiet" != "y" ] && log_warning_msg "Unable to find the persistent medium"
-        fi
-    fi
-
-    mount -t ${cow_fstype} -o ${cow_mountopt} ${cowdevice} /cow || panic "Can not mount $cowdevice on /cow"
-    mkdir -p /cow/upper /cow/work
-
+    # Record the format we are using for this mount.
+    [ ! -f /cow/format ] && cow_write_format "${UNIONFS}" /cow/format
     case ${UNIONFS} in
         unionfs-fuse)
             (ulimit -n 16384; unionfs-fuse -o cow -o noinitgroups -o default_permissions -o allow_other -o use_ino -o suid /cow/upper=RW:$rofsstring "$rootmnt" || panic "${UNIONFS} mount failed")

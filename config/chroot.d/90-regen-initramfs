@@ -20,9 +20,9 @@ if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
     install -T -g root -o root -m 664 \
         $CUSTOMDIR/casper/casper-14.04.3 \
         /usr/share/initramfs-tools/scripts/casper
-else if [ "${CONFIG_UBUNTU_RELEASE_VIVID-x}" = "y" ] ; then
+else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
     install -T -g root -o root -m 664 \
-        $CUSTOMDIR/casper/casper-15.04 \
+        $CUSTOMDIR/casper/casper-15.10 \
         /usr/share/initramfs-tools/scripts/casper
      fi
 fi

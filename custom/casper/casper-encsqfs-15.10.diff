@@ -1,5 +1,5 @@
---- casper-15.04-stock	2015-08-04 13:30:54.000000000 -0700
-+++ casper-15.04-remaster	2015-09-05 07:32:46.000000000 -0700
+--- casper	2015-09-15 05:04:34.000000000 -0700
++++ casper-encsqfs	2015-10-25 21:33:42.000000000 -0700
 @@ -494,7 +494,8 @@
                  # it is a plain directory: do nothing
                  rofsstring="${image}=${roopt}:${rofsstring}"
@@ -10,19 +10,10 @@
                  backdev=$(get_backing_device "$image")
                  fstype=$(get_fstype "${backdev}")
                  if [ "${fstype}" = "unknown" ]; then
-@@ -612,7 +613,7 @@
-
-     if [ -n "${LIVEMEDIA_OFFSET}" ]; then
-         loopdevname=$(setup_loop "${devname}" "loop" "/sys/block/loop*" "${LIVEMEDIA_OFFSET}")
--        devname="${loopdevname}"
-+        devname="${loopdevname}"
-     fi
-
-     fstype=$(get_fstype "${devname}")
 @@ -732,6 +733,18 @@
          done
      fi
-
+ 
 +    # ENCSQFS
 +    # Symlink was found and thus /cdrom was mounted, now set up crypto
 +    # to get /dev/mapper/squashfs so symlink is valid
