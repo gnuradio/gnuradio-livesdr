@@ -20,7 +20,7 @@ ISOTMP=$UBUNTU_ISO_FILE.tmp
 
     MAXTRIES=10
     for i in $(seq 1 $MAXTRIES) ; do
-        $CURL -C - $UBUNTU_ISO_URL -o $ISOTMP
+        $CURL -L -C - $UBUNTU_ISO_URL -o $ISOTMP
         RET=$?
         [ $RET -eq 0 ] && break
         [ $RET -eq 33 ] && $PRINTINFO Ignoring... && break    # workaround curl bug
