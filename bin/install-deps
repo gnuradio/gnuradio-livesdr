@@ -31,7 +31,7 @@ fi
 
 echo Installing kconfig-frontends configuration package...
 $SUDO apt-get install kconfig-ncurses || {
-    echo Unable to install kconrig-ncurses!
+    echo Unable to install kconfig-ncurses!
     exit 1
 }
 
