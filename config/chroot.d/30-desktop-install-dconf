@@ -1,0 +1,25 @@
+#!/bin/sh
+
+cd $SCRIPT_BINDDIR
+
+. ./.config
+. config/config-vars
+. bin/functions.sh
+
+[ -f /etc/skel/.config/dconf ] || {
+    $PRINTINFO Installing live user dconf configuration...
+    mkdir -p /etc/skel/.config/dconf
+
+    if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+        SRCFILE=user-trusty
+    else if [ "${CONFIG_UBUNTU_RELEASE_VIVID-x}" = "y" ] ; then
+        SRCFILE=user-vivid
+         fi
+    fi
+
+    install -T -g 999 -o 999 -m 644 \
+        $CUSTOMDIR/desktop/dconf/$SRCFILE \
+        /etc/skel/.config/dconf/user
+}
+
+exit 0

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+
+. ./.config
+. config/config-vars
+. bin/functions.sh
+
+# Exit if stamp file exists
+[ ! -f $STAMPDIR/19-linux-tools-pkgs.stamp ] || exit 0
+
+# Install linux-tools package names as approprite
+if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+    SRCFILE=$CUSTOMDIR/linux-tools/linux-tools-trusty
+else if [ "${CONFIG_UBUNTU_RELEASE_VIVID-x}" = "y" ] ; then
+    SRCFILE=$CUSTOMDIR/linux-tools/linux-tools-vivid
+     fi
+fi
+
+$PRINTINFO Installing linux-tools package names for Ubuntu version...
+install -T -o root -g root -m 644 \
+    $SRCFILE \
+    config/install-pkgs.d/linux-tools
+
+touch $STAMPDIR/19-linux-tools-pkgs.stamp
+
+exit 0
