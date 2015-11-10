@@ -72,13 +72,8 @@ stamps/chroot-ops.stamp:
 
 chroot-ops: mount stamps/chroot-ops.stamp
 
-${ISO_INITRD}: stamps/chroot-ops.stamp $(wildcard ${CHROOT_INITRD})
-	@bin/copy-initrd
-
-initrd: mount ${ISO_INITRD}
-
 # Target for entire custom content generation
-content: pre-chroot chroot-ops initrd
+content: pre-chroot chroot-ops
 
 ###############
 # Remastering #
