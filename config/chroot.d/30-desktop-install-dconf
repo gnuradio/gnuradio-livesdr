@@ -6,7 +6,7 @@ cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
-[ -f /etc/skel/.config/dconf ] || {
+[ -f /etc/skel/.config/dconf/user ] || {
     $PRINTINFO Installing live user dconf configuration...
     mkdir -p /etc/skel/.config/dconf
 
