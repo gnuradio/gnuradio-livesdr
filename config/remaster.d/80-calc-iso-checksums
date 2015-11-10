@@ -1,0 +1,28 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. ./.config
+. config/config-vars
+. bin/functions.sh
+
+require_iso_rw_mounted
+
+# Exit if nothing to do
+if [ $ISOMNT_RW/md5sum.txt -nt stamps/isofs.stamp ] ; then exit 0; fi
+
+# Update master contents md5sums
+$PRINTINFO Calculating new ISO image internal checksums...
+# Note: must cd to have this as cwd for md5sum output
+cd $ISOMNT_RW
+$SUDO rm -f $ISOMNT_RW/md5sum.txt
+
+$SUDO sh -c \
+   'find . -type f -print0 | \
+    $SUDO xargs -0 md5sum | \
+    grep -v md5sum.txt | \
+    cat > md5sum.txt'
+
+# Do not touch stamps/isofs.stamp here!
+
+exit 0
