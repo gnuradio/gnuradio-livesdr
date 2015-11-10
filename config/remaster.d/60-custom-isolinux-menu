@@ -1,0 +1,28 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. ./.config
+. config/config-vars
+. bin/functions.sh
+
+ISOLINUX_DIR=$ISOMNT_RW/isolinux
+
+require_rootfs_rw_mounted
+
+[ -d $ISOLINUX_DIR ] || {
+    $PRINTINFO Creating target isolinux directory...
+    $SUDO mkdir -p $ISOLINUX_DIR
+}
+
+[ $ISOLINUX_DIR/txt.cfg -nt custom/casper/txt.cfg ] || {
+    $PRINTINFO Installing custom isolinux menu configuration...
+    $SUDO install -g root -o root -m 664 \
+        custom/casper/txt.cfg \
+        $ISOLINUX_DIR
+
+    # Indicate ISO RW filesystem modified
+    touch stamps/isofs.stamp
+}
+
+exit 0

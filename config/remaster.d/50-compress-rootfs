@@ -1,0 +1,46 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. ./.config
+. config/config-vars
+. bin/functions.sh
+
+require_iso_rw_mounted
+
+SQUASHFS_FILE=$ISOMNT_RW/casper/filesystem.squashfs
+
+# Exit if nothing to do
+if [ "${CONFIG_ENCRYPT_ROOTFS-x}" = "y" ] ; then
+    if [ $SQUASHFS_FILE.luks -nt stamps/chroot-ops.stamp ] ; then exit 0; fi
+else
+    if [ $SQUASHFS_FILE -nt stamps/chroot-ops.stamp ] ; then exit 0; fi
+fi
+
+require_rootfs_rw_mounted
+require_chroot_unmounted
+
+# Delete existing compressed squashfs file
+$SUDO rm -f $SQUASHFS_FILE
+
+# Create compressed squashfs file from root filesystem read-write overlay
+$PRINTINFO Creating new squashfs root filesystem image from read-write overlay...
+$SUDO $MKSQUASHFS $ROOTFSMNT_RW $SQUASHFS_FILE || {
+    $PRINTERROR Unable to create squashfs root filesystem image!
+    rm -f $SQUASHFS_FILE # don't leave a stray file
+    exit 1
+}
+
+# Record file size
+$SUDO printf $($SUDO du -sx --block-size=1 $ISOMNT_RW | cut -f1) > filesystem.size &&
+$SUDO mv filesystem.size $ISOMNT_RW/casper || {
+    $PRINTERROR Unable to calculate generated filesystem image.
+    exit 1
+}
+$SUDO chown root.root $ISOMNT_RW/casper/filesystem.size
+
+# Indicate ISO RW filesystem modified
+touch stamps/isofs.stamp
+
+$PRINTSUCCESS Created squashfs root filesystem image.
+exit 0

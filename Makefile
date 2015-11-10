@@ -84,6 +84,12 @@ content: pre-chroot chroot-ops initrd
 # Remastering #
 ###############
 
+stamps/remaster.stamp:
+	@bin/remaster-run-parts
+	@touch stamps/remaster.stamp
+
+remaster: unmount-chroot stamps/remaster.stamp
+
 # Make updated squashfs file from overlay
 rootfs: unmount-chroot
 	@bin/make-rootfs
@@ -96,11 +102,7 @@ master: mount-iso
 	@bin/make-master
 
 # Build a new master image based on current overlays
-ifeq (${CONFIG_ENCRYPT_ROOTFS},y)
-binary: content luks master unmount
-else
-binary: content rootfs master unmount
-endif
+binary: content remaster unmount
 
 ###########
 # Cleanup #
