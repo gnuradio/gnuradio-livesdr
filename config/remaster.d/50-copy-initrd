@@ -7,6 +7,13 @@ set -o nounset
 . bin/functions.sh
 
 require_rootfs_rw_mounted
+require_iso_rw_mounted
+
+# Currently, only need new initrd if using encrypted root filesystem.
+if [ "${CONFIG_ENCRYPT_ROOTFS-x}" != "y" ] ; then exit 0; fi
+
+# Exit if nothing to do
+if [ $ISO_INITRD -nt $CHROOT_INITRD ] ; then exit 0; fi
 
 # Copy chroot /boot initrd into place on remastered ISO overlay
 $PRINTINFO Copying chroot initrd to ISO...
@@ -17,5 +24,8 @@ $SUDO install -g root -o root -m 644 \
     $PRINTERROR Unable to copy chroot initrd into master ISO overlay!
     exit 1
 }
+
+# Indicate ISO RW filesystem has been updated
+touch stamps/isofs.stamp
 
 exit 0

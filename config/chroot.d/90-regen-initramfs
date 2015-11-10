@@ -7,6 +7,10 @@ cd $SCRIPT_BINDDIR
 . config/config-vars
 . bin/functions.sh
 
+# Currently, only need to regen initramfs if using encrypted root
+# filesystem
+if [ "${CONFIG_ENCRYPT_ROOTFS-x}" != "y" ] ; then exit 0; fi
+
 # Exit if already run once
 [ ! -f $STAMPDIR/90-regen-initramfs.stamp ] || exit 0
 
