@@ -101,12 +101,8 @@ luks: rootfs
 master: mount-iso
 	@bin/make-master
 
-# Create torrent from remastered ISO
-torrent:
-	@bin/make-torrent
-
 # Build a new master image based on current overlays
-binary: content remaster torrent unmount
+binary: content remaster unmount
 
 ###########
 # Cleanup #
