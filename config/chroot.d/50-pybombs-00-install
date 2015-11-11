@@ -3,45 +3,32 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-
-. ./.config
-. config/config-vars
-. bin/chroot-functions.sh
+. bin/library.sh
 
 # Exit if already run
 [ ! -f $STAMPDIR/50-pybombs-00-install.stamp ] || exit 0
 
 # Clone pybombs git repository into source dir
-cd $ROOTFS_SRCDIR || {
-    $PRINTERROR Unable to change directory to source dir: $ROOTFS_SRCDIR!
-    exit 1
-}
+cd $ROOTFS_SRCDIR || die Unable to change directory to source dir: $ROOTFS_SRCDIR!
 
 # Install pybombs from git repository
 if [ ! -f $ROOTFS_SRCDIR/pybombs/.git/config ] ; then
-    $PRINTINFO Installing PyBOMBS installation program...
-    git clone --recursive $PYBOMBS_GITURL || {
-        $PRINTERROR Unable to clone pybombs from $PYBOMBS_GITURL!
-        exit 1
-    }
+    printinfo Installing PyBOMBS installation program...
+    git clone --recursive $PYBOMBS_GITURL || die Unable to clone pybombs from $PYBOMBS_GITURL!
 
     # Get latest recipes
-    $PRINTINFO Retrieving latest recipes database...
+    printinfo Retrieving latest recipes database...
     cd $ROOTFS_SRCDIR/pybombs/recipes
-    git pull origin master || {
-        $PRINTERROR Unable to retrieve latest recipes database
-    }
+    git pull origin master || die Unable to retrieve latest recipes database
     cd - >/dev/null
 fi
 
 # Test for configuration file and install if needed
 [ -f $ROOTFS_SRCDIR/pybombs/config.dat ] || {
-    $PRINTINFO Updating PyBOMBS with custom configuration...
-    cp $CUSTOMDIR/pybombs/config.dat $ROOTFS_SRCDIR/pybombs || {
-        $PRINTERROR Unable to install pybombs configuration file.
-        exit 1
-    }
+    printinfo Updating PyBOMBS with custom configuration...
+    cp $CUSTOMDIR/pybombs/config.dat $ROOTFS_SRCDIR/pybombs || die Unable to install pybombs configuration file.
 
+    # Adjust the make parallelism according to config-vars
     sed -i -e 's/makewidth = 2/makewidth = '$MAKEWIDTH'/' $ROOTFS_SRCDIR/pybombs/config.dat
 }
 

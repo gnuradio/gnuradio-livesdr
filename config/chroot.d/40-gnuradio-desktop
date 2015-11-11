@@ -1,26 +1,25 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-
-. ./config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Exit if already run
 [ ! -f $STAMPDIR/40-gnuradio-desktop.stamp ] || exit 0
 
-$PRINTINFO Installing GNU Radio logo file...
+printinfo Installing GNU Radio logo file...
 mkdir -p /usr/local/share/gnuradio
 install -g root -o root -m 644 \
     $CUSTOMDIR/gnuradio/gnuradio_logo.png \
     /usr/local/share/gnuradio
 
-$PRINTINFO Installing custom Mozilla profile...
+printinfo Installing custom Mozilla profile...
 cp -a $CUSTOMDIR/desktop/firefox/.mozilla \
     /etc/skel
 chown 999.999 -R /etc/skel/.mozilla
 
-$PRINTINFO Installing home directory shortcuts...
+printinfo Installing home directory shortcuts...
 ln -sf /usr/local/src/pybombs/src /etc/skel
 ln -sf /usr/local/share/gnuradio/examples /etc/skel
 

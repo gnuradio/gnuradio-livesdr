@@ -2,20 +2,18 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/chroot-functions.sh
+. bin/library.sh
 
 # Install freedesktop files
 [ -f /usr/share/mime/packages/gnuradio-grc.xml ] || {
-    $PRINTINFO Installing GNU Radio freedesktop files...
-    /usr/local/libexec/gnuradio/grc_setup_freedesktop install || {
-        $PRINTERROR Unable to install gnuradio freedesktop files!
-        exit 1
-    }
+    printinfo Installing GNU Radio freedesktop files...
+    /usr/local/libexec/gnuradio/grc_setup_freedesktop install || \
+        die Unable to install gnuradio freedesktop files!
 }
 
 # Install desktop icon for GNU Radio Companion
 [ -f /etc/skel/Desktop/gnuradio-grc.desktop ] || {
-    $PRINTINFO Installing GNU Radio GRC desktop shortcut...
+    printinfo Installing GNU Radio GRC desktop shortcut...
     mkdir -p /etc/skel/Desktop
     install -g 999 -o 999 -m 644 \
         /usr/local/share/gnuradio/grc/freedesktop/gnuradio-grc.desktop \
@@ -24,42 +22,37 @@ set -o nounset
 
 # Install live user configuration files
 [ -f /etc/skel/.gnuradio/config.conf ] || {
-    $PRINTINFO Installing live user configuration files...
+    printinfo Installing live user configuration files...
     install -d -o 999 -g 999 /etc/skel/.gnuradio &&
     install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/config.conf /etc/skel/.gnuradio &&
     install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/thrift.conf /etc/skel/.gnuradio &&
     install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/.bash_aliases /etc/skel &&
     install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/clabs.qss /usr/local/share/gnuradio/themes &&
-    install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/.octaverc /etc/skel || {
-        $PRINTERROR Unable to install live user GNU Radio configuration files!
-    }
+    install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/.octaverc /etc/skel || \
+        die Unable to install live user GNU Radio configuration files!
 }
 
 # Install documentation desktop shortcut
 [ -h "/etc/skel/Desktop/GNU Radio Documentation" ] || {
-    $PRINTINFO Installing GNU Radio documentation shortcut...
+    printinfo Installing GNU Radio documentation shortcut...
     # FIXME automate the below versioned directory
     ln -sf /usr/local/share/doc/gnuradio-3.7.8.1/html/index.html \
-        "/etc/skel/Desktop/GNU Radio Documentation" || {
-        $PRINTERROR Unable to install GNU Radio Documentation shortcut!
-        exit 1
-    }
+        "/etc/skel/Desktop/GNU Radio Documentation" || \
+    die Unable to install GNU Radio Documentation shortcut!
 }
 
 # Install Guided tutorials
 TUTDIR="/etc/skel/tutorials"
 [ -d "$TUTDIR" ] || {
     mkdir -p "$TUTDIR"
-    $PRINTINFO "Installing GNU Radio guided tutorials..."
+    printinfo "Installing GNU Radio guided tutorials..."
     wget -q --page-requisites --convert-links --adjust-extension \
          --recursive --level=1 --no-directories \
          --no-host-directories \
          --reject-regex "history|rename|protect|edit|watch|news|issues|activity|Development|Sponsor|search|users|index|roadmap|gnuradio$|wiki$|Installing|projects$|login|register|repository|files$|gnuradio$" \
          --directory-prefix="$TUTDIR" \
-         http://gnuradio.org/redmine/projects/gnuradio/wiki/Guided_Tutorials || {
-        $PRINTERROR Failed to retrieve guided tutorials content!
-        exit 1
-    }
+         http://gnuradio.org/redmine/projects/gnuradio/wiki/Guided_Tutorials || \
+    die Failed to retrieve guided tutorials content!
 
     cd /etc/skel/Desktop
     ln -sf "/home/ubuntu/tutorials/Guided_Tutorials.html" .

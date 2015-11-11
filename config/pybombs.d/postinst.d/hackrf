@@ -1,41 +1,33 @@
 #!/bin/sh
 set -o nounset
 #set -x #DEBUG
-. bin/chroot-functions.sh
+
+. bin/library.sh
 
 # Install udev permissions for hackrf
 [ -f /etc/udev/rules.d/53-hackrf.rules ] || {
-    $PRINTINFO Installing udev permissions for hackrf...
+    printinfo Installing udev permissions for hackrf...
     install -g root -o root -m 644 \
         /usr/local/src/pybombs/src/hackrf/host/libhackrf/53-hackrf.rules \
-        /etc/udev/rules.d || {
-        $PRINTERROR Unable to install hackrf udev rules file!
-        exit 1
-    }
+        /etc/udev/rules.d || die Unable to install hackrf udev rules file!
 }
 
 # Download and install hackrf firmware files
 HACKRF_VERSION=2015.07.2
 [ -f /usr/local/share/hackrf/firmware-bin/hackrf_one_usb_ram.dfu ] || {
     # Download hackrf release package
-    $PRINTINFO Downloading hackrf release package
+    printinfo Downloading hackrf release package
     mkdir -p /tmp/hackrf &&
     curl -L -# https://github.com/mossmann/hackrf/releases/download/v$HACKRF_VERSION/hackrf-$HACKRF_VERSION.tar.xz \
-        -o /tmp/hackrf/hackrf-$HACKRF_VERSION.tar.xz || {
-        $PRINTERROR Unable to download hackrf release package!
-        exit 1
-    }
+        -o /tmp/hackrf/hackrf-$HACKRF_VERSION.tar.xz || die Unable to download hackrf release package!
 
     # Unpack release package file to tmpdir
-    $PRINTINFO Unpacking hackrf release package...
+    printinfo Unpacking hackrf release package...
     cd /tmp/hackrf &&
-    tar xf hackrf-$HACKRF_VERSION.tar.xz || {
-        $PRINTERROR Unable to unpack hackrf firmware!
-        exit 1
-    }
+    tar xf hackrf-$HACKRF_VERSION.tar.xz || die Unable to unpack hackrf firmware!
 
     # Install firmware-bin files
-    $PRINTINFO Installing hackrf firmware files...
+    printinfo Installing hackrf firmware files...
     TMPDIR=/tmp/hackrf/hackrf-$HACKRF_VERSION/firmware-bin
     DESTDIR=/usr/local/share/hackrf/firmware-bin
 
@@ -46,8 +38,7 @@ HACKRF_VERSION=2015.07.2
         $TMPDIR/hackrf_jawbreaker_usb_ram.dfu \
         $TMPDIR/hackrf_jawbreaker_usb_rom_to_ram.bin \
         $TMPDIR/hackrf_one_usb_ram.dfu \
-        $TMPDIR/hackrf_one_usb_rom_to_ram.bin || {
-        $PRINTERROR Unable to install hackrf firmware files!
+        $TMPDIR/hackrf_one_usb_rom_to_ram.bin || die Unable to install hackrf firmware files!
     }
 
     cd - >/dev/null
@@ -57,32 +48,24 @@ HACKRF_VERSION=2015.07.2
 # Download, compile, and install dfu-util
 DFU_UTIL_VERSION=0.7
 [ -x /usr/local/bin/dfu-util ] || {
-    $PRINTINFO Downloading dfu-util-$DFU_UTIL_VERSION...
+    printinfo Downloading dfu-util-$DFU_UTIL_VERSION...
     # Download source tarball
     mkdir -p /tmp/hackrf &&
     curl -# http://dfu-util.sourceforge.net/releases/dfu-util-$DFU_UTIL_VERSION.tar.gz \
-        -o /tmp/hackrf/dfu-util-$DFU_UTIL_VERSION.tar.gz || {
-        $PRINTERROR Unable to download dfu-util-$DFU_UTIL_VERSION!
-        exit 1
-    }
+        -o /tmp/hackrf/dfu-util-$DFU_UTIL_VERSION.tar.gz || \
+    die Unable to download dfu-util-$DFU_UTIL_VERSION!
 
     # Unpack source tarball
-    $PRINTINFO Unpacking dfu-util-$DFU_UTIL_VERSION source tarball...
+    printinfo Unpacking dfu-util-$DFU_UTIL_VERSION source tarball...
     cd /tmp/hackrf &&
-    tar xzf dfu-util-$DFU_UTIL_VERSION.tar.gz || {
-        $PRINTERROR Unable to unpack hackrf firmware!
-        exit 1
-    }
+    tar xzf dfu-util-$DFU_UTIL_VERSION.tar.gz || die Unable to unpack hackrf firmware!
 
     # Compile and install source tarball
-    $PRINTINFO Compiling dfu-util-$DFU_UTIL_VERSION...
+    printinfo Compiling dfu-util-$DFU_UTIL_VERSION...
     cd /tmp/hackrf/dfu-util-$DFU_UTIL_VERSION &&
     ./configure --prefix=/usr/local &&
     make &&
-    make install || {
-        $PRINTERROR Unable to compile/install dfu-util $DFU_UTIL_VERSION!
-        exit 1
-    }
+    make install || die Unable to compile/install dfu-util $DFU_UTIL_VERSION!
 
     cd - >/dev/null
     rm -rf /tmp/hackrf

@@ -2,43 +2,34 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/chroot-functions.sh
+. bin/library.sh
 
 # Install the udev rules file
 [ -f /etc/udev/rules.d/uhd-usrp.rules ] || {
-    $PRINTINFO Installing UHD udev rules file...
-    install -g root -o root -m 644 /usr/local/src/pybombs/src/uhd/host/utils/uhd-usrp.rules /etc/udev/rules.d || {
-        $PRINTERROR Unable to install UHD udev rules file!
-        exit 1
-    }
+    printinfo Installing UHD udev rules file...
+    install -g root -o root -m 644 /usr/local/src/pybombs/src/uhd/host/utils/uhd-usrp.rules /etc/udev/rules.d || \
+        die Unable to install UHD udev rules file!
 }
 
 # Install the sysctl params for the network stack
 [ -f /etc/sysctl.d/10-uhd-buffers.conf ] || {
-    $PRINTINFO Installing UHD sysctl params...
-    install -g root -o root -m 644 $CUSTOMDIR/uhd/10-uhd-buffers.conf /etc/sysctl.d || {
-        $PRINTERROR Unable to copy UHD sysctl params into place!
-        exit 1
-    }
+    printinfo Installing UHD sysctl params...
+    install -g root -o root -m 644 $CUSTOMDIR/uhd/10-uhd-buffers.conf /etc/sysctl.d || \
+        die Unable to copy UHD sysctl params into place!
 }
 
 # Install the limits file for real-time priority
 [ -f /etc/security/limits.d/10-uhd-limits.conf ] || {
-    $PRINTINFO Installing UHD limits file...
+    printinfo Installing UHD limits file...
     mkdir -p /etc/security/limits.d
-    install -g root -o root -m 644 $CUSTOMDIR/uhd/10-uhd-limits.conf /etc/security/limits.d || {
-        $PRINTERROR Unable to copy UHD limits file into place!
-        exit 1
-    }
+    install -g root -o root -m 644 $CUSTOMDIR/uhd/10-uhd-limits.conf /etc/security/limits.d || \
+        die Unable to copy UHD limits file into place!
 }
 
 # Download and install firmware images
 [ -f /usr/local/share/uhd/images/LICENSE ] || {
-    $PRINTINFO Installing UHD firmware images...
-    uhd_images_downloader || {
-        $PRINTERROR Unable to download UHD firmware images!
-        exit 1
-    }
+    printinfo Installing UHD firmware images...
+    uhd_images_downloader || die Unable to download UHD firmware images!
 }
 
 exit 0

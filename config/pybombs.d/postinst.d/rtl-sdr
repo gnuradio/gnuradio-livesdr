@@ -1,16 +1,14 @@
 #!/bin/sh
 set -o nounset
 #set -x #DEBUG
-. bin/chroot-functions.sh
+
+. bin/library.sh
 
 # Install udev permissions for rtl-sdr
 [ -x /etc/udev/rules.d/rtl-sdr.rules ] || {
     install -g root -o root -m 644 \
         /usr/local/src/pybombs/src/rtl-sdr/rtl-sdr.rules \
-        /etc/udev/rules.d || {
-        $PRINTERROR Unable to install rtl-sdr udev rules file!
-        exit 1
-    }
+        /etc/udev/rules.d || die Unable to install rtl-sdr udev rules file!
 }
 
 exit 0

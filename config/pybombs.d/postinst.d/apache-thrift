@@ -1,13 +1,12 @@
 #!/bin/sh
 set -o nounset
 #set -x #DEBUG
-. bin/chroot-functions.sh
+
+. bin/library.sh
 
 # Remove compilation results
 [ -d /usr/local/src/pybombs/src/apache-thrift ] && {
-    $PRINTINFO Removing apache-thrift build output...
-    make -C /usr/local/src/pybombs/src/apache-thrift distclean >/dev/null || {
-        $PRINTERROR Unable to remove apache-thrift compilation files!
-        exit 1
-    }
+    printinfo Removing apache-thrift build output...
+    make -C /usr/local/src/pybombs/src/apache-thrift distclean >/dev/null || \
+        die Unable to remove apache-thrift compilation files!
 }

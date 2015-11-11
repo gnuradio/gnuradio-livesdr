@@ -1,7 +1,8 @@
 #!/bin/sh
 set -o nounset
 #set -x #DEBUG
-. bin/chroot-functions.sh
+
+. bin/library.sh
 
 FILENAME=opencl_runtime_14.2_x64_4.5.0.8.tgz
 URLBASE=http://registrationcenter.intel.com/irc_nas/4181
@@ -15,9 +16,8 @@ DESTDIR=/
 
     # Create working area
     [ -d $TMPDIR ] || {
-        $PRINTINFO Creating temporary work area $TMPDIR...
-        mkdir -p $TMPDIR || {
-	    $PRINTERROR Unable to create tempdir $TMPDIR
+        printinfo Creating temporary work area $TMPDIR...
+        mkdir -p $TMPDIR || die Unable to create tempdir $TMPDIR
 	    exit 1
         }
     }
@@ -25,61 +25,48 @@ DESTDIR=/
 
     # Retrieve Intel CPU OpenCL distribution tarball
     [ -f $FILENAME ] || {
-        $PRINTINFO Downloading Intel CPU OpenCL driver...
+        printinfo Downloading Intel CPU OpenCL driver...
         for i in 1 2 3 4 5 6 7 8 9 10; do
             curl -C - -# $URL -o $FILENAME
             RET=$?
             [ $RET -eq 0 ] && break
             # TODO: Check here if max tries, then exit
-            [ $RET -eq 33 ] && $PRINTINFO Ignoring... && break    # workaround curl bug
+            [ $RET -eq 33 ] && printinfo Ignoring... && break    # workaround curl bug
             [ $RET -eq 56 ] && continue # network timeout
-	    $PRINTERROR Unable to download Intel CPU OpenCL driver!
-            exit 1
+	    die Unable to download Intel CPU OpenCL driver!
         done
     }
 
     # Unpack outer tgz
     [ -d $DIRNM ] || {
-        $PRINTINFO Unpacking driver file $FILENAME
-        tar xzf $FILENAME || {
-	    $PRINTERROR Unable to unpack driver file $FILENAME!
-	    exit 1
-        }
+        printinfo Unpacking driver file $FILENAME
+        tar xzf $FILENAME || die Unable to unpack driver file $FILENAME!
     }
 
     # Unpack Intel base and CPU rpms
     [ -d $DESTDIR/opt/intel ] || {
-        $PRINTINFO Unpacking Intel OpenCL driver file internal RPM files...
+        printinfo Unpacking Intel OpenCL driver file internal RPM files...
         cd $DESTDIR
         rpm2cpio $TMPDIR/$DIRNM/rpm/*base* | cpio -idm >/dev/null &&
-        rpm2cpio $TMPDIR/$DIRNM/rpm/*cpu* | cpio -idm >/dev/null || {
-	    $PRINTERROR Unable to extract Intel OpenCL driver files!
-	    exit 1
-        }
+        rpm2cpio $TMPDIR/$DIRNM/rpm/*cpu* | cpio -idm >/dev/null || \
+            die Unable to extract Intel OpenCL driver files!
     }
 
     # Install Intel OCL director
-    $PRINTINFO Installing Intel OpenCL dispatcher...
-    update-alternatives --install /usr/lib/x86_64-linux-gnu/libOpenCL.so.1.2 libOpenCL /opt/intel/opencl-1.2-4.5.0.8/lib64/libOpenCL.so.1.2 100 || {
-        $PRINTERROR Unable to install Intel OpenCL dispatcher!
-        exit 1
-    }
+    printinfo Installing Intel OpenCL dispatcher...
+    update-alternatives --install /usr/lib/x86_64-linux-gnu/libOpenCL.so.1.2 libOpenCL /opt/intel/opencl-1.2-4.5.0.8/lib64/libOpenCL.so.1.2 100 || \
+        die Unable to install Intel OpenCL dispatcher!
     cd /usr/lib/x86_64-linux-gnu &&
     ln -sf libOpenCL.so.1.2 libOpenCL.so.1 &&
-    ln -sf libOpenCL.so.1 libOpenCL.so || {
-        $PRINTERROR Unable to create libOpenCL.so symlinks!
-        exit 1
-    }
+    ln -sf libOpenCL.so.1 libOpenCL.so || die Unable to create libOpenCL.so symlinks!
     ldconfig
 
     # Install Intel OCL ICD
     [ -d /etc/OpenCL/vendors/intel.icd ] || {
-        $PRINTINFO Installing Intel OpenCL ICD...
+        printinfo Installing Intel OpenCL ICD...
         mkdir -p /etc/OpenCL/vendors &&
-        ln -sf /opt/intel/opencl-1.2-4.5.0.8/etc/intel64.icd /etc/OpenCL/vendors || {
-	    $PRINTERROR Unable to install Intel OpenCL ICD!
-	    exit 1
-        }
+        ln -sf /opt/intel/opencl-1.2-4.5.0.8/etc/intel64.icd /etc/OpenCL/vendors || \
+            die Unable to install Intel OpenCL ICD!
     }
 
     # Clean up

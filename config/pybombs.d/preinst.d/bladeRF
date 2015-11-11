@@ -1,9 +1,10 @@
 #!/bin/sh
 set -o nounset
 #set -x #DEBUG
-. bin/chroot-functions.sh
+
+. bin/library.sh
 
 # Patch out custom config options in recipe
 LWR=/usr/local/src/pybombs/recipes/bladeRF.lwr
-$PRINTINFO "Removing custom config options for bladeRF in recipe"
+printinfo Removing custom config options for bladeRF in recipe
 sed -i -e '/config_opt/d' $LWR
