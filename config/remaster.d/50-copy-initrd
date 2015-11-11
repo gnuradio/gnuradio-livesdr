@@ -2,9 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 require_rootfs_rw_mounted
 require_iso_rw_mounted
@@ -16,14 +14,11 @@ if [ "${CONFIG_ENCRYPT_ROOTFS-x}" != "y" ] ; then exit 0; fi
 if [ $ISO_INITRD -nt $CHROOT_INITRD ] ; then exit 0; fi
 
 # Copy chroot /boot initrd into place on remastered ISO overlay
-$PRINTINFO Copying chroot initrd to ISO...
+printinfo Copying chroot initrd to ISO...
 $SUDO mkdir -p $(dirname $ISO_INITRD) &&
 $SUDO install -g root -o root -m 644 \
     $CHROOT_INITRD \
-    $ISO_INITRD || {
-    $PRINTERROR Unable to copy chroot initrd into master ISO overlay!
-    exit 1
-}
+    $ISO_INITRD || die Unable to copy chroot initrd into master ISO overlay!
 
 # Indicate ISO RW filesystem has been updated
 touch stamps/isofs.stamp

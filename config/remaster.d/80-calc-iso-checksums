@@ -2,9 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 require_iso_rw_mounted
 
@@ -12,7 +10,7 @@ require_iso_rw_mounted
 if [ $ISOMNT_RW/md5sum.txt -nt stamps/isofs.stamp ] ; then exit 0; fi
 
 # Update master contents md5sums
-$PRINTINFO Calculating new ISO image internal checksums...
+printinfo Calculating new ISO image internal checksums...
 # Note: must cd to have this as cwd for md5sum output
 cd $ISOMNT_RW
 $SUDO rm -f $ISOMNT_RW/md5sum.txt
