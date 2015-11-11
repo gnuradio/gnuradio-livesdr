@@ -49,9 +49,6 @@ CHROOT_INITRD=${ROOTFSMNT_RW}/boot/initrd.img*
 ISO_INITRD=${ISOMNT_RW}/casper/initrd.lz
 #ISO_OLDINIT=${ISOMNT_RW}/casper/initrd.lz
 
-# Chroot locations
-LIVEUB_DIR=/root/live
-
 # Remastered variables
 REMASTER_BASE=${CONFIG_UBUNTU_ISO_BASE}-${CONFIG_REMASTER_SUFFIX}
 REMASTER_NAME=${REMASTER_BASE}.iso
