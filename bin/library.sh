@@ -1,3 +1,5 @@
+export SCRIPT_BINDDIR=./
+
 . bin/functions.sh
 . config/config-vars
 

@@ -1,6 +1,6 @@
 . ./.config
 
-printmsg=bin/print-msg
+printmsg=$SCRIPT_BINDDIR/bin/print-msg
 
 printinfo () {
     $printmsg info "$@"
