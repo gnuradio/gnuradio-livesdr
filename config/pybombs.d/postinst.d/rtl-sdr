@@ -2,7 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/library.sh
+. bin/chroot-library.sh
 
 # Install udev permissions for rtl-sdr
 [ -x /etc/udev/rules.d/rtl-sdr.rules ] || {

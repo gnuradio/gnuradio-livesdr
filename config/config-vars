@@ -1,7 +1,5 @@
 # Note: use of { } is to allow inclusion in Makefile
 
-MAKEWIDTH=2
-
 # Executable commands
 CURL=/usr/bin/curl
 GPG=/usr/bin/gpg
@@ -57,11 +55,3 @@ LIVEUB_DIR=/root/live
 # Remastered variables
 REMASTER_BASE=${CONFIG_UBUNTU_ISO_BASE}-${CONFIG_REMASTER_SUFFIX}
 REMASTER_NAME=${REMASTER_BASE}.iso
-
-# GNU Radio related
-ROOTFS_PREFIX=/usr/local
-ROOTFS_SRCDIR=${ROOTFS_PREFIX}/src
-
-# Pybombs related
-PYBOMBS_GITURL=git://github.com/pybombs/pybombs
-GITCACHE=/root/live/gitcache

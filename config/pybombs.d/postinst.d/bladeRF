@@ -2,7 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/library.sh
+. bin/chroot-library.sh
 
 # Download and install associated FPGA bitstream and firmware files
 
@@ -53,6 +53,7 @@ NUAND_SHARE=/usr/local/share/Nuand/bladeRF
     cd - >/dev/null
     if ! $CHECKSUMS_OKAY; then
         die Exiting due to failed checksums.
+    fi
 
     printinfo Installing FPGA bitstream and firmware files...
     mkdir -p $NUAND_SHARE &&

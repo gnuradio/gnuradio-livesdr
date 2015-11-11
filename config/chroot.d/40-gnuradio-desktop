@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/library.sh
+. bin/chroot-library.sh
 
 # Exit if already run
 [ ! -f $STAMPDIR/40-gnuradio-desktop.stamp ] || exit 0
