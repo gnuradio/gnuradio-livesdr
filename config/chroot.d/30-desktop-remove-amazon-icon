@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/library.sh
+. bin/chroot-library.sh
 
 # Note: unless this is nuked from the /usr... dir, it will get
 # reinstalled onto the desktop!

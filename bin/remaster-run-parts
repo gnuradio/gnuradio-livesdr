@@ -7,14 +7,6 @@ set -o nounset
 # Exit if already run
 [ ! -f stamps/remaster.stamp ] || exit 0
 
-# TODO: export these in config-vars along with anything else needed
-# Why is this needed?
-export ROOTFSMNT_RW=$ROOTFSMNT_RW
-export ISOMNT_RW=$ISOMNT_RW
-export SCRIPT_BINDDIR=$SCRIPT_BINDDIR
-export CUSTOMDIR=$CUSTOMDIR
-export STAMPDIR=$STAMPDIR
-
 # Execute each fragment in config/remaster.d
 printinfo Executing remastering scripts...
 require_rootfs_rw_mounted
@@ -25,3 +17,5 @@ run-parts \
     config/remaster.d || die One or more remaster scripts failed!
 
 printinfo Remaster scripts execution completed.
+
+exit 0

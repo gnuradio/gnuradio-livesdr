@@ -27,14 +27,15 @@ fi
 printinfo Entering into root filesystem chroot jail.
 $SUDO chroot $ROOTFSMNT_RW /usr/bin/env -i \
     HOME=/root TERM=$TERM PS1='\u:\w\# ' DISPLAY=:0.0 \
-    PATH="$CHROOT_PATH" \
+    PATH="$CHROOT_PATH" SCRIPT_BINDDIR=/root/live \
     http_proxy="${http_proxy:-}" \
     /bin/bash --login -c $CMD
-printinfo Returned from root filesystem chroot jail.
+RET=$?
+printinfo Returned from root filesystem chroot jail, exit code $RET
 
 # Remove resolv.conf from chroot
 # FIXME: save and restore
 $SUDO rm -f $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 $SUDO touch $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 
-exit 0
+exit $RET
