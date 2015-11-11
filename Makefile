@@ -85,17 +85,6 @@ stamps/remaster.stamp:
 
 remaster: unmount-chroot stamps/remaster.stamp
 
-# Make updated squashfs file from overlay
-rootfs: unmount-chroot
-	@bin/make-rootfs
-
-luks: rootfs
-	@bin/make-luks
-
-# Make remastered image from overlay
-master: mount-iso
-	@bin/make-master
-
 # Build a new master image based on current overlays
 binary: content remaster unmount
 
