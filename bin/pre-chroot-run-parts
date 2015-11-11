@@ -7,17 +7,8 @@ set -o nounset
 # Exit if already run
 [ ! -f stamps/pre-chroot.stamp ] || exit 0
 
-# TODO: export these in config-vars along with anything else needed
-# Why is this needed?
-export ROOTFSMNT_RW=$ROOTFSMNT_RW
-export ISOMNT_RW=$ISOMNT_RW
-export SCRIPT_BINDDIR=$SCRIPT_BINDDIR
-export CUSTOMDIR=$CUSTOMDIR
-export STAMPDIR=$STAMPDIR
-
 # Execute each fragment in config/pre-chroot.d
 printinfo Executing pre-chroot customization scripts...
-
 require_rootfs_rw_mounted
 
 run-parts \

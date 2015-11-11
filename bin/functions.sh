@@ -1,62 +1,28 @@
-PRINTMSG=bin/print-msg
-PRINTINFO="$PRINTMSG info"
-PRINTERROR="$PRINTMSG error"
-PRINTWARN="$PRINTMSG warn"
-PRINTSUCCESS="$PRINTMSG success"
+. ./.config
 
-. bin/common.sh
+printmsg=bin/print-msg
 
-test_iso_ro_mounted () {
-    [ -f $ISOMNT_RO_SENTINEL ]
+printinfo () {
+    $printmsg info "$@"
 }
 
-test_iso_rw_mounted () {
-    [ -f $ISOMNT_RW_SENTINEL ]
+printerror () {
+    $printmsg error "$@"
 }
 
-require_iso_ro_mounted () {
-    test_iso_ro_mounted || {
-        $PRINTERROR Ubuntu ISO read-only mount not found!
-        exit 1
-    }
+printwarn () {
+    $printmsg warn "$@"
 }
 
-require_iso_rw_mounted () {
-    test_iso_rw_mounted || {
-        $PRINTERROR Ubuntu ISO read-write overlay not found!
-        exit 1
-        }
+printsuccess () {
+    $printmsg success "$@"
 }
 
-test_rootfs_ro_mounted () {
-    [ -f $ROOTFSMNT_RO_SENTINEL ]
+die () {
+    printerror $@
+    exit 1
 }
 
-test_rootfs_rw_mounted () {
-    [ -f $ROOTFSMNT_RW_SENTINEL ]
-}
-
-require_rootfs_rw_mounted () {
-    test_rootfs_rw_mounted || {
-        $PRINTERROR Ubuntu ISO read-write overlay mount not found!
-        exit 1
-    }
-}
-
-test_chroot_mounted () {
-    [ -f $CHROOT_MNT_SENTINEL ]
-}
-
-require_chroot_mounted () {
-    test_chroot_mounted || {
-        echo System mounts in chroot jail not found!
-        exit 1
-    }
-}
-
-require_chroot_unmounted () {
-    test_chroot_mounted && {
-        $PRINTERROR System mounts in chroot still exist!
-        exit 1
-    }
+mkdir_or_fail () {
+    mkdir -p $1 || die "Failed to create dir: " $1
 }

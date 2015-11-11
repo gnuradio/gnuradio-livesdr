@@ -2,17 +2,15 @@
 set -o nounset
 #set -x #DEBUG
 
-cd /root/live
-
-. bin/library.sh
+cd $SCRIPT_BINDDIR
+. bin/chroot-library.sh
 
 # Exit if nothing to do
 [ -n "$(ls config/chroot.d)" ] || exit 0
 
-# TODO: export these in config-vars along with anything else needed
+# The scripts will get the rest of their configuration from
+# config/chroot-vars
 export SCRIPT_BINDDIR=$SCRIPT_BINDDIR
-export CUSTOMDIR=$CUSTOMDIR
-export STAMPDIR=$STAMPDIR
 
 # Execute each fragment in config/clean-rootfs.d
 printinfo Executing chroot customization scripts...
