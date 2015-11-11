@@ -3,9 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Currently, only need to regen initramfs if using encrypted root
 # filesystem
@@ -14,12 +12,12 @@ if [ "${CONFIG_ENCRYPT_ROOTFS-x}" != "y" ] ; then exit 0; fi
 # Exit if already run once
 [ ! -f $STAMPDIR/90-regen-initramfs.stamp ] || exit 0
 
-$PRINTINFO Installing custom initrd configuration...
+printinfo Installing custom initrd configuration...
 install -g root -o root -m 664 \
     $CUSTOMDIR/initramfs/initramfs.conf \
     /etc/initramfs-tools
 
-$PRINTINFO Installing custom casper boot script...
+printinfo Installing custom casper boot script...
 if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
     install -T -g root -o root -m 664 \
         $CUSTOMDIR/casper/casper-14.04.3 \
@@ -32,14 +30,11 @@ else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
 fi
 
 # Create new initramfs that includes cryptsetup
-$PRINTINFO Creating new initramfs with crypto hooks...
+printinfo Creating new initramfs with crypto hooks...
 export CRYPTSETUP=y
-update-initramfs -k all -u || {
-    $PRINTERROR Unable to execute update-initramfs!
-    exit 1
-}
+update-initramfs -k all -u || die Unable to execute update-initramfs!
 
 touch $STAMPDIR/90-regen-initramfs.stamp
-$PRINTSUCCESS done.
+printsuccess done.
 
 exit 0

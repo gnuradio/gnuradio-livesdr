@@ -1,13 +1,12 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 [ ! -f /etc/skel/examples.desktop ] || {
-    $PRINTINFO Removing desktop examples shortcut...
+    printinfo Removing desktop examples shortcut...
     rm -f /etc/skel/examples.desktop
 }
 

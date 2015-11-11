@@ -3,9 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. ./.config
-. config/config-vars
-. bin/chroot-functions.sh
+. bin/library.sh
 
 # Exit if stamp file exists
 [ ! -f $STAMPDIR/20-packages-02-install.stamp ] || exit 0
@@ -18,21 +16,21 @@ cd $SCRIPT_BINDDIR
 
 # Temporarily install policy file to prevent services from running
 [ -f /usr/bin/policy-rc.d ] || {
-    $PRINTINFO Installing temporary policy file to prevent services running...
+    printinfo Installing temporary policy file to prevent services running...
     install -o root -g root -m 755 \
         $CUSTOMDIR/apt/policy-rc.d \
         /usr/sbin
 }
 
-# Execute each fragment in config/install-pkgs.d
-$PRINTINFO Installing configured extra packages...
+# Install packages listed in config/install-pkgs.d
+printinfo Installing configured extra packages...
 for pkglist in config/install-pkgs.d/*; do
     pkgs=`cat $pkglist`
-    apt-get install -y $pkgs
+    apt-get install -y $pkgs || die Package installation failure!
 done
 
 # Remove policy file
-$PRINTINFO Removing temporary policy-rc.d
+printinfo Removing temporary policy-rc.d
 rm -f /usr/sbin/policy-rc.d
 touch $STAMPDIR/20-packages-02-install.stamp
 

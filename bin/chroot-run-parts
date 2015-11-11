@@ -3,9 +3,8 @@ set -o nounset
 #set -x #DEBUG
 
 cd /root/live
-. ./.config
-. config/config-vars
-. bin/chroot-functions.sh
+
+. bin/library.sh
 
 # Exit if nothing to do
 [ -n "$(ls config/chroot.d)" ] || exit 0
@@ -16,12 +15,9 @@ export CUSTOMDIR=$CUSTOMDIR
 export STAMPDIR=$STAMPDIR
 
 # Execute each fragment in config/clean-rootfs.d
-$PRINTINFO Executing chroot customization scripts...
+printinfo Executing chroot customization scripts...
 run-parts \
     --exit-on-err \
-    config/chroot.d || {
-    $PRINTERROR One or more chroot customization scripts failed!
-    exit 1
-}
+    config/chroot.d || die One or more chroot customization scripts failed!
 
 exit 0
