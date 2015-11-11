@@ -1,13 +1,12 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 [ -f /etc/skel/.config/dconf/user ] || {
-    $PRINTINFO Installing live user dconf configuration...
+    printinfo Installing live user dconf configuration...
     mkdir -p /etc/skel/.config/dconf
 
     if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then

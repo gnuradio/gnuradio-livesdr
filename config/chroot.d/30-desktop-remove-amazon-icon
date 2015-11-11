@@ -1,15 +1,14 @@
 #!/bin/sh
+set -o nounset
+#set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Note: unless this is nuked from the /usr... dir, it will get
 # reinstalled onto the desktop!
 [ ! -f /usr/share/applications/ubuntu-amazon-default.desktop ] || {
-    $PRINTINFO Nuking Amazon icon from Unity...
+    printinfo Nuking Amazon icon from Unity...
     rm -f /usr/share/applications/ubuntu-amazon-default.desktop
 }
 

@@ -3,9 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Exit if already run
 [ ! -f $STAMPDIR/99-clean-rootfs.stamp ] || exit 0
@@ -14,7 +12,7 @@ cd $SCRIPT_BINDDIR
 [ -n "$(ls config/clean-rootfs.d)" ] || exit 0
 
 # Delete each filespec in clean-rootfs.d
-$PRINTINFO Deleting selected files from chroot filesystem...
+printinfo Deleting selected files from chroot filesystem...
 for filelist in $SCRIPT_BINDDIR/config/clean-rootfs.d/*; do
     while read fs; do
         rm -rf $fs
@@ -23,6 +21,7 @@ done
 
 # Recreate /var/log/apt/ directory
 # TODO: figure out how to make this unnecessary
+# Answer: truncate!
 mkdir -p /var/log/apt
 
 touch $STAMPDIR/99-clean-rootfs.stamp

@@ -3,9 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. ./.config
-. config/config-vars
-. bin/chroot-functions.sh
+. bin/library.sh
 
 # Exit if upgrading packages is not configured
 [ -z ${CONFIG_UPGRADE_PACKAGES+x} ] || [ "$CONFIG_UPGRADE_PACKAGES" != "y" ] && exit 0
@@ -15,7 +13,7 @@ cd $SCRIPT_BINDDIR
 
 # Temporarily install policy file to prevent services from running
 [ -f /usr/bin/policy-rc.d ] || {
-    $PRINTINFO Installing temporary policy file to prevent services running...
+    printinfo Installing temporary policy file to prevent services running...
     install -o root -g root -m 755 \
         $CUSTOMDIR/apt/policy-rc.d \
         /usr/sbin
@@ -24,12 +22,12 @@ cd $SCRIPT_BINDDIR
 if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
     # HACK HACK HACK
     # See https://bugs.launchpad.net/y-ppa-manager/+bug/1464440
-    $PRINTINFO Unfscking wacom package for upgrade...
+    printinfo Unfscking wacom package for upgrade...
     rm -r /lib/udev/rules.d/69-wacom*
     rm -r /lib/systemd/system/wacom-inputattach\@.service
 fi
 
-$PRINTINFO Upgrading packages...
+printinfo Upgrading packages...
 apt-get update
 apt-get upgrade -y
 
@@ -37,6 +35,6 @@ apt-get upgrade -y
 rm -f /usr/sbin/policy-rc.d
 
 touch $STAMPDIR/20-packages-01-upgrade.stamp
-$PRINTSUCCESS Completed upgrading packages.
+printsuccess Completed upgrading packages.
 
 exit 0

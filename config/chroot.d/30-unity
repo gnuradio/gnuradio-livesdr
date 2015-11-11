@@ -3,16 +3,14 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Exit if already run
 [ ! -f $STAMPDIR/30-unity.stamp ] || exit 0
 
 [ /usr/share/gnome-session/sessions/ubuntu.session -nt \
   $CUSTOMDIR/unity/ubuntu.session ] || {
-    $PRINTINFO Installing custom Unity low graphics mode configuration...
+    printinfo Installing custom Unity low graphics mode configuration...
     install -m 644 \
         $CUSTOMDIR/unity/ubuntu.session \
         /usr/share/gnome-session/sessions/
