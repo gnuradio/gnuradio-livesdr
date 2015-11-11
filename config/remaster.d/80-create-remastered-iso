@@ -2,9 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 require_iso_rw_mounted
 
@@ -19,7 +17,7 @@ if [ "${CONFIG_ISO_UEFI-x}" = "y" ] ; then
     ISOHYBRID_UEFI_OPTS='--uefi'
 fi
 
-$PRINTINFO Creating remastered ISO image from read-write overlay...
+printinfo Creating remastered ISO image from read-write overlay...
 $SUDO $MKISOFS \
     -quiet \
     -D \
@@ -32,26 +30,17 @@ $SUDO $MKISOFS \
     $MKISOFS_UEFI_OPTS \
     -input-charset utf8 \
     -o $ISO_DIR/$REMASTER_NAME $ISOMNT_RW &&
-$SUDO chmod 444 $ISO_DIR/$REMASTER_NAME || {
-    $PRINTERROR Creating remastered ISO image failed!
-    exit 1
-}
+$SUDO chmod 444 $ISO_DIR/$REMASTER_NAME || die Creating remastered ISO image failed!
 
 # Allow booting either as CD or as HD image
-$PRINTINFO Converting ISO to hybrid boot...
-$SUDO $ISOHYBRID $ISOHYBRID_UEFI_OPTS $ISO_DIR/$REMASTER_NAME || {
-    $PRINTERROR Unable to make ISO image a hybrid boot!
-    exit 1
-}
+printinfo Converting ISO to hybrid boot...
+$SUDO $ISOHYBRID $ISOHYBRID_UEFI_OPTS $ISO_DIR/$REMASTER_NAME || die Unable to make ISO image a hybrid boot!
 
 # Calculate checksums
-$PRINTINFO Calculating MD5 and SHA256 checksums...
+printinfo Calculating MD5 and SHA256 checksums...
 cd $ISO_DIR
 md5sum $REMASTER_NAME > md5sums &&
-sha256sum $REMASTER_NAME > sha256sums || {
-    $PRINTERROR Unable to calculate checksums!
-    exit 1
-}
+sha256sum $REMASTER_NAME > sha256sums || die Unable to calculate checksums!
 cd - >/dev/null
 
 exit 0

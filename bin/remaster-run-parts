@@ -2,14 +2,13 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Exit if already run
 [ ! -f stamps/remaster.stamp ] || exit 0
 
 # TODO: export these in config-vars along with anything else needed
+# Why is this needed?
 export ROOTFSMNT_RW=$ROOTFSMNT_RW
 export ISOMNT_RW=$ISOMNT_RW
 export SCRIPT_BINDDIR=$SCRIPT_BINDDIR
@@ -17,15 +16,12 @@ export CUSTOMDIR=$CUSTOMDIR
 export STAMPDIR=$STAMPDIR
 
 # Execute each fragment in config/remaster.d
-$PRINTINFO Executing remastering scripts...
+printinfo Executing remastering scripts...
 require_rootfs_rw_mounted
 require_chroot_unmounted
 
 run-parts \
     --exit-on-err \
-    config/remaster.d || {
-    $PRINTERROR One or more remaster scripts failed!
-    exit 1
-}
+    config/remaster.d || die One or more remaster scripts failed!
 
-$PRINTINFO Remaster scripts execution completed.
+printinfo Remaster scripts execution completed.

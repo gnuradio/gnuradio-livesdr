@@ -2,9 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Bail if already done
 test_iso_ro_mounted && exit 0
@@ -13,11 +11,9 @@ test_iso_ro_mounted && exit 0
 mkdir_or_fail $ISOMNT_RO "Unable to create directory for mounting Ubuntu ISO image!"
 
 # Mount original ISO image
-$PRINTINFO Mounting Ubuntu ISO image file read-only...
-$SUDO $MOUNT -t iso9660 -oloop,ro $UBUNTU_ISO_FILE $ISOMNT_RO || {
-    $PRINTERROR Mounting of Ubuntu ISO image failed!
-    exit 1
-}
+printinfo Mounting Ubuntu ISO image file read-only...
+$SUDO $MOUNT -t iso9660 -oloop,ro $UBUNTU_ISO_FILE $ISOMNT_RO || \
+    die Mounting of Ubuntu ISO image failed!
 
 # Create read-write mount directory
 # TODO: detect presence of btrfs and make subvolume instead
@@ -25,10 +21,8 @@ mkdir_or_fail $ISOMNT_RW "Unable to create directory for mounting Ubuntu ISO rea
 
 # Mount read-write overlay
 # TODO: use btrfs seed mount?
-$PRINTINFO Mounting Ubuntu ISO image file read-write overlay...
-$SUDO $MOUNT -t overlayfs -olowerdir=$ISOMNT_RO,upperdir=$ISOMNT_RW overlayfs $ISOMNT_RW || {
-    $PRINTERROR Mounting of Ubuntu ISO read-write overlay failed!
-    exit 1
-}
+printinfo Mounting Ubuntu ISO image file read-write overlay...
+$SUDO $MOUNT -t overlayfs -olowerdir=$ISOMNT_RO,upperdir=$ISOMNT_RW overlayfs $ISOMNT_RW || \
+    die Mounting of Ubuntu ISO read-write overlay failed!
 
 exit 0

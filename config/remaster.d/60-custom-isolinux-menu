@@ -2,21 +2,20 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 ISOLINUX_DIR=$ISOMNT_RW/isolinux
 
 require_rootfs_rw_mounted
 
+# This should never be needed, but...
 [ -d $ISOLINUX_DIR ] || {
-    $PRINTINFO Creating target isolinux directory...
+    printinfo Creating target isolinux directory...
     $SUDO mkdir -p $ISOLINUX_DIR
 }
 
 [ $ISOLINUX_DIR/txt.cfg -nt custom/casper/txt.cfg ] || {
-    $PRINTINFO Installing custom isolinux menu configuration...
+    printinfo Installing custom isolinux menu configuration...
     $SUDO install -g root -o root -m 664 \
         custom/casper/txt.cfg \
         $ISOLINUX_DIR
