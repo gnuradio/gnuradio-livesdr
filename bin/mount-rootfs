@@ -2,29 +2,22 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Create read-only mount directory if needed
 require_iso_ro_mounted
 mkdir_or_fail $ROOTFSMNT_RO "Unable to create directory for mounting root filesystem!"
 
 # Mount root filesystem
-$PRINTINFO Mounting squashfs root filesystem read only...
-$SUDO $MOUNT -t squashfs -oro $ISOMNT_RO/casper/filesystem.squashfs $ROOTFSMNT_RO || {
-    $PRINTERROR Mounting of root filesystem failed!
-    exit 1
-}
+printinfo Mounting squashfs root filesystem read only...
+$SUDO $MOUNT -t squashfs -oro $ISOMNT_RO/casper/filesystem.squashfs $ROOTFSMNT_RO || \
+    die Mounting of root filesystem failed!
 
 mkdir_or_fail $ROOTFSMNT_RW "Unable to create directory for mounting root filesystem read-write overlay!"
 
 # Mount read-write overlay
-# TODO: use btrfs seed mount?
-$PRINTINFO Mounting squashfs root filesystem read-write overlay...
-$SUDO $MOUNT -t overlayfs -olowerdir=$ROOTFSMNT_RO,upperdir=$ROOTFSMNT_RW overlayfs $ROOTFSMNT_RW || {
-    $PRINTERROR Mounting of Ubuntu root filesystem read-write overlay failed!
-    exit 1
-}
+printinfo Mounting squashfs root filesystem read-write overlay...
+$SUDO $MOUNT -t overlayfs -olowerdir=$ROOTFSMNT_RO,upperdir=$ROOTFSMNT_RW overlayfs $ROOTFSMNT_RW || \
+    die Mounting of Ubuntu root filesystem read-write overlay failed!
 
 exit 0

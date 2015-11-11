@@ -2,9 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 require_chroot_mounted
 
@@ -16,6 +14,7 @@ else
 fi
 
 # Copy parent resolv.conf into chroot for DNS resolution
+# FIXME: save and restore
 $SUDO cp /etc/resolv.conf $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 
 # Create minimal path for chroot operations
@@ -25,15 +24,16 @@ if [ "${CONFIG_USE_CCACHE-x}" = "y" ] ; then
 fi
 
 # Drop into chroot with simple environment
-$PRINTINFO Entering into root filesystem chroot jail.
+printinfo Entering into root filesystem chroot jail.
 $SUDO chroot $ROOTFSMNT_RW /usr/bin/env -i \
     HOME=/root TERM=$TERM PS1='\u:\w\# ' DISPLAY=:0.0 \
     PATH="$CHROOT_PATH" \
     http_proxy="${http_proxy:-}" \
     /bin/bash --login -c $CMD
-$PRINTINFO Returned from root filesystem chroot jail.
+printinfo Returned from root filesystem chroot jail.
 
 # Remove resolv.conf from chroot
+# FIXME: save and restore
 $SUDO rm -f $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 $SUDO touch $ROOTFSMNT_RW/run/resolvconf/resolv.conf
 

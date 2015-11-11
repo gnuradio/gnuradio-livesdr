@@ -2,14 +2,12 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 require_rootfs_rw_mounted
 
 # Prepare chroot "system" mounts for operation
-$PRINTINFO Mounting chroot jail system mounts...
+printinfo Mounting chroot jail system mounts...
 $SUDO $MOUNT --bind    /dev/ $ROOTFSMNT_RW/dev/
 $SUDO $MOUNT -t proc   none  $ROOTFSMNT_RW/proc/
 $SUDO $MOUNT -t sysfs  none  $ROOTFSMNT_RW/sys/

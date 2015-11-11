@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -o nounset
+#set -o nounset   # Don't enable this, colors aren't set when not terminal
 #set -X #DEBUG
 
 # Test for supplied args

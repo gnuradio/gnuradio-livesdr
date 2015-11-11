@@ -2,28 +2,20 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 # Unmount Ubuntu ISO image read-write overlay if needed
 test_iso_rw_mounted && {
     # Unmount overlay
-    $PRINTINFO Unmounting Ubuntu ISO image read-write overlay...
-    $SUDO $UMOUNT $ISOMNT_RW || {
-        $PRINTERROR Failed to unmount Ubuntu ISO image read-write overlay!
-        exit 1
-    }
+    printinfo Unmounting Ubuntu ISO image read-write overlay...
+    $SUDO $UMOUNT -l $ISOMNT_RW || die Failed to unmount Ubuntu ISO image read-write overlay!
 }
 
 # Unmount Ubuntu ISO image read-only mount if needed
 test_iso_ro_mounted && {
     # Unmount image
-    $PRINTINFO Unmounting Ubuntu ISO image...
-    $SUDO $UMOUNT $ISOMNT_RO || {
-        $PRINTERROR Failed to unmount Ubuntu ISO image!
-        exit 1
-    }
+    printinfo Unmounting Ubuntu ISO image...
+    $SUDO $UMOUNT -l $ISOMNT_RO || die Failed to unmount Ubuntu ISO image!
 }
 
 exit 0

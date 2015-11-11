@@ -2,9 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 for cmd in \
     $CURL \
@@ -18,8 +16,8 @@ for cmd in \
     ; do
 
     if ! test -x $cmd ; then
-        $PRINTERROR $cmd not found or not executable!
-        $PRINTINFO Try running 'make deps'.
+        printerror $cmd not found or not executable!
+        printinfo Try running 'make deps'.
         exit 1
     fi
 done

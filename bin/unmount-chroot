@@ -2,12 +2,10 @@
 set -o nounset
 #set -x #DEBUG
 
-. ./.config
-. config/config-vars
-. bin/functions.sh
+. bin/library.sh
 
 test_chroot_mounted || exit 0
-$PRINTINFO Unmounting chroot jail mounts...
+printinfo Unmounting chroot jail mounts...
 
 # Undo ccache mount
 if [ "${CONFIG_USE_CCACHE-x}" = "y" ] ; then
