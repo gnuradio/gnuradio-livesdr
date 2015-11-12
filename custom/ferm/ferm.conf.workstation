@@ -1,0 +1,30 @@
+# -*- shell-script -*-
+
+# Base ferm configuration for workstation with no services
+
+table filter {
+    chain INPUT {
+        # Drop every incoming packet not whitelisted
+        policy DROP;
+
+        # Allow associated packets from outbound connections
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        # Accept all packets from lo interface
+        interface lo ACCEPT;
+
+        # Respond to ICMP requests only
+        proto icmp icmp-type echo-request ACCEPT;
+
+        # Allow ssh connections
+        #proto tcp dport ssh ACCEPT;
+
+    }
+
+    # Do not restrict any outbound traffic
+    chain OUTPUT policy ACCEPT;
+
+    # Do not forward any packets
+    chain FORWARD policy DROP;
+}
