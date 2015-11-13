@@ -5,15 +5,23 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/chroot-library.sh
 
-# TODO: make kconfig switchable
-FERMCONF=$CUSTOMDIR/ferm/ferm.conf.workstation
+if [ -z "${CONFIG_TOR_PROXY+x}" ] || \
+   [ "${CONFIG_TOR_PROXY_MANUAL-x}" = "y" ] ; then
+        SRCFILE=$CUSTOMDIR/ferm/ferm.conf.workstation
+elif [ "${CONFIG_TOR_TRANS_PROXY-x}" = "y" ] ; then
+        SRCFILE=$CUSTOMDIR/ferm/ferm.conf.trans
+
+elif [ "${CONFIG_TOR_ISOLATING_PROXY-x}" = "y" ]; then
+        SRCFILE=$CUSTOMDIR/ferm/ferm.conf.isolating
+fi
 
 # Exit if nothing to do
-[ /etc/ferm/ferm.conf -nt $FERMCONF ] && exit 0
+[ /etc/ferm/ferm.conf -nt $SRCFILE ] && exit 0
 printinfo Installing ferm firewall configuration...
 
+# Install ferm configuration file
 mkdir_or_fail /etc/ferm "Unable to create ferm configuration directory!"
 install -T -o root -g root -m 644 \
-    $FERMCONF /etc/ferm/ferm.conf || die "Unable to install ferm configuration file!"
+    $SRCFILE /etc/ferm/ferm.conf || die "Unable to install ferm configuration file!"
 
 exit 0

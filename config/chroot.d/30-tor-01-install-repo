@@ -1,0 +1,32 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/chroot-library.sh
+
+# Exit if not configured
+[ "${CONFIG_TOR_PROXY-x}" = "y" ] || exit 0
+
+# Exit if already run
+[ -f $STAMPDIR/30-tor-01-install-repo.stamp ] && exit 0
+
+# Add repostiory to apt
+printinfo Adding torproject repository to apt lists...
+if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+    SRCFILE=$CUSTOMDIR/tor/torproject.org.list-trusty
+else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
+    SRCFILE=$CUSTOMDIR/tor/torproject.org.list-wily
+     fi
+fi
+
+install \
+    -T -o root -g root -m 644 \
+    $SRCFILE \
+    /etc/apt/sources.list.d/tor-project.org.list
+
+apt-get update || die "Unable to update repositories!"
+
+touch $STAMPDIR/30-tor-01-install-repo.stamp
+
+exit 0
