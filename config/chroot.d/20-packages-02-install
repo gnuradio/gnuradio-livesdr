@@ -22,6 +22,9 @@ cd $SCRIPT_BINDDIR
         /usr/sbin
 }
 
+# Prevent user prompts
+export DEBIAN_FRONTEND=noninteractive
+
 # Install packages listed in config/install-pkgs.d
 printinfo Installing configured extra packages...
 for pkglist in config/install-pkgs.d/*; do

@@ -19,6 +19,9 @@ cd $SCRIPT_BINDDIR
         /usr/sbin
 }
 
+# Prevent user prompts
+export DEBIAN_FRONTEND=noninteractive
+
 if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
     # HACK HACK HACK
     # See https://bugs.launchpad.net/y-ppa-manager/+bug/1464440
