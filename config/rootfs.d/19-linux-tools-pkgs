@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Exit if stamp file exists
 [ ! -f $STAMPDIR/19-linux-tools-pkgs.stamp ] || exit 0

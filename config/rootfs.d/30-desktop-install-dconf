@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 [ -f /etc/skel/.config/dconf/user ] || {
     printinfo Installing live user dconf configuration...

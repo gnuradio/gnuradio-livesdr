@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Exit if not configured
 [ "${CONFIG_USE_CCACHE-x}" = "y" ] || exit 0
@@ -12,7 +12,7 @@ cd $SCRIPT_BINDDIR
 [ ! -f $STAMPDIR/30-ccache.stamp ] || exit 0
 
 # Set ccache size to 20G
-printinfo Configuring ccache for chroot...
+printinfo Configuring ccache for rootfs operation...
 CCACHE_DIR=/root/.ccache ccache -M 20G
 
 touch $STAMPDIR/30-ccache.stamp
