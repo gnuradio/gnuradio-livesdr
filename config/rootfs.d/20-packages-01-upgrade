@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Exit if upgrading packages is not configured
 [ -z ${CONFIG_UPGRADE_PACKAGES+x} ] || [ "$CONFIG_UPGRADE_PACKAGES" != "y" ] && exit 0

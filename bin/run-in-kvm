@@ -16,6 +16,7 @@ $KVM \
     -cdrom $ISO_DIR/$REMASTER_NAME \
     -smp cpus=4 \
     -m 4096 \
+    -vga std \
     -boot d
 
 exit 0

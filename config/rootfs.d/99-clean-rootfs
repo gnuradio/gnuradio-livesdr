@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Exit if already run
 [ ! -f $STAMPDIR/99-clean-rootfs.stamp ] || exit 0
@@ -12,7 +12,7 @@ cd $SCRIPT_BINDDIR
 [ -n "$(ls config/clean-rootfs.d)" ] || exit 0
 
 # Delete each filespec in clean-rootfs.d
-printinfo Deleting selected files from chroot filesystem...
+printinfo Deleting selected files from rootfs filesystem...
 for filelist in $SCRIPT_BINDDIR/config/clean-rootfs.d/*; do
     while read fs; do
         rm -rf $fs

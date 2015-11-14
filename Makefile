@@ -1,5 +1,5 @@
 -include ./.config
-include config/config-vars
+include config/config.vars
 
 # Get rid of Kconfig quoted strings
 UBUNTU_ISO_FILE_UNQ=$(shell echo $(UBUNTU_ISO_FILE))
@@ -57,36 +57,36 @@ mount: mount-chroot
 
 # Interactive chroot for misc. tasks
 chroot: mount
-	@bin/run-in-chroot
+	@bin/run-in-rootfs
 
-# Run pre-chroot job queue
-stamps/pre-chroot.stamp:
-	@bin/pre-chroot-run-parts
-	@touch stamps/pre-chroot.stamp
+# Run prepare job queue
+stamps/prep.d.stamp:
+	@bin/prep.d-run-parts
+	@touch stamps/prep.d.stamp
 
-pre-chroot: mount stamps/pre-chroot.stamp
+prep: mount stamps/prep.d.stamp
 
-stamps/chroot-ops.stamp:
-	@bin/run-in-chroot /root/live/bin/chroot-run-parts
-	@touch stamps/chroot-ops.stamp
+stamps/rootfs.d.stamp:
+	@bin/run-in-rootfs /root/live/bin/rootfs.d-run-parts
+	@touch stamps/rootfs.d.stamp
 
-chroot-ops: mount stamps/chroot-ops.stamp
+rootfs: mount stamps/rootfs.d.stamp
 
 # Target for entire custom content generation
-content: pre-chroot chroot-ops
+content: prep rootfs
 
 ###############
 # Remastering #
 ###############
 
-stamps/remaster.stamp:
-	@bin/remaster-run-parts
-	@touch stamps/remaster.stamp
+stamps/isofs.d.stamp:
+	@bin/isofs.d-run-parts
+	@touch stamps/isofs.d.stamp
 
-remaster: unmount-chroot stamps/remaster.stamp
+isofs: unmount-chroot stamps/isofs.d.stamp
 
 # Build a new master image based on current overlays
-binary: content remaster unmount
+binary: content isofs unmount
 
 ###########
 # Cleanup #

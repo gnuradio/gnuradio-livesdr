@@ -1,0 +1,21 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+. bin/library.sh
+
+# Exit if already run
+[ ! -f stamps/isofs.d.stamp ] || exit 0
+
+# Execute each fragment in config/isofs.d
+printinfo Executing remastered ISO creation scripts...
+require_rootfs_rw_mounted
+require_chroot_unmounted
+
+run-parts \
+    --exit-on-err \
+    config/isofs.d || die One or more remastering scripts failed!
+
+printsucesss ISO creation scripts completed.
+
+exit 0
