@@ -1,7 +1,7 @@
 export SCRIPT_BINDDIR=./
 
 . bin/functions.sh
-. config/config-vars
+. config/config.vars
 
 test_iso_ro_mounted () {
     [ -f $ISOMNT_RO_SENTINEL ]

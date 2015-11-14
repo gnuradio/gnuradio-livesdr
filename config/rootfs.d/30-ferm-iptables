@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # TODO: make kconfig switchable
 FERMCONF=$CUSTOMDIR/ferm/ferm.conf.workstation
