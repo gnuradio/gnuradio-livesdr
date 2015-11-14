@@ -2,7 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Force gnss-sdr to use libvolk for everything
 LWR=/usr/local/src/pybombs/recipes/gnss-sdr.lwr

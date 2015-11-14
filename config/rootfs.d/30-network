@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Exit if already run
 [ ! -f $STAMPDIR/30-network.stamp ] || exit 0

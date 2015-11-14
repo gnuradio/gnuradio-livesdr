@@ -2,7 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 FILENAME=opencl_runtime_14.2_x64_4.5.0.8.tgz
 URLBASE=http://registrationcenter.intel.com/irc_nas/4181

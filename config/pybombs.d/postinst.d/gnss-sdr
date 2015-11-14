@@ -2,7 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 printinfo Removing gnss-sdr installation binaries...
 rm -f /usr/local/src/pybombs/src/gnss-sdr/install/*

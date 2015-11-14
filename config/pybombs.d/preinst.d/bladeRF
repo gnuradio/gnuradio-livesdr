@@ -2,7 +2,7 @@
 set -o nounset
 #set -x #DEBUG
 
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Patch out custom config options in recipe
 LWR=/usr/local/src/pybombs/recipes/bladeRF.lwr
