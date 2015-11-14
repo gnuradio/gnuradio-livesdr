@@ -3,7 +3,7 @@ set -o nounset
 #set -x #DEBUG
 
 cd $SCRIPT_BINDDIR
-. bin/chroot-library.sh
+. bin/rootfs-library.sh
 
 # Exit if not configured
 [ "${CONFIG_TOR_PROXY-x}" = "y" ] || exit 0
