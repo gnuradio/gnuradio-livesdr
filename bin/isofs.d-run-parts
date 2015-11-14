@@ -16,6 +16,6 @@ run-parts \
     --exit-on-err \
     config/isofs.d || die One or more remastering scripts failed!
 
-printsucesss ISO creation scripts completed.
+printsuccess ISO creation scripts completed.
 
 exit 0

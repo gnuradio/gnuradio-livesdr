@@ -5,9 +5,10 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if already run
-#[ ! -f $STAMPDIR/30-unity-disable-scopes.stamp ] || exit 0
+exit 0
 
+# This won't work because it affects /root/.config/dconf/user
+# Need to figure out how to force it to use /etc/skel/.config/dconf/user
 printinfo "Disabling Unity remote scopes..."
 dbus-launch --exit-with-session gsettings set com.canonical.Unity.Lenses remote-content-search none &&
 dbus-launch --exit-with-session gsettings set com.canonical.Unity.Lenses disabled-scopes \
@@ -16,11 +17,13 @@ dbus-launch --exit-with-session gsettings set com.canonical.Unity.Lenses disable
       'more_suggestions-ebay.scope', 'more_suggestions-ubuntushop.scope',
       'more_suggestions-skimlinks.scope']" || die "Unable to disable remote scopes!"
 
+# This won't work because /etc/hosts gets regenerated somewhere, maybe
+# dnsmasq does it
 if ! grep -q productsearch.ubuntu.com /etc/hosts; then
     printinfo "Disabling Unity Dash keystroke spying..."
     echo "127.0.0.1 productsearch.ubuntu.com" >> /etc/hosts
 fi;
 
-#touch $STAMPDIR/30-unity-disable-scopes.stamp
+updated_rootfs
 
 exit 0

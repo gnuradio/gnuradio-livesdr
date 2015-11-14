@@ -10,19 +10,10 @@
                  backdev=$(get_backing_device "$image")
                  fstype=$(get_fstype "${backdev}")
                  if [ "${fstype}" = "unknown" ]; then
-@@ -563,7 +564,7 @@
- 
-     if [ -n "${LIVEMEDIA_OFFSET}" ]; then
-         loopdevname=$(setup_loop "${devname}" "loop" "/sys/block/loop*" "${LIVEMEDIA_OFFSET}")
--        devname="${loopdevname}" 
-+        devname="${loopdevname}"
-     fi
- 
-     fstype=$(get_fstype "${devname}")
-@@ -683,6 +684,18 @@
+@@ -683,2 +684,2 @@
          done
      fi
- 
+
 +    # ENCSQFS
 +    # Symlink was found and thus /cdrom was mounted, now set up crypto
 +    # to get /dev/mapper/squashfs so symlink is valid

@@ -5,15 +5,11 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# TODO: make kconfig switchable
-FERMCONF=$CUSTOMDIR/ferm/ferm.conf.workstation
+# TODO: make kconfig option
 
-# Exit if nothing to do
-[ /etc/ferm/ferm.conf -nt $FERMCONF ] && exit 0
-printinfo Installing ferm firewall configuration...
-
-mkdir_or_fail /etc/ferm "Unable to create ferm configuration directory!"
-install -T -o root -g root -m 644 \
-    $FERMCONF /etc/ferm/ferm.conf || die "Unable to install ferm configuration file!"
+refresh_or_install_file_as \
+    ferm.conf.workstation \
+    /etc/ferm/ferm.conf \
+    "Installing ferm firewall configuration..."
 
 exit 0

@@ -5,11 +5,9 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if upgrading packages is not configured
-[ -z ${CONFIG_UPGRADE_PACKAGES+x} ] || [ "$CONFIG_UPGRADE_PACKAGES" != "y" ] && exit 0
-
-# Exit if stamp file exists
-[ ! -f $STAMPDIR/20-packages-01-upgrade.stamp ] || exit 0
+# Exit if nothing to do
+exit_if_not_configured CONFIG_UPGRADE_PACKAGES
+exit_if_stamped $0
 
 # Temporarily install policy file to prevent services from running
 [ -f /usr/bin/policy-rc.d ] || {

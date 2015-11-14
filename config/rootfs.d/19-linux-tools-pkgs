@@ -5,9 +5,6 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if stamp file exists
-[ ! -f $STAMPDIR/19-linux-tools-pkgs.stamp ] || exit 0
-
 # Install linux-tools package names as approprite
 if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
     SRCFILE=$CUSTOMDIR/linux-tools/linux-tools-trusty
@@ -16,11 +13,12 @@ else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
      fi
 fi
 
-printinfo Installing linux-tools package names for Ubuntu version...
-install -T -o root -g root -m 644 \
-    $SRCFILE \
-    config/install-pkgs.d/linux-tools
+DSTFILE=config/install-pkgs.d/linux-tools
 
-touch $STAMPDIR/19-linux-tools-pkgs.stamp
+if [ ! -f $DSTFILE ] || [ $SRCFILE -nt $DSTFILE ] ; then
+    printinfo Installing linux-tools package names for Ubuntu version...
+    install -T -o root -g root -m 644 $SRCFILE $DSTFILE || \
+        die "Unable to install linux-tools package names!"
+fi
 
 exit 0

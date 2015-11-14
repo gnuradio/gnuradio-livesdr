@@ -5,21 +5,12 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if already run
-[ ! -f $STAMPDIR/30-unity.stamp ] || exit 0
+refresh_or_install_file \
+    /usr/share/gnome-session/sessions/ubuntu.session \
+    "Installing custom Unity low graphics mode session..."
 
-[ /usr/share/gnome-session/sessions/ubuntu.session -nt \
-  $CUSTOMDIR/unity/ubuntu.session ] || {
-    printinfo Installing custom Unity low graphics mode configuration...
-    install -m 644 \
-        $CUSTOMDIR/unity/ubuntu.session \
-        /usr/share/gnome-session/sessions/
-
-    install -m 644 \
-        $CUSTOMDIR/unity/unity7.conf \
-        /usr/share/upstart/sessions/unity7.conf
-}
-
-touch $STAMPDIR/30-unity.stamp
+refresh_or_install_file \
+    /usr/share/upstart/sessions/unity7.conf \
+    "Installing custom Unity upstart configuration..."
 
 exit 0

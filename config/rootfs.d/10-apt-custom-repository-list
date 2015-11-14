@@ -1,0 +1,25 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+
+# Install new apt sources file for expanded repositories
+if [ "${CONFIG_APT_INSTALL_SOURCES-x}" = "y" ] ; then
+
+    if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+        SRCFILE=sources.list-14.04.3
+    else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
+        SRCFILE=sources.list-15.10
+         fi
+    fi
+
+    refresh_or_install_file_as \
+        $SRCFILE \
+        /etc/apt/sources.list \
+        "Installing updated apt repository list..."
+
+fi
+
+exit 0

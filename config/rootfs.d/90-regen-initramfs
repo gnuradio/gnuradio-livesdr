@@ -5,36 +5,32 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Currently, only need to regen initramfs if using encrypted root
-# filesystem
-if [ "${CONFIG_ENCRYPT_ROOTFS-x}" != "y" ] ; then exit 0; fi
+# Only need a new initramfs if using encrypted rootfs
+exit_if_not_configured CONFIG_ENCRYPT_ROOTFS
+exit_if_stamped $0
 
-# Exit if already run once
-[ ! -f $STAMPDIR/90-regen-initramfs.stamp ] || exit 0
+refresh_or_install_file \
+    /etc/initramfs-tools/initramfs.conf \
+    "Installing custom initrd configuration..."
 
-printinfo Installing custom initrd configuration...
-install -g root -o root -m 664 \
-    $CUSTOMDIR/initramfs/initramfs.conf \
-    /etc/initramfs-tools
 
-printinfo Installing custom casper boot script...
 if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
-    install -T -g root -o root -m 664 \
-        $CUSTOMDIR/casper/casper-14.04.3 \
-        /usr/share/initramfs-tools/scripts/casper
-else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-    install -T -g root -o root -m 664 \
-        $CUSTOMDIR/casper/casper-15.10 \
-        /usr/share/initramfs-tools/scripts/casper
-     fi
+    SRCFILE=casper-14.04.3
+elif [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
+    SRCFILE-casper-15.10
 fi
+
+refresh_or_install_file_as \
+    $SRCFILE \
+    /usr/share/initramfs-tools/scripts/casper \
+    "Installing custom casper boot script..."
 
 # Create new initramfs that includes cryptsetup
 printinfo Creating new initramfs with crypto hooks...
 export CRYPTSETUP=y
 update-initramfs -k all -u || die Unable to execute update-initramfs!
 
-touch $STAMPDIR/90-regen-initramfs.stamp
-printsuccess done.
+updated_rootfs
+make_stamp
 
 exit 0
