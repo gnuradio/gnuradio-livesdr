@@ -5,10 +5,18 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# TODO: make kconfig option
+if [ -z "${CONFIG_TOR_PROXY+x}" ] || \
+   [ "${CONFIG_TOR_PROXY_MANUAL-x}" = "y" ] ; then
+        SRCFILE=ferm.conf.workstation
+elif [ "${CONFIG_TOR_TRANS_PROXY-x}" = "y" ] ; then
+        SRCFILE=ferm.conf.trans
+
+elif [ "${CONFIG_TOR_ISOLATING_PROXY-x}" = "y" ]; then
+        SRCFILE=ferm.conf.isolating
+fi
 
 refresh_or_install_file_as \
-    ferm.conf.workstation \
+    $SRCFILE \
     /etc/ferm/ferm.conf \
     "Installing ferm firewall configuration..."
 

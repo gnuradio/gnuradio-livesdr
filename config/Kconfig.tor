@@ -1,0 +1,43 @@
+config TOR_PROXY
+bool "Install Tor anonymizing network proxy"
+default n
+help
+
+  Installs the Tor anonymizing network proxy and allows configuration
+  for manual, transparent, or isolating operation.
+
+  If unsure, say no here.
+
+choice
+  prompt "Tor Proxy type"
+  depends on TOR_PROXY
+  help
+
+    Choose how Tor will interact with network and application traffic.
+
+    If unsure, choose "Manual operation".
+
+  config TOR_PROXY_MANUAL
+  bool "Manual operation"
+  help
+
+    Tor will be installed and make itself available for use by network
+    applications, however, normal network traffic remains unaffected.
+
+  config TOR_TRANS_PROXY
+  bool "Transparent proxy"
+  help
+
+    Tor will be installed and all network TCP and DNS traffic will be
+    automatically redirected to go over Tor. All non-TCP traffic will
+    be silently dropped.
+
+  config TOR_ISOLATING_PROXY
+  bool "Isolating proxy"
+  help
+
+    Tor will be installed and network applications will need to be
+    configured to use it.  All traffic not destined for Tor is
+    silently dropped.
+
+endchoice

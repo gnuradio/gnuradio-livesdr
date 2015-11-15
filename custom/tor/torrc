@@ -1,0 +1,23 @@
+# Provide default service on 127.0.0.1
+SocksPort 127.0.0.1:9050 IsolateDestAddr IsolateDestPort
+
+# Provide control port locally
+ControlPort 9051
+ControlListenAddress 127.0.0.1
+DisableDebuggerAttachment 0
+
+# Torified DNS
+DNSPort 5353
+AutomapHostsOnResolve 1
+AutomapHostsSuffixes .exit,.onion
+WarnUnsafeSocks 0
+
+# Transparent proxy
+Transport 9040
+TransListenAddress 127.0.0.1
+
+# Make outbound connections through 80 and 443 only
+FascistFirewall 1
+
+# Misc
+AvoidDiskWrites 1

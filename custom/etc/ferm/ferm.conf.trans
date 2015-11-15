@@ -1,0 +1,69 @@
+# -*- shell-script -*-
+
+# Base ferm configuration for workstation with transparent Tor proxy
+
+# FIXME: don't assume this
+@def $TOR_ID = 105;
+
+# Torified DNS server
+@def $TOR_DNSPORT = 5353;
+
+# Transparent Tor port
+@def $TOR_TRANSPORT = 9040;
+
+table filter {
+    chain INPUT {
+        # Drop every incoming packet not whitelisted
+        policy DROP;
+
+        # Allow associated packets from outbound connections
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        # Accept all packets from lo interface
+        interface lo ACCEPT;
+
+        # Respond to ICMP requests only
+        proto icmp icmp-type echo-request ACCEPT;
+
+        # Allow ssh connections
+        #proto tcp dport ssh ACCEPT;
+
+        LOG log-prefix 'input-drop: ';
+    }
+
+    chain OUTPUT {
+        policy DROP;
+
+        # Allow associated packets from outbound connections
+        mod state state INVALID DROP;
+        mod state state (ESTABLISHED RELATED) ACCEPT;
+
+        # Accept Tor generated traffic
+        mod owner uid-owner $TOR_ID ACCEPT;
+
+        # Accept traffic for Tor
+        proto tcp daddr 127.0.0.1 dport $TOR_TRANSPORT ACCEPT;
+        proto udp daddr 127.0.0.1 dport $TOR_DNSPORT ACCEPT;
+
+        LOG log-prefix 'output-drop: ';
+    }
+
+    # Do not forward any packets
+    chain FORWARD policy DROP;
+}
+
+table nat {
+    chain OUTPUT {
+        policy ACCEPT;
+
+        # Don't redirect packets from Tor itself
+        mod owner uid-owner $TOR_ID RETURN;
+
+        # Redirect DNS to Tor DNSPort
+        proto udp dport 53 REDIRECT to-ports $TOR_DNSPORT;
+
+        # Redirect all remaining tcp traffic to main Tor transport
+        proto tcp syn REDIRECT to-ports $TOR_TRANSPORT;
+    }
+}
