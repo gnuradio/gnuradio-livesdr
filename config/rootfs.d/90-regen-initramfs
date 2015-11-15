@@ -28,9 +28,9 @@ refresh_or_install_file_as \
 # Create new initramfs that includes cryptsetup
 printinfo Creating new initramfs with crypto hooks...
 export CRYPTSETUP=y
-update-initramfs -k all -u || die Unable to execute update-initramfs!
+update-initramfs -k all -u || die "Unable to execute update-initramfs!"
 
 updated_rootfs
-make_stamp
+make_stamp $0
 
 exit 0

@@ -1,0 +1,60 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+
+# Exit if nothing to do
+exit_if_not_configured CONFIG_TOR_PROXY
+
+TOR_KEY_ID=886DDD89
+GPG=/usr/bin/gpg
+APT_KEYRING=/etc/apt/trusted.gpg
+
+# Import torproject.org deb signing key
+$GPG --list-keys $TOR_KEY_ID >/dev/null || {
+    printinfo Retrieving torproject.org gpg key...
+    $GPG --keyserver keys.gnupg.net --recv-keys $TOR_KEY_ID || die Import of key failed!
+    printsuccess Import successful.
+}
+
+# Add key to chroot apt-key keyring
+# FIXME: bypass installing it in root's .gnupg and just grab it directly here
+apt-key --keyring $APT_KEYRING list | grep -q $TOR_KEY_ID || {
+    printinfo Installing torproject.org public key into chroot apt-key keyring...
+    $GPG --export A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89 | apt-key --keyring $APT_KEYRING add - || \
+        die Failed to import key into apt-key keyring!
+
+    updated_rootfs
+}
+
+# Add repostiory to apt
+if [ ! -f /etc/apt/sources.list.d/torproject.org.list ] ; then
+    printinfo Adding torproject repository to apt lists...
+
+    if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+        SRCFILE=torproject.org.list-trusty
+    elif [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
+        SRCFILE=torproject.org.list-wily
+    fi
+
+    refresh_or_install_file_as \
+        $SRCFILE \
+        /etc/apt/sources.list.d/torproject.org.list \
+        "Installing Tor project repository..."
+
+    prevent_services_running
+    apt-get update || die "Unable to update repositories!"
+    apt-get install -q -q -y tor tor-arm || die "Unable to install Tor applications!"
+    allow_services_to_run
+
+    updated_rootfs
+fi
+
+refresh_or_install_file \
+    /etc/tor/torrc \
+    "Installing custom Tor configuration file..." \
+    debian-tor debian-tor 644
+
+exit 0
