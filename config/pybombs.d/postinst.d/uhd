@@ -11,20 +11,13 @@ set -o nounset
         die Unable to install UHD udev rules file!
 }
 
-# Install the sysctl params for the network stack
-[ -f /etc/sysctl.d/10-uhd-buffers.conf ] || {
-    printinfo Installing UHD sysctl params...
-    install -g root -o root -m 644 $CUSTOMDIR/uhd/10-uhd-buffers.conf /etc/sysctl.d || \
-        die Unable to copy UHD sysctl params into place!
-}
+refresh_or_install_file \
+    /etc/sysctl.d/10-uhd-buffers.conf \
+    "Installing UHD sysctl params..."
 
-# Install the limits file for real-time priority
-[ -f /etc/security/limits.d/10-uhd-limits.conf ] || {
-    printinfo Installing UHD limits file...
-    mkdir -p /etc/security/limits.d
-    install -g root -o root -m 644 $CUSTOMDIR/uhd/10-uhd-limits.conf /etc/security/limits.d || \
-        die Unable to copy UHD limits file into place!
-}
+refresh_or_install_file \
+    /etc/security/limits.d/10-uhd-limits.conf \
+    "Installing UHD limits file..."
 
 # Download and install firmware images
 [ -f /usr/local/share/uhd/images/LICENSE ] || {

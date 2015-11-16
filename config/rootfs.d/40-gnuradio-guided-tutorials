@@ -1,0 +1,25 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+. config/gnuradio.vars
+
+# Install Guided tutorials
+TUTDIR="/etc/skel/tutorials"
+[ -d "$TUTDIR" ] || {
+    mkdir -p "$TUTDIR"
+    printinfo "Installing GNU Radio guided tutorials..."
+    wget -q --page-requisites --convert-links --adjust-extension \
+         --recursive --level=1 --no-directories \
+         --no-host-directories \
+         --reject-regex "history|rename|protect|edit|watch|news|issues|activity|Development|Sponsor|search|users|index|roadmap|gnuradio$|wiki$|Installing|projects$|login|register|repository|files$|gnuradio$" \
+         --directory-prefix="$TUTDIR" \
+         http://gnuradio.org/redmine/projects/gnuradio/wiki/Guided_Tutorials || \
+    die Failed to retrieve guided tutorials content!
+
+    ln -sf /home/ubuntu/tutorials/Guided_Tutorials.html /etc/skel/Desktop
+}
+
+exit 0

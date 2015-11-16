@@ -1,0 +1,12 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+
+refresh_or_install_file \
+    /usr/local/share/gnuradio/gnuradio_logo.png \
+    "Installing GNU Radio logo file..."
+
+exit 0

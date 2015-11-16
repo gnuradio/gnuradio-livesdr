@@ -20,42 +20,4 @@ set -o nounset
         /etc/skel/Desktop
 }
 
-# Install live user configuration files
-[ -f /etc/skel/.gnuradio/config.conf ] || {
-    printinfo Installing live user configuration files...
-    install -d -o 999 -g 999 /etc/skel/.gnuradio &&
-    install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/config.conf /etc/skel/.gnuradio &&
-    install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/thrift.conf /etc/skel/.gnuradio &&
-    install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/.bash_aliases /etc/skel &&
-    install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/clabs.qss /usr/local/share/gnuradio/themes &&
-    install -g 999 -o 999 -m 644 $CUSTOMDIR/gnuradio/.octaverc /etc/skel || \
-        die Unable to install live user GNU Radio configuration files!
-}
-
-# Install documentation desktop shortcut
-[ -h "/etc/skel/Desktop/GNU Radio Documentation" ] || {
-    printinfo Installing GNU Radio documentation shortcut...
-    # FIXME automate the below versioned directory
-    ln -sf /usr/local/share/doc/gnuradio-3.7.8.1/html/index.html \
-        "/etc/skel/Desktop/GNU Radio Documentation" || \
-    die Unable to install GNU Radio Documentation shortcut!
-}
-
-# Install Guided tutorials
-TUTDIR="/etc/skel/tutorials"
-[ -d "$TUTDIR" ] || {
-    mkdir -p "$TUTDIR"
-    printinfo "Installing GNU Radio guided tutorials..."
-    wget -q --page-requisites --convert-links --adjust-extension \
-         --recursive --level=1 --no-directories \
-         --no-host-directories \
-         --reject-regex "history|rename|protect|edit|watch|news|issues|activity|Development|Sponsor|search|users|index|roadmap|gnuradio$|wiki$|Installing|projects$|login|register|repository|files$|gnuradio$" \
-         --directory-prefix="$TUTDIR" \
-         http://gnuradio.org/redmine/projects/gnuradio/wiki/Guided_Tutorials || \
-    die Failed to retrieve guided tutorials content!
-
-    cd /etc/skel/Desktop
-    ln -sf "/home/ubuntu/tutorials/Guided_Tutorials.html" .
-}
-
 exit 0

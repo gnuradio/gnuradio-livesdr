@@ -1,0 +1,19 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+
+. config/gnuradio.vars
+
+# Install documentation desktop shortcut
+[ -h "/etc/skel/Desktop/GNU Radio Documentation" ] || {
+    printinfo Installing GNU Radio documentation shortcut...
+    mkdir -p /etc/skel/Desktop
+    ln -sf /usr/local/share/doc/gnuradio-$GNURADIO_DOC_VERSION/html/index.html \
+        "/etc/skel/Desktop/GNU Radio Documentation" || \
+    die Unable to install GNU Radio Documentation shortcut!
+}
+
+exit 0

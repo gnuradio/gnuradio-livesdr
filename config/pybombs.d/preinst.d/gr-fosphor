@@ -8,7 +8,7 @@ FILENAME=opencl_runtime_14.2_x64_4.5.0.8.tgz
 URLBASE=http://registrationcenter.intel.com/irc_nas/4181
 URL=$URLBASE/$FILENAME
 DIRNM=pset_opencl_runtime_14.1_x64_4.5.0.8
-TMPDIR=$SCRIPT_BINDDIR/tmp
+TMPDIR=/tmp/fosphor
 DESTDIR=/
 
 # Install Intel OpenCL CPU driver if needed
@@ -18,8 +18,6 @@ DESTDIR=/
     [ -d $TMPDIR ] || {
         printinfo Creating temporary work area $TMPDIR...
         mkdir -p $TMPDIR || die Unable to create tempdir $TMPDIR
-	    exit 1
-        }
     }
     cd $TMPDIR
 

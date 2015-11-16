@@ -1,0 +1,15 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+
+if [ ! -d /etc/skel/.mozilla ] ||
+   [ $CUSTOMDIR/etc/skel/.mozilla -nt /etc/skel/.mozilla ] ; then
+     printinfo Installing custom Mozilla profile...
+     cp -a $CUSTOMDIR/etc/skel/.mozilla /etc/skel
+     chown 999.999 -R /etc/skel/.mozilla
+fi
+
+exit 0

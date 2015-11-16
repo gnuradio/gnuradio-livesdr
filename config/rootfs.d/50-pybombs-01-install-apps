@@ -5,9 +5,6 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if already run
-[ ! -f $STAMPDIR/50-pybombs-01-install-apps.stamp ] || exit 0
-
 # Function to execute a single PyBOMBS package install
 do_pybombs_install () {
     # Test for required arguments
@@ -132,7 +129,5 @@ while read LINE ; do
         }
     }
 done < config/pybombs.d/install.conf
-
-touch $STAMPDIR/50-pybombs-01-install-apps.stamp
 
 exit 0
