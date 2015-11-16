@@ -7,9 +7,9 @@ cd $SCRIPT_BINDDIR
 
 # Install linux-tools package names as approprite
 if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
-    SRCFILE=$CUSTOMDIR/linux-tools/linux-tools-trusty
+    SRCFILE=custom/linux-tools/linux-tools-trusty
 else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-    SRCFILE=$CUSTOMDIR/linux-tools/linux-tools-wily
+    SRCFILE=custom/linux-tools/linux-tools-wily
      fi
 fi
 

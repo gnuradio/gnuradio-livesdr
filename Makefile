@@ -90,6 +90,7 @@ clean:
 	@find config/ -type f -name *~ -delete
 
 dist-clean: unmount clean
+	@rm -f config/install-pkgs.d/linux-tools
 	@rm -f ${ISO_DIR}/${REMASTER_NAME}
 	@rm -f ${ISO_DIR}/${UBUNTU_ISO_BASE}.tmp
 	@rm -f ${ISO_DIR}/SHA256SUM*
