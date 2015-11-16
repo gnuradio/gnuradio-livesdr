@@ -10,9 +10,9 @@ SQUASHFS_FILE=$ISOMNT_RW/casper/filesystem.squashfs
 
 # Exit if nothing to do
 if [ "${CONFIG_ENCRYPT_ROOTFS-x}" = "y" ] ; then
-    if [ $SQUASHFS_FILE.luks -nt stamps/chroot-ops.stamp ] ; then exit 0; fi
+    if [ $SQUASHFS_FILE.luks -nt stamps/rootfs.stamp ] ; then exit 0; fi
 else
-    if [ $SQUASHFS_FILE -nt stamps/chroot-ops.stamp ] ; then exit 0; fi
+    if [ $SQUASHFS_FILE -nt stamps/rootfs.stamp ] ; then exit 0; fi
 fi
 
 require_rootfs_rw_mounted
