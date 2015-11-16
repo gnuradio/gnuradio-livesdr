@@ -10,14 +10,7 @@ exit_if_not_configured CONFIG_UPGRADE_PACKAGES
 exit_if_stamped $0
 
 # Temporarily install policy file to prevent services from running
-[ -f /usr/bin/policy-rc.d ] || {
-    printinfo Installing temporary policy file to prevent services running...
-    install -o root -g root -m 755 \
-        $CUSTOMDIR/apt/policy-rc.d \
-        /usr/sbin
-}
-
-# Prevent user prompts
+prevent_services_running
 export DEBIAN_FRONTEND=noninteractive
 
 if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
@@ -32,10 +25,8 @@ printinfo Upgrading packages...
 apt-get update
 apt-get upgrade -y
 
-# Remove policy file
-rm -f /usr/sbin/policy-rc.d
-
-touch $STAMPDIR/20-packages-01-upgrade.stamp
+allow_services_to_run
+make_stamp $0
 printsuccess Completed upgrading packages.
 
 exit 0
