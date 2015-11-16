@@ -14,7 +14,7 @@ require_chroot_unmounted
 
 run-parts \
     --exit-on-err \
-    config/isofs.d || die One or more remastering scripts failed!
+    scripts/isofs.d || die One or more remastering scripts failed!
 
 printsuccess ISO creation scripts completed.
 

@@ -6,16 +6,16 @@ cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
 # Exit if nothing to do
-[ -n "$(ls config/rootfs.d)" ] || exit 0
+[ -n "$(ls scripts/rootfs.d)" ] || exit 0
 
 # The scripts will get the rest of their configuration from
-# config/chroot-vars
+# config/rootfs.vars
 export SCRIPT_BINDDIR=$SCRIPT_BINDDIR
 
 # Execute each fragment in config/clean-rootfs.d
 printinfo Executing root filesystem customization scripts...
 run-parts \
     --exit-on-err \
-    config/rootfs.d || die One or more rootfs customization scripts failed!
+    scripts/rootfs.d || die One or more rootfs customization scripts failed!
 
 exit 0
