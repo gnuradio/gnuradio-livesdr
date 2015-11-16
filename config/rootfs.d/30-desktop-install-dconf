@@ -5,20 +5,16 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-[ -f /etc/skel/.config/dconf/user ] || {
-    printinfo Installing live user dconf configuration...
-    mkdir -p /etc/skel/.config/dconf
+if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+    SRCFILE=user-trusty
+elif [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
+    SRCFILE=user-wily
+fi
 
-    if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
-        SRCFILE=user-trusty
-    else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-        SRCFILE=user-wily
-         fi
-    fi
-
-    install -T -g 999 -o 999 -m 644 \
-        $CUSTOMDIR/desktop/dconf/$SRCFILE \
-        /etc/skel/.config/dconf/user
-}
+refresh_or_install_file_as \
+    $SRCFILE \
+    /etc/skel/.config/dconf/user \
+    "Installing live user dconf configuration" \
+    999 999 644
 
 exit 0

@@ -5,12 +5,8 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-[ -f /etc/skel/.config/autostart/indicator-multiload.desktop ] || {
-    printinfo Installing desktop autostart for indicator-multiload...
-    mkdir -p /etc/skel/.config/autostart
-    install -g 999 -o 999 -m 644 \
-        $CUSTOMDIR/desktop/autostart/indicator-multiload.desktop \
-        /etc/skel/.config/autostart
-}
+refresh_or_install_file \
+    /etc/skel/.config/autostart/indicator-multiload.desktop \
+    "Installing desktop autostart for indicator-multiload..."
 
 exit 0

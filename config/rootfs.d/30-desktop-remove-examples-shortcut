@@ -5,9 +5,12 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
+# Remove examples shortcut from desktop
 [ ! -f /etc/skel/examples.desktop ] || {
     printinfo Removing desktop examples shortcut...
     rm -f /etc/skel/examples.desktop
+
+    updated_rootfs
 }
 
 exit 0

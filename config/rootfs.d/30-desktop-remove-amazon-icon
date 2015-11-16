@@ -10,6 +10,8 @@ cd $SCRIPT_BINDDIR
 [ ! -f /usr/share/applications/ubuntu-amazon-default.desktop ] || {
     printinfo Nuking Amazon icon from Unity...
     rm -f /usr/share/applications/ubuntu-amazon-default.desktop
+
+    updated_rootfs
 }
 
 exit 0

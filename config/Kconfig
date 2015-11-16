@@ -27,4 +27,8 @@ config USE_CCACHE
 
 endmenu
 
+menu "Privacy enhancing options"
+  source config/Kconfig.tor
+endmenu
+
 source config/Kconfig.iso

@@ -5,24 +5,11 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if stamp file exists
-[ ! -f $STAMPDIR/20-packages-00-uninstall.stamp ] || exit 0
-
-# Exit if removing packages is not configured
-[ -z ${CONFIG_REMOVE_PACKAGES+x} ] || [ "$CONFIG_REMOVE_PACKAGES" != "y" ] && exit 0
-
 # Exit if nothing to do
-[ -n "$(ls config/remove-pkgs.d)" ] || exit 0
+exit_if_not_configured CONFIG_REMOVE_PACKAGES
+exit_if_stamped $0
 
-# Temporarily install policy file to prevent services from running
-[ -f /usr/bin/policy-rc.d ] || {
-    printinfo Installing temporary policy file to prevent services running...
-    install -o root -g root -m 755 \
-        $CUSTOMDIR/apt/policy-rc.d \
-        /usr/sbin
-}
-
-# Prevent user prompts
+prevent_services_running
 export DEBIAN_FRONTEND=noninteractive
 
 printinfo Removing configured packages...
@@ -32,10 +19,9 @@ for pkglist in $SCRIPT_BINDDIR/config/remove-pkgs.d/*; do
     apt-get -q -q -y autoremove
 done
 
-# Remove policy file
-rm -f /usr/sbin/policy-rc.d
+allow_services_to_run
+updated_rootfs
+make_stamp $0
 
-touch $STAMPDIR/20-packages-00-uninstall.stamp
-printinfo Completed removing configured packages.
-
+printsuccess Completed removing configured packages.
 exit 0

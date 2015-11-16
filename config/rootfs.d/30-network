@@ -5,21 +5,14 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if already run
-[ ! -f $STAMPDIR/30-network.stamp ] || exit 0
+# This broken; needs to update /etc/resolvconf.d/tail
+#refresh_or_install_file \
+#    /etc/resolv.conf \
+#    "Installing custom resolv.conf"
 
-# Install resolv.conf to allow resolution from inside chroot
-printinfo Installing custom resolv.conf...
-install -o root -g root -m 664 \
-    $CUSTOMDIR/network/resolv.conf \
-    /etc/
-
-# Install network manager profiles
-printinfo Installing custom Network Manager profiles...
-install -o root -g root -m 400 \
-    -t /etc/NetworkManager/system-connections/ \
-    $CUSTOMDIR/network/NetworkManager/*
-
-touch $STAMPDIR/30-network.stamp
+refresh_or_install_files \
+    /etc/NetworkManager/system-connections/ \
+    "Installing custom NetworkManager connections..." \
+    root root 400 # Permissions are required
 
 exit 0

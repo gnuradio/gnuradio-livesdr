@@ -5,36 +5,23 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Exit if stamp file exists
-[ ! -f $STAMPDIR/20-packages-02-install.stamp ] || exit 0
-
-# Exit if installing packages is not configured
-[ -z ${CONFIG_INSTALL_PACKAGES+x} ] || [ "$CONFIG_INSTALL_PACKAGES" != "y" ] && exit 0
-
 # Exit if nothing to do
+exit_if_not_configured CONFIG_INSTALL_PACKAGES
+exit_if_stamped $0
 [ -n "$(ls config/install-pkgs.d)" ] || exit 0
 
-# Temporarily install policy file to prevent services from running
-[ -f /usr/bin/policy-rc.d ] || {
-    printinfo Installing temporary policy file to prevent services running...
-    install -o root -g root -m 755 \
-        $CUSTOMDIR/apt/policy-rc.d \
-        /usr/sbin
-}
-
-# Prevent user prompts
+prevent_services_running
 export DEBIAN_FRONTEND=noninteractive
 
 # Install packages listed in config/install-pkgs.d
-printinfo Installing configured extra packages...
+printinfo Installing configured additional packages...
 for pkglist in config/install-pkgs.d/*; do
     pkgs=`cat $pkglist`
     apt-get install -y $pkgs || die Package installation failure!
 done
 
-# Remove policy file
-printinfo Removing temporary policy-rc.d
-rm -f /usr/sbin/policy-rc.d
-touch $STAMPDIR/20-packages-02-install.stamp
+allow_services_to_run
+updated_rootfs
+make_stamp $0
 
 exit 0
