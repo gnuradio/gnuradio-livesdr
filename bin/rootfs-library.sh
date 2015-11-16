@@ -36,6 +36,38 @@ refresh_or_install_file () {
     fi
 }
 
+refresh_or_install_files () {
+    # $1 is absolute dir path
+    # $2 is output comment
+    # $3 is owner, default root
+    # $4 is group, default root
+    # $5 is mode, default 644
+    local msgprinted
+    msgprinted=no
+
+    for file in $CUSTOMDIR/$1/*; do
+        local base dest
+        base=$(basename "$file")
+        dest="$1/$base"
+
+        if [ ! -f "$dest" ] || [ "$file" -nt "$dest" ] ; then
+            if [ "$msgprinted" = "no" ] ; then
+                printinfo $2
+                msgprinted=yes
+            fi
+            mkdir_or_fail "$1"
+            install \
+                -o "${3:-root}" \
+                -g "${4:-root}" \
+                -m "${5:-0644}" \
+                "$file" \
+                "$1" || die "Unable to install/update $file !"
+
+            updated_rootfs
+        fi
+    done
+}
+
 refresh_or_install_file_as () {
     # $1 is the source filename only
     # $2 is the absolute file path of final file name
