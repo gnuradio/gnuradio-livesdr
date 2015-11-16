@@ -17,7 +17,7 @@ require_rootfs_rw_mounted
 [ $ISOLINUX_DIR/txt.cfg -nt custom/casper/txt.cfg ] || {
     printinfo Installing custom isolinux menu configuration...
     $SUDO install -g root -o root -m 664 \
-        custom/casper/txt.cfg \
+        custom/isofs/casper/txt.cfg \
         $ISOLINUX_DIR
 
     # Indicate ISO RW filesystem modified
