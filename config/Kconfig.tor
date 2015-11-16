@@ -1,5 +1,6 @@
 config TOR_PROXY
 bool "Install Tor anonymizing network proxy"
+depends on UBUNTU_RELEASE_TRUSTY
 default n
 help
 

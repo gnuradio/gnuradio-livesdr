@@ -9,7 +9,7 @@ printinfo Executing prepartion scripts...
 
 run-parts \
     --exit-on-err \
-    config/prep.d || die One or more preparation scripts failed!
+    scripts/prep.d || die One or more preparation scripts failed!
 
 printinfo Preparation scripts completed.
 

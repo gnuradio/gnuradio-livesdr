@@ -60,17 +60,12 @@ chroot: mount
 	@bin/run-in-rootfs
 
 # Run prepare job queue
-stamps/prep.d.stamp:
+prep: mount
 	@bin/prep.d-run-parts
-	@touch stamps/prep.d.stamp
 
-prep: mount stamps/prep.d.stamp
-
-stamps/rootfs.d.stamp:
+# Run rootfs job queue
+rootfs:
 	@bin/run-in-rootfs /root/live/bin/rootfs.d-run-parts
-	@touch stamps/rootfs.d.stamp
-
-rootfs: mount stamps/rootfs.d.stamp
 
 # Target for entire custom content generation
 content: prep rootfs
@@ -79,11 +74,8 @@ content: prep rootfs
 # Remastering #
 ###############
 
-stamps/isofs.d.stamp:
+isofs: unmount-chroot
 	@bin/isofs.d-run-parts
-	@touch stamps/isofs.d.stamp
-
-isofs: unmount-chroot stamps/isofs.d.stamp
 
 # Build a new master image based on current overlays
 binary: content isofs unmount
@@ -98,6 +90,7 @@ clean:
 	@find config/ -type f -name *~ -delete
 
 dist-clean: unmount clean
+	@rm -f config/install-pkgs.d/linux-tools
 	@rm -f ${ISO_DIR}/${REMASTER_NAME}
 	@rm -f ${ISO_DIR}/${UBUNTU_ISO_BASE}.tmp
 	@rm -f ${ISO_DIR}/SHA256SUM*

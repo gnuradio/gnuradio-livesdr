@@ -29,6 +29,21 @@ endmenu
 
 menu "Privacy enhancing options"
   source config/Kconfig.tor
+
+config ENCRYPT_ROOTFS
+  bool "Encrypt root filesystem"
+  default n
+  help
+
+    Enabling this option will replace the compressed root-filesystem
+    with an encrypted LUKS container. During build of the image, you
+    will be prompted for a decryption passphrase (3 times).  During
+    operation, you will be required to enter this passphrase, and the
+    root filesystem will be automatically decrypted and decompressed
+    on-the-fly as needed.
+
+    If in question, say no here.
+
 endmenu
 
 source config/Kconfig.iso

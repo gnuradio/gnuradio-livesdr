@@ -15,6 +15,7 @@ choice
 
   config UBUNTU_RELEASE_WILY
     bool "Ubuntu 15.10 Desktop 64-bit"
+    depends on EXPERIMENTAL
     help
 
       This is the current latest release of Ubuntu Desktop, for use
