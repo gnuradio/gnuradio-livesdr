@@ -6,8 +6,8 @@ set -o nounset
 
 # Download and install associated FPGA bitstream and firmware files
 
-BLADERF_FPGA_VERSION=v0.3.4
-BLADERF_FW_VERSION=v1.8.0
+BLADERF_FPGA_VERSION=v0.4.1
+BLADERF_FW_VERSION=v1.8.1
 
 NUAND_SHARE=/usr/local/share/Nuand/bladeRF
 
@@ -19,7 +19,7 @@ NUAND_SHARE=/usr/local/share/Nuand/bladeRF
     curl -# http://nuand.com/fpga/${BLADERF_FPGA_VERSION}/hostedx115.rbf \
         -o /tmp/bladeRF/hostedx115.rbf &&
     curl -# http://nuand.com/fx3/bladeRF_fw_${BLADERF_FW_VERSION}.img \
-        -o /tmp/bladeRF/bladeRF_fw_v1.8.0.img || \
+        -o /tmp/bladeRF/bladeRF_fw_${BLADERF_FW_VERSION}.img || \
     die Unable to download bladeRF FPGA and firmware files!
 
     printinfo Downloading checksums...
@@ -28,7 +28,7 @@ NUAND_SHARE=/usr/local/share/Nuand/bladeRF
     curl -# http://nuand.com/fpga/${BLADERF_FPGA_VERSION}/hostedx115.rbf.sha256sum \
         -o /tmp/bladeRF/hostedx115.rbf.sha256sum &&
     curl -# http://nuand.com/fx3/bladeRF_fw_${BLADERF_FW_VERSION}.img.sha256sum \
-        -o /tmp/bladeRF/bladeRF_fw_v1.8.0.img.sha256sum ||
+        -o /tmp/bladeRF/bladeRF_fw_${BLADERF_FW_VERSION}.img.sha256sum ||
     die Unable to download checksums!
 
     printinfo Verifying checksums...
