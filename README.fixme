@@ -1,0 +1,57 @@
+Miscellaneous small fixes or improvements needed:
+
+- migrate bin/get-stock-iso into prep.d queue
+
+- linux-tools package name(s) can be determined from linux kernel name
+  instead of manual files like now
+
+- update linux kernel to latest during upgrade
+
+- update to casper script should be done via diff instead of
+  replacement
+
+- check if wacom fix still needed for upgrading packages
+
+- ccache max size could be configurable
+
+- make indicate-multiload Kconfig-urable as part of "Desktop" group
+
+- make ferm Kconfig-urable as part of group "Security", make Tor
+  installation dependent on this being installed
+
+- make linux-tools Kconfig-urable as part of group "Developer Tools"
+  or some such
+
+- allow specification of non-Tor destinations for transparent proxy
+
+- make ubuntu session and upstart files through patch instead of
+  replacement
+
+- fix disabling of scopes, using gsettings (requires dconf change
+  above)
+
+- install custom hosts file making productsearch.ubuntu.com set to
+  localhost, but it gets overwritten somehow by dnsmasq?
+
+- update initramfs-tools.conf via patch instead of replacement
+
+- truncate log files intead of rm -rf'ing them, will fix apt
+  complaining
+
+- make squashfs compression type Kconfig-urable
+
+- make initrd compression type Kconfig-urable
+
+
+
+Larger feature items:
+
+- packages to be removed or installed are a consequence of different
+  "features"; make these into Kconfig options and manipulate the
+  package lists from there.
+
+- dconf config file that gets installed into /etc/skel/... could be
+  manipulated via gsettings instead, allowing individual settings to
+  be scripted.  unfortunately, running gsetting in chroot results in
+  modifying /root/.config/..., so need to copy baseline into ~root,
+  allow gsetting to manipulate that, then move into /etc/skel.
