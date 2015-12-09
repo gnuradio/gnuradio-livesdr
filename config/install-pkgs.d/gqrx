@@ -1,0 +1,5 @@
+libboost-system-dev
+libqt5svg5-dev
+qt5-qmake
+qtbase5-dev
+qtbase5-dev-tools
