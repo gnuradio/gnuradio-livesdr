@@ -1,4 +1,5 @@
 /*.iso
+/*.asc
 /SHA256SUMS*
 /*.torrent
 /md5sums
