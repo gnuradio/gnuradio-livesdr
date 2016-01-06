@@ -1,0 +1,18 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+
+[ -x /usr/local/bin/jupyter ] || {
+    printinfo "Installing Jupyter Notebook server"
+    pip install jupyter || {
+        printerror "Jupyter Notebook server installation failed!"
+        exit 1
+    }
+
+    updated_rootfs
+}
+
+exit 0
