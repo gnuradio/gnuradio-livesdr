@@ -14,10 +14,21 @@ $SUDO $MOUNT -t squashfs -oro $ISOMNT_RO/casper/filesystem.squashfs $ROOTFSMNT_R
     die Mounting of root filesystem failed!
 
 mkdir_or_fail $ROOTFSMNT_RW "Unable to create directory for mounting root filesystem read-write overlay!"
+mkdir_or_fail $ROOTFSMNT_WORK "Unable to create work directory for root filesystem read-write overlay!"
 
 # Mount read-write overlay
 printinfo Mounting squashfs root filesystem read-write overlay...
-$SUDO $MOUNT -t overlayfs -olowerdir=$ROOTFSMNT_RO,upperdir=$ROOTFSMNT_RW overlayfs $ROOTFSMNT_RW || \
+
+workdiropt=''
+if test_overlay_workdir_needed ; then
+    workdiropt='-oworkdir='$ROOTFSMNT_WORK
+fi
+
+$SUDO $MOUNT -t overlayfs \
+             -olowerdir=$ROOTFSMNT_RO \
+             -oupperdir=$ROOTFSMNT_RW \
+             $workdiropt \
+             overlayfs $ROOTFSMNT_RW || \
     die Mounting of Ubuntu root filesystem read-write overlay failed!
 
 exit 0
