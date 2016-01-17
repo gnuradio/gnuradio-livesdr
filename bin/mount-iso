@@ -18,11 +18,21 @@ $SUDO $MOUNT -t iso9660 -oloop,ro $UBUNTU_ISO_FILE $ISOMNT_RO || \
 # Create read-write mount directory
 # TODO: detect presence of btrfs and make subvolume instead
 mkdir_or_fail $ISOMNT_RW "Unable to create directory for mounting Ubuntu ISO read-write overlay!"
+mkdir_or_fail $ISOMNT_WORK "Unable to create work directory for Ubuntu ISO read-write overlay!"
 
 # Mount read-write overlay
-# TODO: use btrfs seed mount?
 printinfo Mounting Ubuntu ISO image file read-write overlay...
-$SUDO $MOUNT -t overlayfs -olowerdir=$ISOMNT_RO,upperdir=$ISOMNT_RW overlayfs $ISOMNT_RW || \
+
+workdiropt=''
+if test_overlay_workdir_needed ; then
+    workdiropt='-oworkdir='$ISOMNT_WORK
+fi
+
+$SUDO $MOUNT -t overlayfs \
+             -olowerdir=$ISOMNT_RO \
+             -oupperdir=$ISOMNT_RW \
+             $workdiropt \
+             overlayfs $ISOMNT_RW || \
     die Mounting of Ubuntu ISO read-write overlay failed!
 
 exit 0
