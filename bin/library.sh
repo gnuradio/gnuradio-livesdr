@@ -42,3 +42,12 @@ require_chroot_mounted () {
 require_chroot_unmounted () {
     test_chroot_mounted && die System mounts in chroot still exist!
 }
+
+test_overlay_workdir_needed () {
+    local kernel=$(uname -r)
+    local major=$(echo $kernel | cut -f 1 -d '.')
+    local minor=$(echo $kernel | cut -f 2 -d '.')
+
+    [ "$major" -gt "3" ] ||
+    [ "$major" -eq "3" ] && [ "$minor" -gt "17" ]
+}
