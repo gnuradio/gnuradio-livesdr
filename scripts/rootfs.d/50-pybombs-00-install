@@ -35,6 +35,8 @@ if [ ! -f $ROOTFS_SRCDIR/pybombs/.git/config ] ; then
 
     # Adjust the make parallelism according to config-vars
     sed -i -e 's/makewidth = 2/makewidth = '$MAKEWIDTH'/' $ROOTFS_SRCDIR/pybombs/config.dat
+
+    updated_rootfs
 fi
 
 exit 0

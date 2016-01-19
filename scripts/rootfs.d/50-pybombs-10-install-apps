@@ -69,6 +69,8 @@ do_pybombs_install () {
     # TODO: PyBOMBS might do this in the future, check this
     ldconfig
     cd - >/dev/null
+
+    updated_rootfs
 }
 
 # Create git cache repository if needed
