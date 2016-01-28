@@ -16,11 +16,11 @@ do_pybombs_install () {
     fi
 
     # Check LWR exists:
-    LWR=/usr/local/src/pybombs/recipes/${PKG}.lwr
+    LWR=/usr/local/src/pybombs_legacy/recipes/${PKG}.lwr
     [ -r $LWR ] || die "Cannot find LWR for package $PKG!"
 
     # This is where the repo is checked out by PyBOMBS:
-    REPODIR=/usr/local/src/pybombs/src/$PKG
+    REPODIR=/usr/local/src/pybombs_legacy/src/$PKG
 
     # This is where the build process is run:
     MAKEDIR=$REPODIR/build
@@ -50,7 +50,7 @@ do_pybombs_install () {
     fi
 
     # Execute pybombs recipe to install package
-    cd $ROOTFS_SRCDIR/pybombs
+    cd $ROOTFS_SRCDIR/pybombs_legacy
     ./pybombs install $PKG || die Unable to install package $PKG via pybombs!
 
     # Clean up compilation results
@@ -95,7 +95,7 @@ while read LINE ; do
         # Check if remote repo needs adding to gitcache
         if ! git -C $GITCACHE remote | grep -q $COMP ; then
             printinfo Adding remote repository for $COMP to gitcache...
-            REMOTE_URL=$(grep ^source: $ROOTFS_SRCDIR/pybombs/recipes/$COMP.lwr | cut -f 3- -d /)
+            REMOTE_URL=$(grep ^source: $ROOTFS_SRCDIR/pybombs_legacy/recipes/$COMP.lwr | cut -f 3- -d /)
             # Clone into temp dir to avoid long waits identifying "no common commits"
             TEMPDIR=$SCRIPT_BINDDIR`mktemp -d`
             printinfo Cloning remote repository into tmpdir...

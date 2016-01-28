@@ -5,6 +5,6 @@ set -o nounset
 . bin/rootfs-library.sh
 
 # Patch out custom config options in recipe
-LWR=/usr/local/src/pybombs/recipes/bladeRF.lwr
+LWR=/usr/local/src/pybombs_legacy/recipes/bladeRF.lwr
 printinfo Removing custom config options for bladeRF in recipe
 sed -i -e '/config_opt/d' $LWR

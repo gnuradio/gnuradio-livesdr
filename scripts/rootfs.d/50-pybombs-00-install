@@ -6,7 +6,7 @@ cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
 # Install pybombs from git repository
-if [ ! -f $ROOTFS_SRCDIR/pybombs/.git/config ] ; then
+if [ ! -f $ROOTFS_SRCDIR/pybombs_legacy/.git/config ] ; then
     printinfo Installing PyBOMBS installation program...
 
     # Clone pybombs git repository into source dir
@@ -15,13 +15,13 @@ if [ ! -f $ROOTFS_SRCDIR/pybombs/.git/config ] ; then
 
     # Get latest recipes
     printinfo Retrieving latest recipes database...
-    cd $ROOTFS_SRCDIR/pybombs/recipes
+    cd $ROOTFS_SRCDIR/pybombs_legacy/recipes
     git pull origin master || die Unable to retrieve latest recipes database
 
     cd - >/dev/null
 
     # Patch out running volk performance test
-    SRCFILE=$ROOTFS_SRCDIR/pybombs/mod_pybombs/pybombs_ops.py
+    SRCFILE=$ROOTFS_SRCDIR/pybombs_legacy/mod_pybombs/pybombs_ops.py
     [ -f $SRCFILE ] && {
         sed -i -e '/pkg.*gnuradio/d' $SRCFILE
         sed -i -e '/Run VOLK Profile/d' $SRCFILE
@@ -29,12 +29,12 @@ if [ ! -f $ROOTFS_SRCDIR/pybombs/.git/config ] ; then
     }
 
     refresh_or_install_file \
-        $ROOTFS_SRCDIR/pybombs/config.dat \
+        $ROOTFS_SRCDIR/pybombs_legacy/config.dat \
         "Updating PyBOMBS with custom configuration..." \
         999 999 644
 
     # Adjust the make parallelism according to config-vars
-    sed -i -e 's/makewidth = 2/makewidth = '$MAKEWIDTH'/' $ROOTFS_SRCDIR/pybombs/config.dat
+    sed -i -e 's/makewidth = 2/makewidth = '$MAKEWIDTH'/' $ROOTFS_SRCDIR/pybombs_legacy/config.dat
 
     updated_rootfs
 fi
