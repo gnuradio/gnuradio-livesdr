@@ -7,7 +7,8 @@ cd $SCRIPT_BINDDIR
 
 [ -x /usr/local/bin/jupyter ] || {
     printinfo "Installing Jupyter Notebook server"
-    pip install jupyter || {
+    pip install jupyter &&
+    pip install notebook || {
         printerror "Jupyter Notebook server installation failed!"
         exit 1
     }
