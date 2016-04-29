@@ -1,5 +1,5 @@
---- casper	2015-09-15 05:04:34.000000000 -0700
-+++ casper-encsqfs	2015-10-25 21:33:42.000000000 -0700
+--- /usr/share/initramfs-tools/scripts/casper	2015-08-04 20:30:54.000000000 +0000
++++ /usr/share/initramfs-tools/scripts/casper-encsqfs	2016-04-28 23:26:28.000000000 +0000
 @@ -494,7 +494,8 @@
                  # it is a plain directory: do nothing
                  rofsstring="${image}=${roopt}:${rofsstring}"

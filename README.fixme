@@ -7,9 +7,6 @@ Miscellaneous small fixes or improvements needed:
 
 - update linux kernel to latest during upgrade
 
-- update to casper script should be done via diff instead of
-  replacement
-
 - check if wacom fix still needed for upgrading packages
 
 - ccache max size could be configurable

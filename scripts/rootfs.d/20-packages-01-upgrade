@@ -13,14 +13,6 @@ exit_if_stamped $0
 prevent_services_running
 export DEBIAN_FRONTEND=noninteractive
 
-if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-    # HACK HACK HACK
-    # See https://bugs.launchpad.net/y-ppa-manager/+bug/1464440
-    printinfo Unfscking wacom package for upgrade...
-    rm -r /lib/udev/rules.d/69-wacom*
-    rm -r /lib/systemd/system/wacom-inputattach\@.service
-fi
-
 printinfo Upgrading packages...
 apt-get update
 apt-get upgrade -y

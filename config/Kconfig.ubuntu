@@ -10,15 +10,15 @@ choice
     bool "Ubuntu 14.04.4 LTS Desktop 64-bit"
     help
 
-      This is the Long Term Support version of Ubuntu Desktop, for use
+      This is the previous Long Term Support version of Ubuntu Desktop, for use
       with either 32- or 64-bit CPUs.
 
-  config UBUNTU_RELEASE_WILY
-    bool "Ubuntu 15.10 Desktop 64-bit"
+  config UBUNTU_RELEASE_XENIAL
+    bool "Ubuntu 16.04 Desktop 64-bit"
     depends on EXPERIMENTAL
     help
 
-      This is the current latest release of Ubuntu Desktop, for use
+      This is the newest Long Term Support version of Ubuntu Desktop, for use
       with either 32- or 64-bit CPUs.
 
 endchoice
@@ -30,9 +30,9 @@ config UBUNTU_URL_BASE
 config UBUNTU_URL_DIR
   string
   default "14.04" if UBUNTU_RELEASE_TRUSTY
-  default "15.10" if UBUNTU_RELEASE_WILY
+  default "16.04" if UBUNTU_RELEASE_XENIAL
 
 config UBUNTU_ISO_BASE
   string
   default ubuntu-14.04.4-desktop-amd64 if UBUNTU_RELEASE_TRUSTY
-  default ubuntu-15.10-desktop-amd64 if UBUNTU_RELEASE_WILY
+  default ubuntu-16.04-desktop-amd64 if UBUNTU_RELEASE_XENIAL
