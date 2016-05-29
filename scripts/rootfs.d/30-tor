@@ -53,6 +53,11 @@ if [ ! -f /etc/apt/sources.list.d/torproject.org.list ] ; then
 fi
 
 refresh_or_install_file \
+    /etc/apparmor.d/system_tor \
+    "Installing patched Tor apparmor profile..." \
+    debian-tor debian-tor 644
+
+refresh_or_install_file \
     /etc/tor/torrc \
     "Installing custom Tor configuration file..." \
     debian-tor debian-tor 644
