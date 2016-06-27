@@ -6,9 +6,7 @@ cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
 printinfo Installing home directory shortcuts...
-ln -sf /usr/local/src/pybombs/src /etc/skel
+ln -sf /usr/local/src/pybombs_legacy/src /etc/skel/src
 ln -sf /usr/local/share/gnuradio/examples /etc/skel
-
-
 
 exit 0
