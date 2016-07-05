@@ -49,5 +49,5 @@ test_overlay_workdir_needed () {
     local minor=$(echo $kernel | cut -f 2 -d '.')
 
     [ "$major" -gt "3" ] ||
-    [ "$major" -eq "3" ] && [ "$minor" -gt "17" ]
+    [ "$major" -eq "3" -a "$minor" -gt "17" ]
 }
