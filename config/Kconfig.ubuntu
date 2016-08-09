@@ -14,7 +14,7 @@ choice
       with either 32- or 64-bit CPUs.
 
   config UBUNTU_RELEASE_XENIAL
-    bool "Ubuntu 16.04 Desktop 64-bit"
+    bool "Ubuntu 16.04.1 Desktop 64-bit"
     depends on EXPERIMENTAL
     help
 
@@ -30,9 +30,9 @@ config UBUNTU_URL_BASE
 config UBUNTU_URL_DIR
   string
   default "14.04" if UBUNTU_RELEASE_TRUSTY
-  default "16.04" if UBUNTU_RELEASE_XENIAL
+  default "16.04.1" if UBUNTU_RELEASE_XENIAL
 
 config UBUNTU_ISO_BASE
   string
   default ubuntu-14.04.4-desktop-amd64 if UBUNTU_RELEASE_TRUSTY
-  default ubuntu-16.04-desktop-amd64 if UBUNTU_RELEASE_XENIAL
+  default ubuntu-16.04.1-desktop-amd64 if UBUNTU_RELEASE_XENIAL
