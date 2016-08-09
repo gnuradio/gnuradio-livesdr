@@ -35,8 +35,8 @@ if [ ! -f /etc/apt/sources.list.d/torproject.org.list ] ; then
 
     if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
         SRCFILE=torproject.org.list-trusty
-    elif [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-        SRCFILE=torproject.org.list-wily
+    elif [ "${CONFIG_UBUNTU_RELEASE_XENIAL-x}" = "y" ] ; then
+        SRCFILE=torproject.org.list-xenial
     fi
 
     refresh_or_install_file_as \
@@ -51,6 +51,11 @@ if [ ! -f /etc/apt/sources.list.d/torproject.org.list ] ; then
 
     updated_rootfs
 fi
+
+refresh_or_install_file \
+    /etc/apparmor.d/system_tor \
+    "Installing patched Tor apparmor profile..." \
+    debian-tor debian-tor 644
 
 refresh_or_install_file \
     /etc/tor/torrc \

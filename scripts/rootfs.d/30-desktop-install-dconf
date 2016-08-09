@@ -7,8 +7,8 @@ cd $SCRIPT_BINDDIR
 
 if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
     SRCFILE=user-trusty
-elif [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-    SRCFILE=user-wily
+elif [ "${CONFIG_UBUNTU_RELEASE_XENIAL-x}" = "y" ] ; then
+    SRCFILE=user-xenial
 fi
 
 refresh_or_install_file_as \

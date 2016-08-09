@@ -1,9 +1,10 @@
 aptitude
+ccache
 compizconfig-settings-manager
 curl
+dconf-tools
 emacs24
 htop
 indicator-cpufreq
 indicator-multiload
 mc
-ccache

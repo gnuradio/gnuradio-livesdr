@@ -10,8 +10,8 @@ if [ "${CONFIG_APT_INSTALL_SOURCES-x}" = "y" ] ; then
 
     if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
         SRCFILE=sources.list-14.04.4
-    else if [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-        SRCFILE=sources.list-15.10
+    else if [ "${CONFIG_UBUNTU_RELEASE_XENIAL-x}" = "y" ] ; then
+        SRCFILE=sources.list-16.04
          fi
     fi
 

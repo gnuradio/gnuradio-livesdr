@@ -19,6 +19,7 @@ Transport 9040
 TransListenAddress 127.0.0.1
 
 # Make outbound connections through 80 and 443 only
+# FIXME: replace with proper configs
 FascistFirewall 1
 
 # Misc

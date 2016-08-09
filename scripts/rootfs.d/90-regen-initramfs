@@ -13,17 +13,8 @@ refresh_or_install_file \
     /etc/initramfs-tools/initramfs.conf \
     "Installing custom initrd configuration..."
 
-
-if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
-    SRCFILE=casper-14.04.4
-elif [ "${CONFIG_UBUNTU_RELEASE_WILY-x}" = "y" ] ; then
-    SRCFILE-casper-15.10
-fi
-
-refresh_or_install_file_as \
-    $SRCFILE \
-    /usr/share/initramfs-tools/scripts/casper \
-    "Installing custom casper boot script..."
+printinfo "Patching init scripts for encrypted rootfs..."
+patch -d / -p1 < patches/rootfs/casper-encsqfs.diff || die "Unable to patch initramfs-tools casper script!"
 
 # Create new initramfs that includes cryptsetup
 printinfo Creating new initramfs with crypto hooks...
