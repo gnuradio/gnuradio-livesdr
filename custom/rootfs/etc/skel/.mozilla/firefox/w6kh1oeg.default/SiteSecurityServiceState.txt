@@ -1,1 +1,5 @@
+use.typekit.net:HSTS	0	17084	1507669478179,1,1
 services.addons.mozilla.org:HSTS	1	16608	1466474415253,1,0
+self-repair.mozilla.org:HSTS	0	17084	1491901520117,1,1
+ssl.google-analytics.com:HSTS	0	17084	1487020024262,1,1
+www.google-analytics.com:HSTS	0	17084	1487019958583,1,1
