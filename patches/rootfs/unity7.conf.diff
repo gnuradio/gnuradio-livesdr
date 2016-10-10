@@ -1,0 +1,12 @@
+--- /usr/share/upstart/sessions/unity7.conf.orig	2016-04-08 09:37:21.000000000 -0700
++++ /usr/share/upstart/sessions/unity7.conf	2016-10-10 07:37:58.000000000 -0700
+@@ -17,6 +17,8 @@
+ env COMPIZ_CONFIG_PROFILE="ubuntu"
+ export COMPIZ_CONFIG_PROFILE
+
++env UNITY_LOW_GFX_MODE="1"
++export UNITY_LOW_GFX_MODE
++
+ respawn
+ exec compiz
+-

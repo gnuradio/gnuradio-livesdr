@@ -1,0 +1,8 @@
+--- /usr/share/gnome-session/sessions/ubuntu.session.orig	2015-03-26 10:37:37.000000000 -0700
++++ /usr/share/gnome-session/sessions/ubuntu.session	2016-10-10 07:37:58.000000000 -0700
+@@ -1,4 +1,4 @@
+ [GNOME Session]
+ Name=Ubuntu
+-RequiredComponents=unity-settings-daemon;compiz;
++RequiredComponents=unity-settings-daemon;
+ DesktopName=Unity
