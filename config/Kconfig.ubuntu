@@ -4,7 +4,7 @@ choice
     Selects the release version of the base ISO image
     to use for customization.
 
-    If unsure, select "Ubuntu 14.04.4 LTS Desktop 64-bit"
+    If unsure, select "Ubuntu 14.04.5 LTS Desktop 64-bit"
 
   config UBUNTU_RELEASE_TRUSTY
     bool "Ubuntu 14.04.5 LTS Desktop 64-bit"
