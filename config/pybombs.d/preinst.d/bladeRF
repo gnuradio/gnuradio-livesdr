@@ -4,6 +4,17 @@ set -o nounset
 
 . bin/rootfs-library.sh
 
+# Install libtecla using distro-specific package name
+DIST=$(cat /etc/issue | cut -f 2 -d ' ' | cut -f 1 -d .)
+
+if [ "$DIST" = "16" ] ; then
+    printinfo Installing libtecla-dev...
+    apt-get install -q -y libtecla-dev
+elif [ "$DIST" = "14" ] ; then
+    printinfo Installing libtecla1-dev...
+    apt-get install -q -y libtecla1-dev
+fi
+
 # Patch out custom config options in recipe
 LWR=/usr/local/src/pybombs_legacy/recipes/bladeRF.lwr
 printinfo Removing custom config options for bladeRF in recipe

@@ -3,7 +3,6 @@ libcomedi-dev
 libsdl1.2-dev
 libzmq3-dev
 octave
-octave-audio
 octave-communications
 octave-signal
 python-matplotlib
