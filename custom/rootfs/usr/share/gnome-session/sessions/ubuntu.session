@@ -1,4 +1,0 @@
-[GNOME Session]
-Name=Ubuntu
-RequiredComponents=unity-settings-daemon;
-DesktopName=Unity
