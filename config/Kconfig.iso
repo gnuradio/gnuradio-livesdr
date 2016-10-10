@@ -2,7 +2,7 @@ menu "Target ISO image options"
 
 config REMASTER_SUFFIX
   string "Suffix to append to remastered ISO file"
-  default "gnuradio-3.7.9"
+  default "gnuradio-3.7.10.1"
   help
 
     Choose a string to be appended to the ISO file name to distinguish

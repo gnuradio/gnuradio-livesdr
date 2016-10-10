@@ -1,6 +1,6 @@
 #!/bin/sh
 
-. config/config-vars
+. config/config.vars
 
 # Format destination as FAT32
 if [ -z $1 ] ; then
