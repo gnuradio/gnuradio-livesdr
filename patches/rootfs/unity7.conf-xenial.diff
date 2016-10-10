@@ -1,0 +1,15 @@
+--- /usr/share/upstart/sessions/unity7.conf.orig	2016-07-15 03:17:22.000000000 -0700
++++ /usr/share/upstart/sessions/unity7.conf	2016-10-10 12:19:14.251785903 -0700
+@@ -13,11 +13,7 @@
+     stop ; exit 0
+   fi
+
+-  compiz_profile="ubuntu"
+-
+-  if ! /usr/lib/nux/unity_support_test -p; then
+-    compiz_profile="ubuntu-lowgfx"
+-  fi
++  compiz_profile="ubuntu-lowgfx"
+
+   echo "Using compiz profile '$compiz_profile'"
+   initctl set-env -g COMPIZ_CONFIG_PROFILE="$compiz_profile"

@@ -9,8 +9,12 @@ cd $SCRIPT_BINDDIR
 exit_if_stamped $0
 
 printinfo "Patching Unity configuration scripts..."
-patch -s -d / -p1 <patches/rootfs/ubuntu.session.diff || die "Unable to patch ubuntu.session!"
-patch -s -d / -p1 <patches/rootfs/unity7.conf.diff || die "Unable to patch unity7.conf!"
+if [ "${CONFIG_UBUNTU_RELEASE_TRUSTY-x}" = "y" ] ; then
+    patch -s -d / -p1 <patches/rootfs/ubuntu.session.diff || die "Unable to patch ubuntu.session!"
+    patch -s -d / -p1 <patches/rootfs/unity7.conf.diff || die "Unable to patch unity7.conf!"
+elif [ "${CONFIG_UBUNTU_RELEASE_XENIAL-x}" = "y" ] ; then
+    patch -s -d / -p1 <patches/rootfs/unity7.conf-xenial.diff || die "Unable to patch unity7.conf!"
+fi
 
 updated_rootfs
 make_stamp $0
