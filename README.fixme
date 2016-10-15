@@ -7,8 +7,6 @@ Miscellaneous small fixes or improvements needed:
 
 - update linux kernel to latest during upgrade
 
-- check if wacom fix still needed for upgrading packages
-
 - ccache max size could be configurable
 
 - make indicate-multiload Kconfig-urable as part of "Desktop" group
@@ -21,9 +19,6 @@ Miscellaneous small fixes or improvements needed:
 
 - allow specification of non-Tor destinations for transparent proxy
 
-- make ubuntu session and upstart files through patch instead of
-  replacement
-
 - fix disabling of scopes, using gsettings (requires dconf change
   above)
 
@@ -32,14 +27,13 @@ Miscellaneous small fixes or improvements needed:
 
 - update initramfs-tools.conf via patch instead of replacement
 
-- truncate log files intead of rm -rf'ing them, will fix apt
-  complaining
-
 - make squashfs compression type Kconfig-urable
 
 - make initrd compression type Kconfig-urable
 
+- fix Tor apparmor reload so not needed at boot time in rc.local
 
+- fix Tor transparent proxy segfault and implement isolating proxy
 
 Larger feature items:
 
