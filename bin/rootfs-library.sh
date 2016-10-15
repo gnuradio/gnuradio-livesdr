@@ -15,6 +15,25 @@ make_stamp () {
     touch $STAMPDIR/`basename "$1"`.stamp
 }
 
+install_file () {
+    # $1 is absolute file path
+    # $2 is output comment
+    # $3 is owner, default root
+    # $4 is group, default root
+    # $5 is mode, default 644
+
+    printinfo "$2"
+    mkdir_or_fail $(dirname $1)
+    install \
+        -o "${3:-root}" \
+        -g "${4:-root}" \
+        -m "${5:-0644}" \
+        "$CUSTOMDIR/$1" \
+        "$(dirname $1)" || die "Unable to install/update $1 !"
+
+    updated_rootfs
+}
+
 refresh_or_install_file () {
     # $1 is absolute file path
     # $2 is output comment

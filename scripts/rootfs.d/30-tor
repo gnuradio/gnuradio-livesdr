@@ -7,6 +7,7 @@ cd $SCRIPT_BINDDIR
 
 # Exit if nothing to do
 exit_if_not_configured CONFIG_TOR_PROXY
+exit_if_stamped $0
 
 TOR_KEY_ID=886DDD89
 GPG=/usr/bin/gpg
@@ -52,14 +53,25 @@ if [ ! -f /etc/apt/sources.list.d/torproject.org.list ] ; then
     updated_rootfs
 fi
 
-refresh_or_install_file \
-    /etc/apparmor.d/system_tor \
-    "Installing patched Tor apparmor profile..." \
+# Update Tor apparmor config to workaround permissions issue
+# FIXME: this update doesn't get automatically processed by apparmor
+#        we're using a hack in rc.local to reload the profile at
+#        startup.
+install_file \
+    /etc/apparmor.d/abstractions/tor \
+    "Installing updated Tor apparmor configuration..." \
     debian-tor debian-tor 644
 
-refresh_or_install_file \
+install_file \
+    /etc/rc.local \
+    "Installing custom rc.local file..." \
+    root root 755
+
+# Install configuration file
+install_file \
     /etc/tor/torrc \
     "Installing custom Tor configuration file..." \
     debian-tor debian-tor 644
 
+make_stamp $0
 exit 0
