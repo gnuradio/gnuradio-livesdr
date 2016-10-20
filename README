@@ -8,14 +8,13 @@ image.
 This branch extends the master branch to create the GNU Radio Live SDR
 Environment image.
 
-
 Using the Ubuntu Remaster build scripts
 
 To create a remastered Ubuntu ISO file, with no further customization
 beyond what is done in these scripts, simply do the following:
 
-$ git clone -b <desired branch> git://github.com/jmcorgan/ubuntu-remaster.git
-$ cd ubuntu-remaster
+$ git clone -b <desired branch> https://github.com/gnuradio/gnuradio-livesdr.git
+$ cd gnuradio-livesdr
 $ make deps
 $ make config
 $ make
