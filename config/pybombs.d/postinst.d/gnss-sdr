@@ -5,9 +5,9 @@ set -o nounset
 . bin/rootfs-library.sh
 
 printinfo Removing gnss-sdr installation binaries...
-rm -f /usr/local/src/pybombs_legacy/src/gnss-sdr/install/*
+rm -f /usr/local/src/gnss-sdr/install/*
 
 printinfo Removing gnss-sdr third party downloads...
-rm -rf /usr/local/src/pybombs_legacy/src/gnss-sdr/thirdparty/*
+rm -rf /usr/local/src/gnss-sdr/thirdparty/*
 
 exit 0

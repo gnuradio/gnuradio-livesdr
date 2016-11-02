@@ -1,9 +1,0 @@
-#!/bin/sh
-set -o nounset
-#set -x #DEBUG
-
-. bin/rootfs-library.sh
-
-# Patch out osdmo-sdr dependency in gr-osmosdr.lwr
-LWR=/usr/local/src/pybombs_legacy/recipes/gr-osmosdr.lwr
-sed -i -e 's/\<osmo-sdr\>//g' $LWR

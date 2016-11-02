@@ -7,7 +7,7 @@ set -o nounset
 # Install the udev rules file
 [ -f /etc/udev/rules.d/uhd-usrp.rules ] || {
     printinfo Installing UHD udev rules file...
-    install -g root -o root -m 644 /usr/local/src/pybombs_legacy/src/uhd/host/utils/uhd-usrp.rules /etc/udev/rules.d || \
+    install -g root -o root -m 644 /usr/local/src/uhd/host/utils/uhd-usrp.rules /etc/udev/rules.d || \
         die Unable to install UHD udev rules file!
 }
 

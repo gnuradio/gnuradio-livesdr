@@ -4,6 +4,8 @@ set -o nounset
 
 . bin/rootfs-library.sh
 
+# TODO: If libtecla is a bladeRF dependency, it should go into PyBOMBS.
+
 # Install libtecla using distro-specific package name
 DIST=$(cat /etc/issue | cut -f 2 -d ' ' | cut -f 1 -d .)
 
@@ -15,7 +17,3 @@ elif [ "$DIST" = "14" ] ; then
     apt-get install -q -y libtecla1-dev
 fi
 
-# Patch out custom config options in recipe
-LWR=/usr/local/src/pybombs_legacy/recipes/bladeRF.lwr
-printinfo Removing custom config options for bladeRF in recipe
-sed -i -e '/config_opt/d' $LWR

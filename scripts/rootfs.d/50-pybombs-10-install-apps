@@ -5,131 +5,21 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
-# Function to execute a single PyBOMBS package install
-do_pybombs_install () {
-    # Test for required arguments
-    if [ $# -lt 2 ] ; then
-        die "Usage: $0 <PACKAGE> <GITREV>"
-    else
-        PKG=$1
-        GITREV=$2
-    fi
+## Preinst tasks
+printinfo "Executing pre-installation scripts for PyBOMBS packages."
+run-parts -v --exit-on-error $SCRIPT_BINDDIR/config/pybombs.d/preinst.d
 
-    # Check LWR exists:
-    LWR=/usr/local/src/pybombs_legacy/recipes/${PKG}.lwr
-    [ -r $LWR ] || die "Cannot find LWR for package $PKG!"
+## Actual PyBOMBS install
+printinfo "Launching PyBOMBS prefix initialization."
+pybombs prefix init -a sys -R livesdr /usr/local
 
-    # This is where the repo is checked out by PyBOMBS:
-    REPODIR=/usr/local/src/pybombs_legacy/src/$PKG
+# Postinst
+printinfo "Executing post-installation scripts for PyBOMBS packages."
+run-parts $SCRIPT_BINDDIR/config/pybombs.d/postinst.d
 
-    # This is where the build process is run:
-    MAKEDIR=$REPODIR/build
-
-    # Check if the recipe overrides this:
-    MAKEDIR_FROM_LWR=`sed -n '/^makedir:/p' $LWR | sed 's/^makedir:[ \t]*//'`
-
-    # NOTE: -n below requires "" escaping
-    if [ -n "$MAKEDIR_FROM_LWR" ]; then
-        MAKEDIR=$REPODIR/$MAKEDIR_FROM_LWR
-    fi
-
-    # Repo history etc.:
-    REPODOTDIR=$REPODIR/.git
-
-    ### Run install
-
-    # Edit pybombs recipe for desired revision
-    # TODO: PyBOMBS might be able to do this in the future
-    grep gitrev $LWR
-    RET=$?
-    if [ $RET -ge 2 ] ; then
-        die Unable to access gnuradio pybombs recipe!
-    fi
-    if [ $RET -eq 1 ] ; then
-        sed -i -e '/gitbranch/a gitrev: '$GITREV $LWR
-    fi
-
-    # Execute pybombs recipe to install package
-    cd $ROOTFS_SRCDIR/pybombs_legacy
-    ./pybombs install $PKG || die Unable to install package $PKG via pybombs!
-
-    # Clean up compilation results
-    if [ -d $MAKEDIR ]; then
-        rm -r $MAKEDIR || die Unable to clean up after compiling package $PKG!
-    fi
-
-    # Nuke repository history for git repos
-    if [ -d $REPODOTDIR ]; then
-        rm -r $REPODOTDIR || die Unable to clean up repository history for package $PKG!
-    else
-        printwarn Repo directory $REPODOTDIR not found.
-    fi
-
-    # Tell the system we've possibly installed a new shared libraries
-    # TODO: PyBOMBS might do this in the future, check this
-    ldconfig
-    cd - >/dev/null
-
-    updated_rootfs
-}
-
-# Create git cache repository if needed
-if ! [ -f $GITCACHE/config ] ; then
-    printinfo Initializing git cache repository...
-    git init --bare gitcache/
-fi
-
-# Run through each line in install.conf
-while read LINE ; do
-    # Skip comments and whitespace
-    if echo $LINE | grep -v -q ^[^#] ; then continue ; fi
-
-    # Extract columnwise data
-    COMP=$(echo $LINE | cut -f 1 -d ' ')
-    REV=$(echo $LINE | cut -f 2 -d ' ')
-    FILE=$(echo $LINE | cut -f 3 -d ' ')
-
-    [ -f $FILE ] || {
-        printinfo Installing component $COMP at revision $REV...
-
-        # Check if remote repo needs adding to gitcache
-        if ! git -C $GITCACHE remote | grep -q $COMP ; then
-            printinfo Adding remote repository for $COMP to gitcache...
-            REMOTE_URL=$(grep ^source: $ROOTFS_SRCDIR/pybombs_legacy/recipes/$COMP.lwr | cut -f 3- -d /)
-            # Clone into temp dir to avoid long waits identifying "no common commits"
-            TEMPDIR=$SCRIPT_BINDDIR`mktemp -d`
-            printinfo Cloning remote repository into tmpdir...
-            git clone $REMOTE_URL $TEMPDIR
-            # Now add this temp repo as remote to fetch from and update
-            printinfo Adding temp repository into gitcache...
-            git -C $GITCACHE remote add $COMP $TEMPDIR/
-            git -C $GITCACHE fetch $COMP --tags
-            # Finally, set the remote to the actual remote URL
-            git -C $GITCACHE remote rm $COMP
-            git -C $GITCACHE remote add $COMP $REMOTE_URL
-            git -C $GITCACHE fetch $COMP --tags
-            # And clean up
-            rm -rf $TEMPDIR/
-        fi
-
-        printinfo Updating gitcache with latest commits from remote repo...
-        git -C $GITCACHE remote update -p $COMP
-
-        # Check for pre-installation actions
-        [ -f $SCRIPT_BINDDIR/config/pybombs.d/preinst.d/$COMP ] && {
-            printinfo Executing pre-installation script for $COMP
-            config/pybombs.d/preinst.d/$COMP || die Pre-installation for $COMP failed!
-        }
-
-        # DOOO EEET! DOOO EEET NOW!
-        do_pybombs_install $COMP $REV
-
-        # Check for post-installation actions
-        [ -f config/pybombs.d/postinst.d/$COMP ] && {
-            printinfo Executing post-installation script for $COMP
-            config/pybombs.d/postinst.d/$COMP || die Post-installation for $COMP failed!
-        }
-    }
-done < config/pybombs.d/install.conf
+## Remove build artifacts
+printinfo "Removing build artifacts from source builds."
+find /usr/local/src -depth -type d -name build | xargs rm -rf || die Could not remove build artifacts.
 
 exit 0
+

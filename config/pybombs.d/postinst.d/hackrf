@@ -8,7 +8,7 @@ set -o nounset
 [ -f /etc/udev/rules.d/53-hackrf.rules ] || {
     printinfo Installing udev permissions for hackrf...
     install -g root -o root -m 644 \
-        /usr/local/src/pybombs_legacy/src/hackrf/host/libhackrf/53-hackrf.rules \
+        /usr/local/src/hackrf/host/libhackrf/53-hackrf.rules \
         /etc/udev/rules.d || die Unable to install hackrf udev rules file!
 }
 

@@ -5,8 +5,8 @@ set -o nounset
 . bin/rootfs-library.sh
 
 # Remove compilation results
-[ -d /usr/local/src/pybombs_legacy/src/apache-thrift ] && {
+[ -d /usr/local/src/apache-thrift ] && {
     printinfo Removing apache-thrift build output...
-    make -C /usr/local/src/pybombs_legacy/src/apache-thrift distclean >/dev/null || \
+    make -C /usr/local/src/apache-thrift distclean >/dev/null || \
         die Unable to remove apache-thrift compilation files!
 }

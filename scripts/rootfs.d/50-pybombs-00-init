@@ -1,0 +1,11 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+# Install and initialize PyBOMBS
+pip install -q pybombs || die Could not install PyBOMBS through pip.
+pybombs recipes add gr-recipes git+https://github.com/gnuradio/gr-recipes.git || die Failed to install recipes.
+# If anything should go onto the livesdr, it better be in gr-recipes. Don't need gr-etcetera.
+#pybombs recipes add gr-etcetera git+https://github.com/gnuradio/gr-etcetera.git
+pybombs recipes add livesdr config/pybombs.d/recipes
+

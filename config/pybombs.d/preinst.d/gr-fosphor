@@ -11,6 +11,8 @@ DIRNM=pset_opencl_runtime_14.1_x64_4.5.0.8
 TMPDIR=/tmp/fosphor
 DESTDIR=/
 
+# TODO: Pretty sure PyBOMBS could do this install.
+
 # Install Intel OpenCL CPU driver if needed
 [ -f /opt/intel/opencl-1.2-4.5.0.8/etc/intel64.icd ] || {
 
