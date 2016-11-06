@@ -1,0 +1,27 @@
+#!/bin/sh
+set -o nounset
+#set -x #DEBUG
+
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
+
+# Exit if nothing to do
+exit_if_not_configured CONFIG_REMOVE_PACKAGES
+exit_if_stamped $0
+
+prevent_services_running
+export DEBIAN_FRONTEND=noninteractive
+
+printinfo "Removing configured packages (phase 2)..."
+for pkglist in $SCRIPT_BINDDIR/config/remove-pkgs2.d/*; do
+    pkgs=`cat $pkglist`
+    apt-get -q -q -y purge $pkgs
+    apt-get -q -q -y autoremove
+done
+
+allow_services_to_run
+updated_rootfs
+make_stamp $0
+
+printsuccess Completed removing configured packages.
+exit 0
