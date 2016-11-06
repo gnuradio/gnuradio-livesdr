@@ -5,21 +5,27 @@ set -o nounset
 cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
+# Exit if already done
+exit_if_stamped $0
+
 ## Preinst tasks
-printinfo "Executing pre-installation scripts for PyBOMBS packages."
+printinfo "Executing pre-installation scripts for PyBOMBS packages..."
 run-parts -v --exit-on-error $SCRIPT_BINDDIR/config/pybombs.d/preinst.d
 
 ## Actual PyBOMBS install
-printinfo "Launching PyBOMBS prefix initialization."
+printinfo "Launching PyBOMBS prefix initialization..."
 pybombs prefix init -a sys -R livesdr /usr/local
 
 # Postinst
-printinfo "Executing post-installation scripts for PyBOMBS packages."
+printinfo "Executing post-installation scripts for PyBOMBS packages..."
 run-parts $SCRIPT_BINDDIR/config/pybombs.d/postinst.d
 
 ## Remove build artifacts
-printinfo "Removing build artifacts from source builds."
-find /usr/local/src -depth -type d -name build | xargs rm -rf || die Could not remove build artifacts.
+printinfo "Removing build artifacts from source builds..."
+find /usr/local/src -depth -type d -name build | xargs rm -rf \
+    || die Could not remove build artifacts.
 
+# Exit cleanly
+updated_rootfs
+make_stamp $0
 exit 0
-

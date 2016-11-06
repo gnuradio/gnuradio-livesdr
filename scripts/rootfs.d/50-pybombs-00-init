@@ -2,10 +2,28 @@
 set -o nounset
 #set -x #DEBUG
 
-# Install and initialize PyBOMBS
-pip install -q pybombs || die Could not install PyBOMBS through pip.
-pybombs recipes add gr-recipes git+https://github.com/gnuradio/gr-recipes.git || die Failed to install recipes.
-# If anything should go onto the livesdr, it better be in gr-recipes. Don't need gr-etcetera.
-#pybombs recipes add gr-etcetera git+https://github.com/gnuradio/gr-etcetera.git
-pybombs recipes add livesdr config/pybombs.d/recipes
+cd $SCRIPT_BINDDIR
+. bin/rootfs-library.sh
 
+# Exit if already done
+exit_if_stamped $0
+
+# Install and initialize PyBOMBS
+pip install -q pybombs || die Could not install PyBOMBS through pip!
+
+# Add public GNU Radio recipes list
+pybombs recipes add gr-recipes git+https://github.com/gnuradio/gr-recipes.git \
+    || die Failed to install GNU Radio recipes!
+
+# If anything should go onto the livesdr, it better be in
+# gr-recipes. Don't need gr-etcetera.
+#pybombs recipes add gr-etcetera git+https://github.com/gnuradio/gr-etcetera.git
+
+# Add local recipe configuration
+pybombs recipes add livesdr config/pybombs.d/recipes \
+    || die Failed to install local recipes!
+
+# Exit cleanly
+updated_rootfs
+make_stamp $0
+exit 0
