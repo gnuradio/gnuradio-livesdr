@@ -23,6 +23,11 @@ pybombs recipes add gr-recipes git+https://github.com/gnuradio/gr-recipes.git \
 pybombs recipes add livesdr config/pybombs.d/recipes \
     || die Failed to install local recipes!
 
+# Do parallel compiles
+pybombs config makewidth $MAKEWIDTH || die Unable to configure makewidth
+
+# TODO: Move chroot config.yml into /etc/skel for live user
+
 # Exit cleanly
 updated_rootfs
 make_stamp $0
