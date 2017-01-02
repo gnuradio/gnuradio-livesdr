@@ -8,19 +8,18 @@ require_rootfs_rw_mounted
 
 # Prepare chroot "system" mounts for operation
 printinfo Mounting chroot jail system mounts...
-$SUDO $MOUNT --bind    /dev/ $ROOTFSMNT_RW/dev/
 $SUDO $MOUNT -t proc   none  $ROOTFSMNT_RW/proc/
 $SUDO $MOUNT -t sysfs  none  $ROOTFSMNT_RW/sys/
 $SUDO $MOUNT -t devpts none  $ROOTFSMNT_RW/dev/pts/
 
 # Mount live scripts inside root directory
 [ -d $ROOTFSMNT_RW/root/live ] || $SUDO mkdir -p $ROOTFSMNT_RW/root/live
-$SUDO $MOUNT --rbind . $ROOTFSMNT_RW/root/live
+$SUDO $MOUNT --bind . $ROOTFSMNT_RW/root/live
 
 # Mount ccache directory inside root directory
 if [ ${CONFIG_USE_CCACHE-x} = "y" ] ; then
     $SUDO mkdir -p $ROOTFSMNT_RW/root/.ccache
-    $SUDO $MOUNT --rbind ./ccache $ROOTFSMNT_RW/root/.ccache
+    $SUDO $MOUNT --bind ./ccache $ROOTFSMNT_RW/root/.ccache
 fi
 
 exit 0
