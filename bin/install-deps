@@ -13,7 +13,8 @@ $SUDO apt-get install \
      squashfs-tools \
      ccache \
      genisoimage \
-     syslinux || {
+     syslinux \
+     syslinux-utils || {
     echo Package installation failed!
     exit 1
 }
