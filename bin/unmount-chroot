@@ -7,6 +7,8 @@ set -o nounset
 test_chroot_mounted || exit 0
 printinfo Unmounting chroot jail mounts...
 
+# Unmount last to first
+
 # Undo ccache mount
 if [ "${CONFIG_USE_CCACHE-x}" = "y" ] ; then
     $SUDO $UMOUNT -l $ROOTFSMNT_RW/root/.ccache
@@ -15,12 +17,11 @@ fi
 
 # Undo live script mount
 $SUDO $UMOUNT -l $ROOTFSMNT_RW/root/live
-$SUDO rm -rf $ROOTFSMNT_RW/root/live
+$SUDO rmdir $ROOTFSMNT_RW/root/live
 
 # Undo chroot mounts
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/dev/pts
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/sys
 $SUDO $UMOUNT -l $ROOTFSMNT_RW/proc
-$SUDO $UMOUNT -l $ROOTFSMNT_RW/dev
+$SUDO $UMOUNT -l $ROOTFSMNT_RW/sys
+$SUDO $UMOUNT -l $ROOTFSMNT_RW/dev/pts
 
 exit 0
