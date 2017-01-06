@@ -8,3 +8,5 @@ htop
 indicator-cpufreq
 indicator-multiload
 mc
+mosh
+terminator
