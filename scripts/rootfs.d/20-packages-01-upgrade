@@ -6,7 +6,6 @@ cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
 # Exit if nothing to do
-exit_if_not_configured CONFIG_UPGRADE_PACKAGES
 exit_if_stamped $0
 
 # Temporarily install policy file to prevent services from running

@@ -8,42 +8,15 @@ config EXPERIMENTAL
     Select yes here to allow configuring of features that haven't been
     fully tested or are experimental in nature.
 
-source config/Kconfig.ubuntu
-
-source config/Kconfig.packages
-
-menu "Content generation options"
-
-config USE_CCACHE
-  bool "Add ccache to $PATH for compiling in root filesytem"
-  depends on INSTALL_PACKAGES
-  default y
-  help
-
-    Select no here to turn off the use of ccache when compiling software
-    in the chroot.
-
-    If in question, say yes here.
-
-endmenu
-
-menu "Privacy enhancing options"
-  source config/Kconfig.tor
-
-config ENCRYPT_ROOTFS
-  bool "Encrypt root filesystem"
+config DEPRECATED
+  bool "Configure deprecated options"
   default n
   help
 
-    Enabling this option will replace the compressed root-filesystem
-    with an encrypted LUKS container. During build of the image, you
-    will be prompted for a decryption passphrase (3 times).  During
-    operation, you will be required to enter this passphrase, and the
-    root filesystem will be automatically decrypted and decompressed
-    on-the-fly as needed.
+    Select yes here to allow choosing configuration options which have
+    been deprecated and will be going away.
 
-    If in question, say no here.
-
-endmenu
-
-source config/Kconfig.iso
+source config/Kconfig.ubuntu
+source config/Kconfig.target
+source config/Kconfig.build
+source config/Kconfig.applications
