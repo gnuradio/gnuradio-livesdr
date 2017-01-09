@@ -46,8 +46,8 @@ if [ ! -f /etc/apt/sources.list.d/torproject.org.list ] ; then
         "Installing Tor project repository..."
 
     prevent_services_running
-    apt-get update || die "Unable to update repositories!"
-    apt-get install -q -q -y tor tor-arm || die "Unable to install Tor applications!"
+    http_proxy=$CONFIG_APT_PROXY apt-get update || die "Unable to update repositories!"
+    http_proxy=$CONFIG_APT_PROXY apt-get install -q -q -y tor tor-arm || die "Unable to install Tor applications!"
     allow_services_to_run
 
     updated_rootfs

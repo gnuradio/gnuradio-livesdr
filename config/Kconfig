@@ -18,5 +18,6 @@ config DEPRECATED
 
 source config/Kconfig.ubuntu
 source config/Kconfig.target
+source config/Kconfig.apt
 source config/Kconfig.build
 source config/Kconfig.applications

@@ -16,7 +16,7 @@ export DEBIAN_FRONTEND=noninteractive
 printinfo Installing configured additional packages...
 for pkglist in config/install-pkgs.d/*; do
     pkgs=`cat $pkglist`
-    apt-get install -y $pkgs || die Package installation failure!
+    http_proxy=$CONFIG_APT_PROXY apt-get install -y $pkgs || die Package installation failure!
 done
 
 allow_services_to_run
