@@ -1,0 +1,15 @@
+menu "APT package manager options"
+
+config APT_PROXY
+  string "APT proxy location"
+  default ""
+  help
+
+    Configure an APT proxy server address.
+
+    NOTE: This is only used during image *build*; the created image will not
+    have this set.
+
+    If in question leave this at the default.
+
+endmenu

@@ -4,21 +4,21 @@ choice
     Selects the release version of the base ISO image
     to use for customization.
 
-    If unsure, select "Ubuntu 14.04.5 LTS Desktop 64-bit"
-
-  config UBUNTU_RELEASE_TRUSTY
-    bool "Ubuntu 14.04.5 LTS Desktop 64-bit"
-    help
-
-      This is the previous Long Term Support version of Ubuntu Desktop, for use
-      with either 32- or 64-bit CPUs.
+    If unsure, select "Ubuntu 16.04.1 LTS Desktop 64-bit"
 
   config UBUNTU_RELEASE_XENIAL
     bool "Ubuntu 16.04.1 Desktop 64-bit"
-    depends on EXPERIMENTAL
     help
 
       This is the newest Long Term Support version of Ubuntu Desktop, for use
+      with either 32- or 64-bit CPUs.
+
+  config UBUNTU_RELEASE_TRUSTY
+    bool "Ubuntu 14.04.5 LTS Desktop 64-bit"
+    depends on DEPRECATED
+    help
+
+      This is the previous Long Term Support version of Ubuntu Desktop, for use
       with either 32- or 64-bit CPUs.
 
 endchoice

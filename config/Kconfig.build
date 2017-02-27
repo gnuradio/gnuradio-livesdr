@@ -1,0 +1,22 @@
+menu "Software build options"
+
+config USE_CCACHE
+  bool "Add ccache to $PATH for compiling in root filesytem"
+  default y
+  help
+
+    Select no here to turn off the use of ccache when compiling software
+    in the chroot.
+
+    If in question, say yes here.
+
+config MAKEWIDTH
+  string "Number of parallel make jobs"
+  default "2"
+  help
+
+    Choose the number of parallel make jobs to use when invoking make. This
+    should usually be the number of cores present in the machine.
+
+
+endmenu
