@@ -34,7 +34,7 @@ if [ ! -f $ROOTFS_SRCDIR/pybombs_legacy/.git/config ] ; then
         999 999 644
 
     # Adjust the make parallelism according to config-vars
-    sed -i -e 's/makewidth = 2/makewidth = '$MAKEWIDTH'/' $ROOTFS_SRCDIR/pybombs_legacy/config.dat
+    sed -i -e 's/makewidth = 2/makewidth = '$CONFIG_MAKEWIDTH'/' $ROOTFS_SRCDIR/pybombs_legacy/config.dat
 
     updated_rootfs
 fi
