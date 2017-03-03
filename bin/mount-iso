@@ -28,11 +28,11 @@ if test_overlay_workdir_needed ; then
     workdiropt='-oworkdir='$ISOMNT_WORK
 fi
 
-$SUDO $MOUNT -t overlayfs \
+$SUDO $MOUNT -t overlay \
              -olowerdir=$ISOMNT_RO \
              -oupperdir=$ISOMNT_RW \
              $workdiropt \
-             overlayfs $ISOMNT_RW || \
+             overlay $ISOMNT_RW || \
     die Mounting of Ubuntu ISO read-write overlay failed!
 
 exit 0
