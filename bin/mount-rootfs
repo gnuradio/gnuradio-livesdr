@@ -24,11 +24,11 @@ if test_overlay_workdir_needed ; then
     workdiropt='-oworkdir='$ROOTFSMNT_WORK
 fi
 
-$SUDO $MOUNT -t overlayfs \
+$SUDO $MOUNT -t overlay \
              -olowerdir=$ROOTFSMNT_RO \
              -oupperdir=$ROOTFSMNT_RW \
              $workdiropt \
-             overlayfs $ROOTFSMNT_RW || \
+             overlay $ROOTFSMNT_RW || \
     die Mounting of Ubuntu root filesystem read-write overlay failed!
 
 exit 0
