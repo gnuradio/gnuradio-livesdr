@@ -4,21 +4,21 @@ choice
     Selects the release version of the base ISO image
     to use for customization.
 
-    If unsure, select "Ubuntu 14.04.5 LTS Desktop 64-bit"
-
-  config UBUNTU_RELEASE_TRUSTY
-    bool "Ubuntu 14.04.5 LTS Desktop 64-bit"
-    help
-
-      This is the previous Long Term Support version of Ubuntu Desktop, for use
-      with either 32- or 64-bit CPUs.
+    If unsure, select "Ubuntu 16.04.2 LTS Desktop 64-bit"
 
   config UBUNTU_RELEASE_XENIAL
-    bool "Ubuntu 16.04.1 Desktop 64-bit"
-    depends on EXPERIMENTAL
+    bool "Ubuntu 16.04.2 Desktop 64-bit"
     help
 
       This is the newest Long Term Support version of Ubuntu Desktop, for use
+      with either 32- or 64-bit CPUs.
+
+  config UBUNTU_RELEASE_TRUSTY
+    bool "Ubuntu 14.04.5 LTS Desktop 64-bit"
+    depends on DEPRECATED
+    help
+
+      This is the previous Long Term Support version of Ubuntu Desktop, for use
       with either 32- or 64-bit CPUs.
 
 endchoice
@@ -30,9 +30,9 @@ config UBUNTU_URL_BASE
 config UBUNTU_URL_DIR
   string
   default "14.04" if UBUNTU_RELEASE_TRUSTY
-  default "16.04.1" if UBUNTU_RELEASE_XENIAL
+  default "16.04.2" if UBUNTU_RELEASE_XENIAL
 
 config UBUNTU_ISO_BASE
   string
   default ubuntu-14.04.5-desktop-amd64 if UBUNTU_RELEASE_TRUSTY
-  default ubuntu-16.04.1-desktop-amd64 if UBUNTU_RELEASE_XENIAL
+  default ubuntu-16.04.2-desktop-amd64 if UBUNTU_RELEASE_XENIAL

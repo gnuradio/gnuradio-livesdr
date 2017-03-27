@@ -24,20 +24,22 @@ choice
     Tor will be installed and make itself available for use by network
     applications, however, normal network traffic remains unaffected.
 
-#  config TOR_TRANS_PROXY
-#  bool "Transparent proxy"
-#  help
-#
-#    Tor will be installed and all network TCP and DNS traffic will be
-#    automatically redirected to go over Tor. All non-TCP traffic will
-#    be silently dropped.
+  config TOR_TRANS_PROXY
+  depends on EXPERIMENTAL
+  bool "Transparent proxy"
+  help
 
-#  config TOR_ISOLATING_PROXY
-#  bool "Isolating proxy"
-#  help
-#
-#    Tor will be installed and network applications will need to be
-#    configured to use it.  All traffic not destined for Tor is
-#    silently dropped.
+    Tor will be installed and all network TCP and DNS traffic will be
+    automatically redirected to go over Tor. All non-TCP traffic will
+    be silently dropped.
+
+  config TOR_ISOLATING_PROXY
+  depends on EXPERIMENTAL
+  bool "Isolating proxy"
+  help
+
+    Tor will be installed and network applications will need to be
+    configured to use it.  All traffic not destined for Tor is
+    silently dropped.
 
 endchoice

@@ -6,7 +6,6 @@ cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
 # Exit if nothing to do
-exit_if_not_configured CONFIG_REMOVE_PACKAGES
 exit_if_stamped $0
 
 prevent_services_running

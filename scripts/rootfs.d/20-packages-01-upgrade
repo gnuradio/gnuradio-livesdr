@@ -6,7 +6,6 @@ cd $SCRIPT_BINDDIR
 . bin/rootfs-library.sh
 
 # Exit if nothing to do
-exit_if_not_configured CONFIG_UPGRADE_PACKAGES
 exit_if_stamped $0
 
 # Temporarily install policy file to prevent services from running
@@ -14,8 +13,8 @@ prevent_services_running
 export DEBIAN_FRONTEND=noninteractive
 
 printinfo Upgrading packages...
-apt-get update
-apt-get upgrade -y
+http_proxy=$CONFIG_APT_PROXY apt-get update
+http_proxy=$CONFIG_APT_PROXY apt-get upgrade -y
 
 allow_services_to_run
 make_stamp $0

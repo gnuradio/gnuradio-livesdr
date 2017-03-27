@@ -1,0 +1,5 @@
+menu "Application Selection"
+
+source config/Kconfig.tor
+
+endmenu
