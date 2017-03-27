@@ -14,10 +14,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Install packages listed in config/install-pkgs.d
 printinfo Installing configured additional packages...
-for pkglist in config/install-pkgs.d/*; do
-    pkgs=`cat $pkglist`
-    http_proxy=$CONFIG_APT_PROXY apt-get install -y $pkgs || die Package installation failure!
-done
+pkgs=`cat config/install-pkgs.d/*`
+http_proxy=$CONFIG_APT_PROXY apt install -y $pkgs || die Package installation failure!
 
 allow_services_to_run
 updated_rootfs
