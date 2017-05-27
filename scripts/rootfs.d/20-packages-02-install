@@ -13,7 +13,7 @@ prevent_services_running
 export DEBIAN_FRONTEND=noninteractive
 
 # Install packages listed in config/install-pkgs.d
-printinfo Installing configured additional packages...
+printinfo Installing configured additional packages using proxy: $CONFIG_APT_PROXY
 pkgs=`cat config/install-pkgs.d/*`
 http_proxy=$CONFIG_APT_PROXY apt install -y $pkgs || die Package installation failure!
 

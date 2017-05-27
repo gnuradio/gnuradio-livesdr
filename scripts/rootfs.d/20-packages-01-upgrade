@@ -12,9 +12,9 @@ exit_if_stamped $0
 prevent_services_running
 export DEBIAN_FRONTEND=noninteractive
 
-printinfo Upgrading packages...
-http_proxy=$CONFIG_APT_PROXY apt-get update
-http_proxy=$CONFIG_APT_PROXY apt-get upgrade -y
+printinfo Upgrading packages, using proxy: $CONFIG_APT_PROXY
+http_proxy=$CONFIG_APT_PROXY apt-get update &&
+http_proxy=$CONFIG_APT_PROXY apt-get upgrade -y || die Unable to upgrade packages!
 
 allow_services_to_run
 make_stamp $0
