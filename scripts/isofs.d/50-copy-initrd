@@ -10,11 +10,15 @@ require_iso_rw_mounted
 # Currently, only need new initrd if using encrypted root filesystem.
 if [ "${CONFIG_ENCRYPT_ROOTFS-x}" != "y" ] ; then exit 0; fi
 
+# Determine most recent initrd
+CHROOT_INITRD=$(ls -1 $ROOTFSMNT_RW/boot/initrd.img* | sort | tail -n1)
+
 # Exit if nothing to do
 if [ $ISO_INITRD -nt $CHROOT_INITRD ] ; then exit 0; fi
 
 # Copy chroot /boot initrd into place on remastered ISO overlay
-printinfo Copying chroot initrd to ISO...
+printinfo Copying chroot initrd: $CHROOT_INITRD
+
 $SUDO mkdir -p $(dirname $ISO_INITRD) &&
 $SUDO install -g root -o root -m 644 \
     $CHROOT_INITRD \
