@@ -24,7 +24,7 @@ pybombs recipes add livesdr config/pybombs.d/recipes \
     || die Failed to install local recipes!
 
 # Do parallel compiles
-pybombs config makewidth $MAKEWIDTH || die Unable to configure makewidth
+pybombs config makewidth $CONFIG_MAKEWIDTH || die Unable to configure makewidth
 
 # TODO: Move chroot config.yml into /etc/skel for live user
 
