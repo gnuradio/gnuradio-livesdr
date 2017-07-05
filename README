@@ -25,6 +25,7 @@ below), and possible password prompts for 'sudo' operation.
 
 ## Adding a trusted signing key for Ubuntu
 After confirming signature out-of-band, use the following to trust the Ubuntu Signing Key
+
 ```
 gpg --keyserver keyserver.ubuntu.com --recv <THE-KEY-ID>
 gpg --edit <THE-KEY-ID>
